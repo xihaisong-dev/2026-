@@ -1,0 +1,14 @@
+\section{程序排版示例}\label{app:demo}
+下列程序只检查平方展开恒等式，不属于参赛求解代码。正式附录应给出实际源程序、依赖、输入和运行方式；借用或辅助生成的代码需如实注明来源。
+\begin{lstlisting}[caption={Python 最小可运行示例}]
+def square_expansion(x):
+    left = (x + 1) ** 2
+    right = x * x + 2 * x + 1
+    return left, right
+
+if __name__ == "__main__":
+    for x in (-2, 0, 3):
+        left, right = square_expansion(x)
+        assert left == right
+        print(x, left, right)
+\end{lstlisting}
