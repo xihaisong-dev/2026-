@@ -32,11 +32,21 @@
   },
   "gmcm": {
     "display_name": "“华为杯”中国研究生数学建模竞赛（NPGMCM/GMCM）",
-    "aliases": ["npgmcm", "huawei", "华为杯", "研究生数学建模"],
-    "rule_version": "2025",
+    "aliases": [
+      "npgmcm",
+      "huawei",
+      "华为杯",
+      "研究生数学建模"
+    ],
+    "rule_version": "2026",
     "template_dir": "gmcm",
     "class_file": "gmcmthesis.cls",
-    "class_required_terms": ["LoadClass[a4paper,12pt]", "geometry{top=30mm,bottom=18.5mm,left=22.5mm,right=22.5mm}", "setfontsize\\normalsize{12.05}"],
+    "class_required_terms": [
+      "LoadClass[a4paper,12pt]",
+      "geometry{top=30mm,bottom=18mm,left=22.5mm,right=22.5mm,footskip=10mm}",
+      "@setfontsize\\normalsize{12bp}{14.4bp}",
+      "\\baselinestretch}{1}"
+    ],
     "language": "zh-CN",
     "minimum_font_pt": 12,
     "minimum_body_units": 7000,
@@ -49,23 +59,29 @@
       "abstract_end_marker": "AbstractEnd",
       "body_start_marker": "BodyStart",
       "body_end_marker": "BodyEnd",
-      "toc_required": true,
+      "toc_required": false,
       "toc_max_depth": 3,
       "toc_forbidden_depth": 4,
       "appendix_counted": true
     },
     "quality_targets": {
-      "body_pages_min": 30,
+      "body_pages_min": 0,
       "body_units_min": 7000,
-      "body_pages_is_hard_limit": true,
-      "hard_limit_quality_modes": ["championship"],
+      "body_pages_is_hard_limit": false,
+      "hard_limit_quality_modes": [],
       "standard_mode_action": "warn"
     },
     "problem_intake": {
       "requires_template_upload": true,
       "problem_dir": "题目/赛题原件",
       "template_dir": "题目/官方论文模板",
-      "template_formats": [".doc", ".docx", ".pdf", ".tex", ".zip"]
+      "template_formats": [
+        ".doc",
+        ".docx",
+        ".pdf",
+        ".tex",
+        ".zip"
+      ]
     },
     "ai_disclosure": {
       "mode": "conditional",
@@ -76,14 +92,31 @@
       "minimum_records": 1,
       "recommended_statement": "AI 仅作为辅助手段，模型假设、核心推导、创新点、结果分析由参赛团队独立完成。",
       "required_semantic_terms": [
-        ["AI"],
-        ["辅助"],
-        ["模型假设"],
-        ["核心推导"],
-        ["创新点"],
-        ["结果分析"],
-        ["参赛团队", "团队"],
-        ["独立完成"]
+        [
+          "AI"
+        ],
+        [
+          "辅助"
+        ],
+        [
+          "模型假设"
+        ],
+        [
+          "核心推导"
+        ],
+        [
+          "创新点"
+        ],
+        [
+          "结果分析"
+        ],
+        [
+          "参赛团队",
+          "团队"
+        ],
+        [
+          "独立完成"
+        ]
       ]
     },
     "identity_policy": {
@@ -96,12 +129,36 @@
       "require_manifest": true,
       "minimum_code_lines": 20
     },
-    "allowed_identity": ["封皮团队信息"],
-    "required_source_terms": ["gmcmthesis", "withoutpreface", "\\tableofcontents", "setcounter{tocdepth}{3}", "GMCM_COVER_START", "GMCM_COVER_END"],
-    "required_content_terms": ["摘要", "关键词", "目录", "参考文献"],
-    "forbidden_identity_terms": ["学校名称", "指导教师", "队员姓名", "参赛人员姓名", "队伍编号", "参赛队员", "单位名称"],
-    "official_notes": "references/competition-profiles/gmcm-2025.md",
-    "supported_output_formats": ["pdf", "docx"]
+    "allowed_identity": [
+      "封皮团队信息"
+    ],
+    "required_source_terms": [
+      "gmcmthesis",
+      "withoutpreface",
+      "setcounter{tocdepth}{3}",
+      "GMCM_COVER_START",
+      "GMCM_COVER_END"
+    ],
+    "required_content_terms": [
+      "摘要",
+      "关键词",
+      "参考文献"
+    ],
+    "forbidden_identity_terms": [
+      "学校名称",
+      "指导教师",
+      "队员姓名",
+      "参赛人员姓名",
+      "队伍编号",
+      "参赛队员",
+      "单位名称"
+    ],
+    "official_notes": "references/competition-profiles/gmcm-2026.md",
+    "supported_output_formats": [
+      "pdf",
+      "docx"
+    ],
+    "local_adaptation": "gmcm-2026.1; XeLaTeX/PDF tested separately from DOCX"
   },
   "51mcm": {
     "display_name": "五一数学建模竞赛（51MCM）",
