@@ -1,0 +1,68 @@
+from __future__ import annotations
+
+import json
+from functools import lru_cache
+from pathlib import Path
+from typing import Any, Optional
+
+
+SKILL_ROOT = Path(__file__).resolve().parent.parent
+MANIFEST_PATH = SKILL_ROOT / "assets" / "workflow_manifest.json"
+COMPETITION_PROFILES_PATH = SKILL_ROOT / "assets" / "competition_profiles.json"
+
+
+@lru_cache(maxsize=1)
+def load_manifest() -> dict[str, Any]:
+    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=1)
+def load_competition_profiles() -> dict[str, Any]:
+    return json.loads(COMPETITION_PROFILES_PATH.read_text(encoding="utf-8"))
+
+
+def competition_choices() -> list[str]:
+    profiles = load_competition_profiles()
+    choices = set(profiles)
+    for profile in profiles.values():
+        choices.update(profile.get("aliases", []))
+    return sorted(choices)
+
+
+def normalize_competition(key: str) -> str:
+    raw = str(key).strip()
+    profiles = load_competition_profiles()
+    aliases: dict[str, str] = {name.casefold(): name for name in profiles}
+    for name, profile in profiles.items():
+        for alias in profile.get("aliases", []):
+            aliases[str(alias).strip().casefold()] = name
+    canonical = aliases.get(raw.casefold())
+    if canonical is None:
+        raise ValueError(f"Unknown competition profile: {key}. Choices: {', '.join(competition_choices())}")
+    return canonical
+
+
+def competition_profile(key: str) -> dict[str, Any]:
+    profiles = load_competition_profiles()
+    canonical = normalize_competition(key)
+    return profiles[canonical]
+
+
+def ordered_steps() -> list[dict[str, Any]]:
+    return list(load_manifest()["steps"])
+
+
+def find_step(identifier: str) -> Optional[dict[str, Any]]:
+    ident = identifier.strip()
+    for step in ordered_steps():
+        if ident in {step["stage_id"], step["skill_name"]}:
+            return step
+    return None
+
+
+def next_step(stage_id: str) -> Optional[dict[str, Any]]:
+    steps = ordered_steps()
+    for index, step in enumerate(steps):
+        if step["stage_id"] == stage_id:
+            return steps[index + 1] if index + 1 < len(steps) else None
+    return None

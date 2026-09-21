@@ -14,4 +14,6 @@ jobs:
         with:
           python-version: '3.12'
       - name: Validate repository structure and JSON
-        run: python -X utf8 tools/check_repository.py
+        run: python -X utf8 协作/工具/check_repository.py
+      - name: Verify workflow startup and blocking behavior
+        run: python -X utf8 协作/工具/verify_migration.py
