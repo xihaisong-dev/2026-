@@ -54,6 +54,15 @@ CONFIGS.update({
 })
 
 
+for name, extra in {
+    'seed_components': ['init_components'],
+    'seed_batches': ['init_batches'],
+    'seed_depth': ['init_depth'],
+    'seed_combined': ['init_components', 'init_batches', 'init_depth'],
+}.items():
+    CONFIGS[name] = CONFIGS['shared_region'] + extra
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--cases', nargs='+', default=['case_001', 'case_093', 'case_034'])

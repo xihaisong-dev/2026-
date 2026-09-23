@@ -299,3 +299,16 @@ python 程序/q1_ablation.py --cases case_017 case_045 case_048 case_065 --cores
 
 
 第十六轮新增 `shared_phase` DDR阶段排序实验开关，未推广。`q1_parallel.py --workers 4` 将独立case/core/seed/config分配到多进程，每运行独立目录、父进程统一汇总；可调workers但须留内存余量。完整命令及负结果见[并行验证](../审查/问题一第十六轮DDR阶段与并行验证.md)。
+
+
+## 结构初解同预算对照
+
+`q1_structural_seeds.py` 构造完整弱分量、分量分批与深度窗口初解；对应消融配置为 `seed_components`、`seed_batches`、`seed_depth`、`seed_combined`。正式默认配置不变。`q1_seed_campaign.py` 固定十图、12 评价机会、种子和原版 A 最终重放；所有输出目录必须是新目录。主实验 200 组，稳健性 40 组。基础输入先按原有 prepare 流程准备，并保留 v18 的已校验固定单核结果。
+
+```powershell
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/q1-seed-reproduce-primary --workers 12
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/q1-seed-reproduce-robust --workers 4 --robustness
+python 程序/q1_seed_report.py --primary 图表/runs/q1-seed-reproduce-primary --robustness 图表/runs/q1-seed-reproduce-robust --prior 图表/runs/20260923-A-q1-v18-analysis/all_case_results.csv --output 图表/runs/q1-seed-reproduce-analysis
+```
+
+平均加速比按每图单核/多核比值取算术平均。求解耗时与模拟出的 makespan 单位不同；本轮本机和服务器分片的运行耗时不能直接用来声称算法墙钟加速。停止进程前先保留完整记录；迁移时冻结任务清单，只派发未完成任务，候选评分预算不会因续跑而增加。

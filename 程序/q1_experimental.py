@@ -9,7 +9,7 @@ import time
 from q1_solver import Graph, greedy_partition, multilevel, mutate, validate, topological
 
 FEATURES = frozenset({'local_cost', 'critical', 'adaptive', 'portfolio'})
-EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init'})
+EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init', 'init_components', 'init_batches', 'init_depth'})
 
 
 class CostGraph(Graph):
@@ -282,6 +282,9 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         raise ValueError('Choose local_repair or repair_move, not both')
     if 'partition_guard' in features and (evaluation_budget < 8 or features & {'guarded_joint', 'budget_adapt', 'portfolio', 'adaptive', 'joint', 'ddr', 'lookahead', 'beam', 'calibrated'}):
         raise ValueError('partition_guard requires budget >= 8 and base-only features')
+    structural = features & {'init_components', 'init_batches', 'init_depth'}
+    if structural and ('partition_guard' not in features or evaluation_budget < 12 or 'resource_init' in features):
+        raise ValueError('Structural seeds require partition_guard, budget >= 12 and exclude resource_init')
     from q1_search_tools import EvaluationCache, replay, diagnose, ranked_joint, choose_arm
     g = CostGraph(raw, settings, waits, bool({'local_cost', 'calibrated'} & features))
     g.fast_costs = evaluator_backend == 'counter'
@@ -366,6 +369,31 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
                 from q1_partition import shared_coarsen
                 coarse = shared_coarsen(g, coarse, cores)
             evaluate(g.schedule(coarse, cores)[0], 'multilevel')
+    structural_info = {}
+    if structural and cores > 1:
+        from q1_structural_seeds import initial_candidates, canonical_key
+        proposals, structural_info = initial_candidates(raw, settings, waits, cores,
+            {feature.removeprefix('init_') for feature in structural})
+        # At most four new official opportunities. Four grain attempts and at
+        # least one normal search opportunity survive, in addition to old init.
+        limit = max(0, min(4, evaluation_budget - len(history) - 5))
+        structural_info.update(limit=limit, evaluated=0, ledger=[])
+        known = {canonical_key(json.loads(key)): index for key, index in cache.items()}
+        for kind, plan in proposals:
+            record = {'candidate': 'structural_' + kind}
+            structural_info['ledger'].append(record)
+            key = canonical_key(plan)
+            if key in known:
+                record.update(status='equivalent_duplicate', evaluation_id=known[key])
+                continue
+            if structural_info['evaluated'] >= limit:
+                record['status'] = 'seed_limit'
+                continue
+            entry = evaluate(plan, record['candidate'])
+            record.update(proposal_ledger[-1])
+            if entry:
+                structural_info['evaluated'] += 1
+                known[key] = len(history) - 1
     arms = ['grain', 'directed', 'random'] + (['local_reschedule'] if g.enabled else [])
     if 'budget_adapt' in features:
         arms = ['grain', 'directed', 'split', 'boundary', 'migrate', 'reorder', 'local_reschedule']
@@ -507,6 +535,7 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
              'budget_unit': 'unique evaluated candidates including cache hits; hits do not buy extra search',
              'shared_input_stats': getattr(g, 'shared_input_stats', {}),
              'resource_init_stats': getattr(g, 'resource_init_stats', {}),
+             'structural_seed_stats': structural_info,
              'protected_grain_attempts': protected_grain_attempts,
              'protected_grain_ledger': protected_grain_ledger,
              'proposal_ledger': proposal_ledger,
