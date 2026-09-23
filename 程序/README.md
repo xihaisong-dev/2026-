@@ -169,3 +169,17 @@ python 程序/q1_exact_polish.py --runs 图表/runs/20260923-A-q1-v8-beam --conf
 输入为q1_ablation.py的完整实验目录。原始12候选方案之外追加至多8候选，最终完整官方复核额外一次；不是保持原12候选预算。完整mapping缓存仅复用局部准备工作，仍模拟动态DDR，且保持Task编号。旧CLI与默认算法不变。
 
 q1_exact_report.py比较额外精修与直接加长搜索，只纳入候选总数相同的组合；最终复核开销另列。当前等20候选实验精修总体慢0.343%，不推荐替换主搜索。官方私有接口变更需重新做差分测试，禁止直接声称跨版本缓存安全。
+
+
+## 划分机会保护、共享输入、局部修复（第十轮）
+
+```powershell
+python 程序/q1_ablation.py --cases case_045 --cores 2 3 4 5 --seeds 0 --evaluations 12 --configs insertion_rank partition_guard shared_input local_repair
+python 程序/主程序.py solve --cases case_044 --cores 4 --experimental --evaluation-budget 12 --features local_cost critical insertion comm_rank partition_guard shared_input
+```
+
+partition_guard保持旧轮转顺序，在剩余预算即将不足时预留未尝试的四档粒度。最小预算8；不等于四个不同合法候选，不保证不退步。shared_input和local_repair都要求partition_guard，不能把仅在这一预算机制上测出的效果推广为对任意搜索都有效。
+
+shared_input只改变multilevel候选：考虑无内部生产者的共享输入复用，扣除计算并行损失代理，并限制合并规模及全图代理不恶化。真实候选仍官方评价。local_repair保留未受影响Task的核和相对顺序，非法修复拒绝；子Task继承父核可能抑制并行，当前不默认推荐。新配置均为独立消融，默认组合不变。
+
+q1_partition_report.py核验预算、四档尝试和初始前缀；--baseline-runs仅提取经校验的insertion_rank历史行，报告调用合计包含复用参考，不能当成本轮新增调用。v10a前置所有粒度的失败与v10b修订均保留，见计算结果.md第十轮。
