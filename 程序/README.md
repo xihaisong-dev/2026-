@@ -361,3 +361,16 @@ python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-
 ```
 
 目录必须新建。上述fast命令会额外重复原版最终复核，耗时不在已报告搜索秒数内；本轮的精确结果复用基准脚本为q1_contraction_benchmark.py，服务器执行命令与输入包哈希见memory-routing/execution_metadata.json。报告命令见交接单；90测试命令为 `python -m unittest discover -s 程序/tests -p "test_q1*.py"`。
+
+
+### 候选机会成本实验（未采用）
+
+`routes_unguarded`按结构启用memory/hybrid路由及等价收缩加速；`routes_guarded`追加同口径局部时长筛选。32组开发检验0胜30平2负，筛选有误拒且未消除保护组退步，保持实验开关，正式默认不变。
+
+`q1_opportunity_campaign.py`支持`--verified-plan-runs`，只复用已原版复核的同输入、同配置、同方案字节、同完整结果的最终验证；搜索评分不复用。`q1_opportunity_report.py`核查哈希、预算和历史同池候选，并保留失败。
+
+复核命令（output须新目录）：
+```powershell
+python 程序/q1_opportunity_report.py --run 图表/runs/20260924-A-q1-opportunity-budget --output _tmp/opportunity-review
+```
+冻结启动命令及参数：`图表/runs/20260924-A-q1-opportunity-budget/launch.py`、`execution.json`。16图扩展因开发门槛失败未运行。
