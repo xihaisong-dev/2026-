@@ -312,3 +312,16 @@ python 程序/q1_seed_report.py --primary 图表/runs/q1-seed-reproduce-primary 
 ```
 
 平均加速比按每图单核/多核比值取算术平均。求解耗时与模拟出的 makespan 单位不同；本轮本机和服务器分片的运行耗时不能直接用来声称算法墙钟加速。停止进程前先保留完整记录；迁移时冻结任务清单，只派发未完成任务，候选评分预算不会因续跑而增加。
+
+
+## 完整分量预算控制实验
+
+`component_guard` 与 `component_slot` 继承 `shared_region`，只允许一份经结构筛选的完整分量候选，不启用深度窗口/分批。前者在初解阶段评分，后者替换一次普通随机扰动。结构门槛不满足则保留原搜索。固定预算 12，测试输出必须为新目录。
+
+```powershell
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/component-reproduce-primary --workers 12 --variants shared_region component_guard component_slot --cases case_017 case_045 case_048 case_065 case_077 case_002 case_028 case_063 case_067 case_085 case_006 case_040 case_090 case_097 --protocol 审查/问题一分量预算优化实验协议_20260924.md
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/component-reproduce-robust --workers 4 --variants shared_region component_guard component_slot --robustness --protocol 审查/问题一分量预算优化实验协议_20260924.md
+python 程序/q1_component_report.py --primary 图表/runs/component-reproduce-primary --robustness 图表/runs/component-reproduce-robust --previous 图表/runs/20260923-A-q1-structural-seeds --prior 图表/runs/20260923-A-q1-v18-analysis/all_case_results.csv --output 图表/runs/component-reproduce-analysis
+```
+
+`q1_seed_campaign.py` 新增可选 `--cases/--variants/--cores/--seeds/--protocol`，不传仍为原结构初解矩阵。正式 `q1_submit.py` 默认不变。原版 A 的最终复核开销与搜索秒数分开记录。
