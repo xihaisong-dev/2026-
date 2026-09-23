@@ -110,3 +110,23 @@ python 程序/q1_ablation_report.py --runs <实验目录> --pairs insertion_rank
 ```
 
 `--bounds` 核验本地输入后计算不可删除的非COPY算子Pipe工作量/核数与计算依赖最长路径下界；不包含预测等待、额外搬运或溢出。下界不保证可达。报告中的时间/下界不是实际次优程度的证明。审核报告的逐项复核见 `审查/问题一初版审核复核.md`。
+
+## 时间诊断、联合邻域、预算与结果缓存
+
+所有实验候选在官方评价前记录固定方案预测，评价后记录独立Task时长回放。`local_model_residual` 是回放与预测的差，包含Pipe依赖、复制、内存约束等；`global_replay_residual` 是官方时间与独立回放的差，可提示并发影响，不能单独证明全部由DDR造成。两项相加等于预测总误差。`fixed_profile_wait_effect` 在固定独立时长下关闭等待后重放，是同步影响的反事实代理，不能额外与前两项相加。逐候选数据见search.json。
+
+新增四个独立开关：
+
+- `calibrated`：以已经评价的独立Task时长/原成本比例，按主导Pipe分别取最近64个不同子图观测的中位数，校准未观察子图；比例截断0.5～4，保留计算关键路径下限。仅用本次求解过去的观测，不使用当前候选真值预测自己。已观察子图继续复用精确独立时长。
+- `joint`：对低余量瓶颈联合生成主导Pipe拆分、边界算子双向移动后重新映射，以及核心迁移；合法候选按完整固定方案时间代理排序。
+- `budget_adapt`：将拆分、边界移动、迁移、重排分成独立搜索臂，按过去实际完成时间改进/尝试数选择，四分之一提案机会保留轮转探索。非法/重复提案也计入尝试数以反映无效生成成本；不是按墙钟实时调节。
+- `ddr`：从实际DDR竞争事件与Task并发时长相对独立时长的增量识别候选对象，尝试迁移、合法核内相邻重排。它不强制传输串行，也不直接修改官方时间；收益须重新仿真。
+
+```powershell
+python 程序/q1_ablation.py --configs insertion_rank calibrated joint_cal budget_joint all_new --seeds 0
+python 程序/主程序.py solve --cases case_001 --cores 4 --experimental --evaluation-budget 12 --features local_cost critical insertion comm_rank calibrated joint --cache-dir _tmp/q1-evaluation-cache
+```
+
+`--cache-dir` 可选，默认关闭。缓存键覆盖原图、硬件/等待配置、整个官方Python评估源码集合、Python版本和完整方案；结果带校验哈希、gzip压缩、临时文件原子落盘，损坏报错。缓存不信任人工编辑的数据。不要把私人缓存目录作为正式成绩。命中仍占一个候选名额，不增加搜索预算；日志分别给出 `official_calls` 与 `cache_hits`，二者相加为候选评价数。关闭缓存时与先前总官方调用预算一致。跨实验复用只节约求解时间，不直接改变Task执行时间。
+
+当前是可消融原型，四项联合并不保证优于原算法。正式实验应关闭缓存，或同时报告真实调用与缓存命中，不把命中冒充重新仿真。默认full及旧八配置消融不包含这些新开关。

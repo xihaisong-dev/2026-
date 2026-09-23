@@ -26,6 +26,19 @@ def collect(folder):
             raise ValueError('Metric mismatch')
         if row['evaluations'] != summary['evaluation_budget'] or not row['budget_exhausted']:
             raise ValueError('Unequal evaluation budget')
+        if 'official_calls' in row:
+            hits = sum(e.get('cache_hit', False) for e in search['evaluations'])
+            if row.get('cache_hits', 0) != hits or row['official_calls'] != row['evaluations']-hits:
+                raise ValueError('Official/cache accounting mismatch')
+        diagnostics = [e['timing_diagnostic'] for e in search['evaluations'] if 'timing_diagnostic' in e]
+        if diagnostics:
+            row['prediction_diagnostics'] = {
+                'candidate_count': len(diagnostics),
+                'mean_absolute_relative_error': mean(abs(d['predicted_makespan']-d['official_makespan'])/max(1,d['official_makespan']) for d in diagnostics),
+                'mean_local_residual_cycles': mean(d['local_model_residual'] for d in diagnostics),
+                'mean_global_residual_cycles': mean(d['global_replay_residual'] for d in diagnostics),
+                'mean_wait_effect_cycles': mean(d['fixed_profile_wait_effect'] for d in diagnostics),
+            }
     return summary
 
 
@@ -74,7 +87,9 @@ def main():
         p.error('pairs must use before:after')
     comparisons = [compare(rows, a, b) for a, b in pairs]
     output = {'status': 'prototype_descriptive_only', 'runs': len(rows),
-              'official_evaluations': sum(r['evaluations'] for r in rows),
+              'evaluated_candidates': sum(r['evaluations'] for r in rows),
+              'official_evaluations': sum(r.get('official_calls', r['evaluations']) for r in rows),
+              'cache_hits': sum(r.get('cache_hits', 0) for r in rows),
               'verified_summaries': {str(f): sha((f/'summary.json').read_bytes()) for f in args.runs},
               'comparisons': comparisons, 'results': rows}
     if args.bounds:
@@ -102,13 +117,22 @@ def main():
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(args.output / 'comparison.json', output)
     lines = ['# 问题一同预算消融', '',
-             f"共 {len(rows)} 次运行，{output['official_evaluations']} 次官方评估。每次 {summaries[0]['evaluation_budget']} 次，包含初解。",
+             f"共 {len(rows)} 次运行，{output['evaluated_candidates']} 个已评候选，{output['official_evaluations']} 次实际官方调用，{output['cache_hits']} 次缓存命中。每次候选预算 {summaries[0]['evaluation_budget']}，包含初解与命中。",
              f"{len({r['case'] for r in rows})} 张图；核数 {sorted({r['cores'] for r in rows})}；种子 {sorted({r['seed'] for r in rows})}（各组合见下表）。仅作探索性描述，不作显著性或全量收益结论。", '',
              '正降幅表示后者更快；均值是逐配对百分比的算术平均，不是总时间之比。', '',
              '| 对照 → 候选 | 胜/平/负 | 平均时间降幅 |', '| --- | ---: | ---: |']
     for c in comparisons:
         lines.append(f"| {c['before']} → {c['after']} | {c['wins']}/{c['ties']}/{c['losses']} | {c['mean_paired_reduction_percent']:.3f}% |")
     configs = list(dict.fromkeys(r['config'] for r in rows))
+    diagnostic_rows = [r for r in rows if 'prediction_diagnostics' in r]
+    if diagnostic_rows:
+        lines += ['', '## 候选预测诊断', '', '| 配置 | 平均绝对相对误差 | 局部时长残差均值 cycles | 全局回放残差均值 cycles |',
+                  '| --- | ---: | ---: | ---: |']
+        for config in configs:
+            ds = [r['prediction_diagnostics'] for r in diagnostic_rows if r['config'] == config]
+            if ds:
+                lines.append(f"| {config} | {100*mean(d['mean_absolute_relative_error'] for d in ds):.3f}% | {mean(d['mean_local_residual_cycles'] for d in ds):.2f} | {mean(d['mean_global_residual_cycles'] for d in ds):.2f} |")
+        lines += ['', '各配置访问的候选不同，该误差均值不是同候选校准优劣证明。局部残差包含Pipe依赖、复制和内存约束等，全局回放残差提示并发模型差异；二者不是独立因果归因。原始逐候选诊断见search.json。']
     lines += ['', '## 完成时间（cycles）', '', '| 图/核数/种子 | ' + ' | '.join(configs) + ' |',
               '| --- | ' + ' | '.join(['---:']*len(configs)) + ' |']
     for case, cores, seed in sorted({(r['case'], r['cores'], r['seed']) for r in rows}):
