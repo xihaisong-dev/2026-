@@ -192,3 +192,16 @@ python 程序/q1_ablation.py --cases case_045 --cores 4 5 --seeds 0 --evaluation
 ```
 
 repair_move要求partition_guard，不能与local_repair同时启用。最多2个受影响Task×2个候选目标核×1个插入位置，加全局和继承候选，每次编辑至多6个代理方案。保留全局代理兜底，实际评价总预算不变。当前28组总计只少7 cycles，不能视为稳定收益，因此默认不启用。所有结果和反例见计算结果.md第十一轮。
+
+
+## 第十二轮：固定关键区域破坏—贪心修复（实验开关）
+
+`shared_region` 配置继承 `shared_input`，新增 `region` 特性。最多选择4个在数据依赖/同核相邻关系上连接的Task、512个算子；以冻结官方时间线余量选择种子。仅生成原划分、少量均衡再划分和高关联边界移动，最多6种映射，每种按关键尾长/任务时长两种优先级进行贪心调度，最多12个代理候选，不枚举分区、核心组合或排列。区域外核心归属和相对顺序不变，时间可以变化。商图与核心顺序必须无环。
+
+最终B版在第二次或之后的随机提案机会使用一次区域候选，恢复原有local_reschedule；partition_guard继续保留四档grain构造机会。每次求解最多一次区域提案，可能因重复或非法而没有新增官方调用。仍是12个总候选预算，包含初解，不能保证完整保留原搜索轨迹或在每组上不退步。A版占用local_reschedule的失败结果也保留；默认配置未改变。
+
+```powershell
+python 程序/q1_ablation.py --cases case_017 case_045 case_048 case_065 case_077 --cores 2 3 4 5 --seeds 0 --evaluations 12 --configs shared_region --output 图表/runs/请改成全新目录
+```
+
+结果和限制见 `审查/问题一第十二轮区域修复验证.md`；这是已反复使用的开发集，不能作为独立泛化证据。
