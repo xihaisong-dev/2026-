@@ -8,6 +8,7 @@
 - 时间（+08:00）：2026-09-24T00:20:45.525220+08:00。
 - 交接状态：READY，未代填接收确认。
 - 分支：codex/q1-component-budget；从 codex/q1-structure-seeds 的 0d7f846 继续。
+- PR：Draft #11，https://github.com/xihaisong-dev/2026-/pull/11 。已推送，等待独立审阅；未合并。
 - 产物提交 SHA：b2a3e8494026e3d16cb64689b202875cd788d108。
 - 本机 worktree：C:/Users/Lenovo/.codex/worktrees/q1-structure-seeds/2026华为杯数学建模。
 - 输入与来源：继承 v18 的单核基准与 processed/q1 官方源码、100 图、固定配置；逐文件及输入原件哈希见本轮两批 summary.json 与 input_package.json。新增分量布局沿用上一轮已署名的用户参考工程，新增的是结构预算控制，不声称原始分量算法为原创。
