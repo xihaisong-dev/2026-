@@ -9,7 +9,7 @@ import time
 from q1_solver import Graph, greedy_partition, multilevel, mutate, validate, topological
 
 FEATURES = frozenset({'local_cost', 'critical', 'adaptive', 'portfolio'})
-EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain'})
+EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init'})
 
 
 class CostGraph(Graph):
@@ -30,6 +30,7 @@ class CostGraph(Graph):
         self.calibrated = False
         self.learn_calibration = False
         self.ratios = defaultdict(list)
+        self.fast_costs = False
 
     def schedule(self, mapping, cores):
         if self.beam:
@@ -64,7 +65,11 @@ class CostGraph(Graph):
             self.local_observations[key] = value
 
     def costs(self, mapping):
-        duration, traffic, view = super().costs(mapping)
+        if self.fast_costs:
+            from q1_fast_costs import costs
+            duration, traffic, view = costs(self, mapping)
+        else:
+            duration, traffic, view = super().costs(mapping)
         if not self.enabled:
             return duration, traffic, view
         groups = view[0]
@@ -239,8 +244,17 @@ def elite_update(entries, entry, limit=4):
 
 
 def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed=0,
-                       features=(), on_evaluation=None, cache_dir=None):
+                       features=(), on_evaluation=None, cache_dir=None, single_reference=None,
+                       evaluator_backend='official'):
     from multicore_cut_evaluate_problem_1 import evaluate_scene_a
+    if evaluator_backend == 'counter':
+        from q1_fast_evaluator import evaluate_scene_a, BACKEND_ID
+        # Keep derived-backend evidence separate from the original cache.
+        if cache_dir is not None:
+            from pathlib import Path
+            cache_dir = Path(cache_dir) / BACKEND_ID.replace(':', '-')
+    elif evaluator_backend != 'official':
+        raise ValueError('Unknown evaluator backend')
     features = frozenset(features)
     if 'late_chain' in features and 'chain_joint' not in features:
         raise ValueError('late_chain requires chain_joint')
@@ -270,6 +284,7 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         raise ValueError('partition_guard requires budget >= 8 and base-only features')
     from q1_search_tools import EvaluationCache, replay, diagnose, ranked_joint, choose_arm
     g = CostGraph(raw, settings, waits, bool({'local_cost', 'calibrated'} & features))
+    g.fast_costs = evaluator_backend == 'counter'
     g.insertion = 'insertion' in features
     g.beam = 'beam' in features
     g.communication_rank = 'comm_rank' in features
@@ -306,7 +321,12 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         predicted = replay(g, plan, g.costs(mapping)[0])
         def compute():
             return evaluate_scene_a(raw, plan, g.bandwidth, g.capacity, g.cross, g.same)
-        result, cache_hit = persistent.run(plan, compute) if persistent else (compute(), False)
+        if label == 'single_task' and single_reference is not None:
+            from q1_single_reference import reuse
+            result = reuse(single_reference, raw, settings, waits, cores)
+            cache_hit = True
+        else:
+            result, cache_hit = persistent.run(plan, compute) if persistent else (compute(), False)
         diagnostic = diagnose(g, plan, result, predicted)
         score = (result['makespan'], result['data_movement_bytes']['added_copy_bytes'])
         entry = (score, plan, result)
@@ -322,7 +342,8 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         record.update(status='evaluated', evaluation_id=len(history), cache_hit=cache_hit)
         history.append({'candidate': label, 'makespan': score[0], 'added_copy_bytes': score[1],
                         'evaluation_seconds': time.perf_counter() - t,
-                        'cache_hit': cache_hit, 'timing_diagnostic': diagnostic,
+                        'cache_hit': cache_hit, 'fixed_single_reference': label == 'single_task' and single_reference is not None,
+                        'timing_diagnostic': diagnostic,
                         'best_makespan': best[0][0]})
         if on_evaluation:
             on_evaluation(history[-1])
@@ -333,8 +354,12 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
     evaluate(fallback, 'single_task')
     baseline = best[0][0]
     if cores > 1 and len(history) < evaluation_budget:
-        initial = greedy_partition(g, cores)
-        evaluate(g.schedule(initial, cores)[0], 'greedy')
+        if 'resource_init' in features:
+            from q1_resource_init import resource_partition
+            initial = resource_partition(g, cores)
+        else:
+            initial = greedy_partition(g, cores)
+        evaluate(g.schedule(initial, cores)[0], 'resource_initial' if 'resource_init' in features else 'greedy')
         if len(history) < evaluation_budget:
             coarse = multilevel(g, initial, cores)
             if 'shared_input' in features:
@@ -474,11 +499,14 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
             # Count-based reward keeps seeded runs reproducible across machine speeds.
             rewards[arm] += max(0., before - entry[0][0]) / max(1, baseline)
     stats = {'method': 'experimental', 'features': sorted(features), 'seed': seed,
+             'evaluator_backend': evaluator_backend,
+             'official_calls_semantics': 'full global scoring calls, original or equivalent derived backend',
              'evaluation_budget': evaluation_budget, 'evaluations': history,
              'official_calls': sum(not r['cache_hit'] for r in history),
              'cache_hits': sum(r['cache_hit'] for r in history),
              'budget_unit': 'unique evaluated candidates including cache hits; hits do not buy extra search',
              'shared_input_stats': getattr(g, 'shared_input_stats', {}),
+             'resource_init_stats': getattr(g, 'resource_init_stats', {}),
              'protected_grain_attempts': protected_grain_attempts,
              'protected_grain_ledger': protected_grain_ledger,
              'proposal_ledger': proposal_ledger,

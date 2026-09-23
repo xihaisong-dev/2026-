@@ -213,5 +213,80 @@
         "sha256": "08f2e9e8b6042c4fdde6809cc27d59a66d73d8282414528d8b7ae230082ac782"
       }
     ]
+  },
+  "latest_result_set": "v18_full_100_shared_region",
+  "followup_v18": {
+    "status": "completed_prototype",
+    "cases": 100,
+    "baseline": "shared_region",
+    "seed": 0,
+    "budget": 12,
+    "mean_speedup": {
+      "1": 1,
+      "2": 1.700388600754181,
+      "3": 2.26469702801702,
+      "4": 2.685511275068951,
+      "5": 2.9906610645949363
+    },
+    "result_path": "图表/runs/20260923-A-q1-v18-merged",
+    "analysis_path": "图表/runs/20260923-A-q1-v18-analysis",
+    "summary_sha256": "c5d05fdd2eede62cf5d2cea22169a6548230fb672673910ad233d13931f64a2e",
+    "challenger_decision": "retain_shared_region; shared_resource has 23 wins,206 ties,171 losses"
+  },
+  "delivery_entry": "程序/q1_submit.py",
+  "runtime_delivery": {
+    "status": "verified_prototype_delivery",
+    "backend": "indexed-counter-v3:2095f188a6c24ce3899f156bef21d50dcd87cbd9368488046b1e77e2bf91af3f",
+    "official_result_replays": 500,
+    "base_cost_cold_and_warm_checks": 500,
+    "complete_slow_searches": 6,
+    "unit_tests": 70,
+    "max_cold_single_seconds": 14.423173500108533,
+    "max_selected_search_including_single_seconds": 281.0000484000193,
+    "same_machine_single_evaluation_pair": {
+      "case": "case_084",
+      "cores": 1,
+      "seconds": 2.917408399982378,
+      "full_result_equal": true,
+      "original_seconds": 18.35420860000886,
+      "runtime_speedup": 6.291271595749064
+    },
+    "runtime_evidence": [
+      "图表/runs/20260923-A-q1-runtime-final-all100/checks.json",
+      "图表/runs/20260923-A-q1-runtime-slowest-six/checks.json",
+      "图表/runs/20260923-A-q1-runtime-final-paired/checks.json",
+      "图表/runs/20260923-A-q1-runtime-cost-check/checks.json"
+    ],
+    "makespan_and_added_bytes_change": 0,
+    "full_400_searches_repeated": false,
+    "limitations": [
+      "Selected slow-search timing uses two concurrent processes; original batch had different hosts/load.",
+      "Runtime improvement is solver wall time, not a new makespan improvement.",
+      "No wall-clock hard deadline; arbitrary future inputs have no 600-second guarantee."
+    ],
+    "archive": {
+      "file": "q1-baseline-repro-20260923.zip",
+      "bytes": 34820298,
+      "sha256": "ad8e409ee6ecbd272db24867c94a9b2feefc794c153ebbbba8480164c76cd01f"
+    },
+    "extracted_package_smoke": "图表/runs/20260923-A-q1-delivery-extracted-smoke.json",
+    "desktop_package": "C:/Users/Lenovo/Desktop/问题一_可复现基线_20260923.zip"
+  },
+  "model_identity": {
+    "Q1": {
+      "academic_name": "考虑共享DDR与缓存约束的有向无环图划分—多处理器调度组合优化模型",
+      "canonical_model_family": "有向无环图划分与带前驱约束的多处理器调度组合优化",
+      "solver_algorithm": "贪心初始划分、多层次无环粗化与关键区域贪心修复的有界多邻域搜索"
+    }
+  },
+  "writing_handoff": {
+    "status": "READY_pending_recipient",
+    "task": "Q1-WRITE-r01",
+    "model": "建模报告.md",
+    "analysis": "问题分析.md",
+    "tables": "图表/runs/20260923-A-q1-writing-handoff",
+    "adopted": "shared_region",
+    "baseline_rows": 500,
+    "formal_gate_advanced": false
   }
 }
