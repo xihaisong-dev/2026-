@@ -4,7 +4,7 @@
 
 仓库统一使用固定的 `meta-model-agent` 完整版，入口为 `.agents/skills/meta-model-agent/`，来源和本地 2026 适配补丁见 [技能版本锁](协作/技能版本锁.json)。三端使用同一仓库版本，不依赖各自安装的个人 skill。
 
-当前为赛前准备：`gmcm / PDF / baseline / standard`，DISCOVERY 尚未启动；正式题面和官方模板仍须按 intake 导入，AI 报告选择仍为 pending。已有模板试编译及 Word 版式检查，不代表研究阶段或参赛论文验收。
+当前为研究启动准备：`gmcm / PDF / baseline / standard`，DISCOVERY 尚未启动。已归档[多核调度题面与附件原件](题目/README.md)，题面和官方模板仍须按 intake 正式导入，AI 报告选择仍为 pending。已有模板试编译及 Word 版式检查，不代表研究阶段或参赛论文验收。
 
 ## 写作资料直接入口
 
