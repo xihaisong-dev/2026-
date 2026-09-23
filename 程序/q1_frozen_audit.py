@@ -9,6 +9,7 @@ from q1_ablation_report import collect
 from q1_experimental import CostGraph
 from q1_boundary_refine import pool
 from q1_search_tools import replay
+from q1_rank_metrics import metrics
 
 
 def rank_report(rows, field):
@@ -21,7 +22,7 @@ def rank_report(rows, field):
             comparable += 1
             discordant += p*y < 0
     top = min(rows, key=lambda r: (r[field], r['label'])) if rows else None
-    return {'comparable': comparable, 'discordant': discordant, 'ties': ties,
+    return {**metrics(rows, field), 'comparable': comparable, 'discordant': discordant, 'ties': ties,
             'top_label': top['label'] if top else None,
             'top_regret_cycles': top['official']-min(r['official'] for r in rows) if rows else None}
 

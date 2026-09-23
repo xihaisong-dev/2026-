@@ -228,3 +228,6 @@ python 程序/q1_ablation.py --cases case_017 case_045 case_048 case_065 --cores
 ```
 
 结果及限制见 `审查/问题一第十四轮冻结成本与边界细化验证.md`。
+
+
+第十五轮新增 `shared_exact`、`shared_exact_wide`、`shared_exact_uphill` 消融配置。局部准备复用官方边界/溢出/Pipe逻辑，不计作全局评价；额外耗时单列。基础粒度 `protected_grain_ledger` 明确记录新评估或重复引用；`q1_local_rank_audit.py` 审计固定池，`q1_ranking_report.py` 校验台账及配对结果。详见[验证报告](../审查/问题一第十五轮排序与区域验证.md)，均未成为默认。
