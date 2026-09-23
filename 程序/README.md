@@ -146,3 +146,15 @@ python 程序/q1_ablation.py --configs insertion_rank guarded_joint --cases case
 ```
 
 本轮另按全部结构统计选择计算关键路径占比最大、张量字节/工作量最大两图作补充，名单在其求解前保存为独立profile；这是顺序开展的探索，不是事前注册的统计验证。实验期间不修改已冻结的求解文件。
+
+
+## 同一划分的束搜索映射（第八轮，可选）
+
+```powershell
+python 程序/主程序.py solve --cases case_045 --cores 2 3 4 5 --experimental --evaluation-budget 12 --features local_cost critical insertion comm_rank beam
+python 程序/q1_ablation.py --cases case_045 --cores 2 3 4 5 --seeds 0 --evaluations 12 --configs insertion_rank beam
+```
+
+beam宽度8、最大128个Task，超过阈值回退insertion_rank；固定任务优先顺序，只扩展核心与插入位置。比较原映射代理后择优，实际成绩仍由原始官方评估器决定。不会增加单次官方评价预算，但耗费更多候选构造时间。尚未验证稳定收益，尤其4/5核没有稳定改善，不默认开启，也不建议与guarded_joint组合解释前缀保护。
+
+q1_placement_probe.py用于事后固定划分诊断：先从既有官方结果读精确局部时长，再生成映射，额外评价单独计数；不属于同预算求解性能。其CLI参数见--help，结果见计算结果.md第八轮。
