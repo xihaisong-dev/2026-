@@ -1,0 +1,79 @@
+{
+  "method": "alns",
+  "seed": 0,
+  "budget": 4,
+  "block_size": 64,
+  "singlecore_makespan": 842996,
+  "speedup": 1.893220083948876,
+  "search_evaluations": 4,
+  "evaluations": [
+    {
+      "candidate": "single_task",
+      "makespan": 842996,
+      "added_copy_bytes": 1079832,
+      "evaluation_seconds": 2.7039679000154138
+    },
+    {
+      "candidate": "greedy",
+      "makespan": 460654,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.9559945999644697
+    },
+    {
+      "candidate": "multilevel",
+      "makespan": 651522,
+      "added_copy_bytes": 6122532,
+      "evaluation_seconds": 0.8550810000160709
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 462156,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.8657440999522805
+    },
+    {
+      "candidate": "split",
+      "makespan": 451982,
+      "added_copy_bytes": 10056046,
+      "evaluation_seconds": 0.9163743000244722
+    },
+    {
+      "candidate": "migrate",
+      "makespan": 452017,
+      "added_copy_bytes": 10056046,
+      "evaluation_seconds": 0.8945810999721289
+    },
+    {
+      "candidate": "split",
+      "makespan": 445271,
+      "added_copy_bytes": 10096494,
+      "evaluation_seconds": 0.9111446000169963
+    }
+  ],
+  "rejected_proposals": [
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 13 -> 15"
+    },
+    {
+      "operation": "merge",
+      "reason": "子图收缩或执行顺序产生环"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 47 -> 50"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 2 -> 3"
+    }
+  ],
+  "operator_weights": {
+    "merge": 1.0,
+    "split": 2.4400000000000004,
+    "boundary": 1.0,
+    "migrate": 1.0,
+    "reorder": 1.0
+  },
+  "elapsed_seconds": 9.409745399956591
+}
