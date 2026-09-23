@@ -1,0 +1,114 @@
+{
+  "case": "case_065",
+  "cores": 3,
+  "gate": "eligible",
+  "rows": [
+    {
+      "label": "component_lpt",
+      "static": [
+        10042.0,
+        327656,
+        19334.0
+      ],
+      "proxy": 10042.0,
+      "local": 19932,
+      "duration": {
+        "0": 19865,
+        "1": 19932,
+        "2": 19726
+      },
+      "plan_sha256": "e7093b3774966282306867cef87dd1ec8e04c374abbaea2b28c68785a395a706",
+      "official": 17964,
+      "added_bytes": 27936,
+      "evaluation_seconds": 0.5067455433309078,
+      "evaluation_sha256": "6dc36d6fd8f50b97669923ea3abfacf191ea852c184e4ff87b2fc7741b81a9ff"
+    },
+    {
+      "label": "component_pipe",
+      "static": [
+        9852.0,
+        327512,
+        19673.0
+      ],
+      "proxy": 9852.0,
+      "local": 20290,
+      "duration": {
+        "0": 20290,
+        "1": 19090,
+        "2": 20084
+      },
+      "plan_sha256": "1b8e6e694d09e0461b177349687dbc4c24915957212be2ac691425da1fc93543",
+      "official": 18135,
+      "added_bytes": 27792,
+      "evaluation_seconds": 0.3416964188218117,
+      "evaluation_sha256": "7fb64623fbd300a34029ca226cd18bccaa5bfe3953c21c2164b2ea527384baaf"
+    },
+    {
+      "label": "component_round_robin",
+      "static": [
+        10103.0,
+        327656,
+        19519.0
+      ],
+      "proxy": 10103.0,
+      "local": 20082,
+      "duration": {
+        "0": 19798,
+        "1": 20082,
+        "2": 19666
+      },
+      "plan_sha256": "8af11c029567de527373b64d72f54f4af6c970ed2b3e95e9e903a54890f68842",
+      "official": 17851,
+      "added_bytes": 27936,
+      "evaluation_seconds": 0.3040570765733719,
+      "evaluation_sha256": "cdefc4a079eff7fe7b97aef62c810b4bbb31adf41ff927ccca4577c28a9cf719"
+    }
+  ],
+  "preparation": {
+    "seconds": 0.9177044294774532,
+    "calls": 3,
+    "partition_hits": 0,
+    "partition_misses": 3,
+    "global_evaluations": 0,
+    "phase_seconds": 0.0,
+    "event_seconds": 0.0,
+    "event_passes": 0,
+    "event_max_nodes": 0
+  },
+  "cost_state": "empty local observations; raw graph/config frozen",
+  "rankings": {
+    "static": {
+      "n": 3,
+      "spearman": -1.0,
+      "top1_regret": 284,
+      "top2_regret": 113,
+      "top2_covers_best": false,
+      "top2_labels": [
+        "component_pipe",
+        "component_lpt"
+      ]
+    },
+    "proxy": {
+      "n": 3,
+      "spearman": -1.0,
+      "top1_regret": 284,
+      "top2_regret": 113,
+      "top2_covers_best": false,
+      "top2_labels": [
+        "component_pipe",
+        "component_lpt"
+      ]
+    },
+    "local": {
+      "n": 3,
+      "spearman": 0.5,
+      "top1_regret": 113,
+      "top2_regret": 0,
+      "top2_covers_best": true,
+      "top2_labels": [
+        "component_lpt",
+        "component_round_robin"
+      ]
+    }
+  }
+}

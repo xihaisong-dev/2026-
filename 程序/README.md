@@ -337,3 +337,14 @@ python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-
 ```
 
 输出目录须为新目录；保留固定单核与原版最终复核。报告程序 `q1_followup_report.py` 的 `--help` 列出本轮、上轮和历史结构实验的对照输入。不要用单核总时间/多核总时间替代逐用例平均加速比。
+
+
+## 冻结局部排序全量实验
+
+`component_local_rank` 在已有完整分量池内使用独立官方局部准备排序；不运行完整共享DDR模拟，仍限制12次评价机会，正式提交入口默认未改。
+
+```powershell
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/ranking-reproduce-full100 --workers 16 --variants component_local_rank --protocol 审查/问题一排序诊断与全量验证协议_20260924.md --cases (1..100 | ForEach-Object { 'case_{0:D3}' -f $_ })
+```
+
+输出必须为新目录。完整审计与验证命令在 `图表/runs/20260924-A-q1-ranking-execution/full_execution.json` 和 `audit_command.json`；服务器绝对路径按本机工作目录调整。分析脚本 `q1_ranking_full_report.py --help` 列出所需历史对照和冻结证据；绘图脚本使用可选matplotlib，不属于求解器依赖。

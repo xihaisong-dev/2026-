@@ -1,0 +1,111 @@
+{
+  "case": "case_065",
+  "cores": 2,
+  "gate": "eligible",
+  "rows": [
+    {
+      "label": "component_lpt",
+      "static": [
+        15777.0,
+        313688,
+        28917.0
+      ],
+      "proxy": 15777.0,
+      "local": 29791,
+      "duration": {
+        "0": 29569,
+        "1": 29791
+      },
+      "plan_sha256": "31fd752a5260cd1fb08ad8b086d0eaae90f184dc590e800074197863ca9ceca3",
+      "official": 26802,
+      "added_bytes": 13968,
+      "evaluation_seconds": 0.2715291604399681,
+      "evaluation_sha256": "12cf1f059cbac97654dff69bb48e7181330b1b94d5135a7a1dfb574f5605e1fc"
+    },
+    {
+      "label": "component_pipe",
+      "static": [
+        15394.0,
+        313688,
+        29468.0
+      ],
+      "proxy": 15394.0,
+      "local": 30172,
+      "duration": {
+        "0": 29188,
+        "1": 30172
+      },
+      "plan_sha256": "50cc1c2c4060cfa611fb0445ff1f284121f301f65a40635466bf738086959dcf",
+      "official": 26972,
+      "added_bytes": 13968,
+      "evaluation_seconds": 0.32242998853325844,
+      "evaluation_sha256": "da68e9ad7f5666b9554d3363842b7653c7449a99d1565adc8a61b18ae953a290"
+    },
+    {
+      "label": "component_round_robin",
+      "static": [
+        15444.0,
+        313688,
+        29743.0
+      ],
+      "proxy": 15444.0,
+      "local": 30555,
+      "duration": {
+        "0": 30555,
+        "1": 28805
+      },
+      "plan_sha256": "54c5b00299afdb43316658f7cc53fdfd8ddfb3a13790ea1c5f668ab26844028e",
+      "official": 27352,
+      "added_bytes": 13968,
+      "evaluation_seconds": 0.4549481440335512,
+      "evaluation_sha256": "37c27726535cc3792ce6c85c60c64e5867da607dba08b476dfacfdd224197c15"
+    }
+  ],
+  "preparation": {
+    "seconds": 0.9691614750772715,
+    "calls": 3,
+    "partition_hits": 0,
+    "partition_misses": 3,
+    "global_evaluations": 0,
+    "phase_seconds": 0.0,
+    "event_seconds": 0.0,
+    "event_passes": 0,
+    "event_max_nodes": 0
+  },
+  "cost_state": "empty local observations; raw graph/config frozen",
+  "rankings": {
+    "static": {
+      "n": 3,
+      "spearman": -0.5,
+      "top1_regret": 170,
+      "top2_regret": 170,
+      "top2_covers_best": false,
+      "top2_labels": [
+        "component_pipe",
+        "component_round_robin"
+      ]
+    },
+    "proxy": {
+      "n": 3,
+      "spearman": -0.5,
+      "top1_regret": 170,
+      "top2_regret": 170,
+      "top2_covers_best": false,
+      "top2_labels": [
+        "component_pipe",
+        "component_round_robin"
+      ]
+    },
+    "local": {
+      "n": 3,
+      "spearman": 1.0,
+      "top1_regret": 0,
+      "top2_regret": 0,
+      "top2_covers_best": true,
+      "top2_labels": [
+        "component_lpt",
+        "component_pipe"
+      ]
+    }
+  }
+}

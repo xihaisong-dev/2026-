@@ -112,6 +112,27 @@ class ComponentBudgetTests(unittest.TestCase):
         self.assertEqual(len(stats['structural_seed_stats']['ledger']), 1)
         self.assertFalse(any(x['candidate']=='structural_unused' for x in stats['evaluations']))
 
+    def test_local_rank_is_local_only_and_keeps_budget(self):
+        raw = fixture([(u,u+30) for u in range(30)])
+        for i, op in enumerate(raw['ops']): op['cycles'] = (i*37)%91+10
+        _, info = guarded_component_candidate(raw, SETTINGS, WAITS, 3, max_candidates=2, ranking='local')
+        self.assertEqual(info['local_preparation']['global_evaluations'], 0)
+        self.assertLessEqual(info['local_preparation']['calls'], 3)
+        self.assertEqual([x['local_prediction'] for x in info['ranked']], sorted(x['local_prediction'] for x in info['ranked']))
+        _, result, stats = solve_experimental(raw, SETTINGS, WAITS, 3, 12, 0, CONFIGS['component_local_rank'])
+        self.assertEqual(len(stats['evaluations']), 12)
+        self.assertEqual(stats['protected_grain_attempts'], [.5,1.,2.,.25])
+        self.assertLessEqual(stats['structural_seed_stats']['evaluated'], 2)
+        self.assertEqual(result['makespan'], min(x['makespan'] for x in stats['evaluations']))
+
+    def test_proposal_observer_cannot_modify_search(self):
+        raw = fixture([(u,u+15) for u in range(15)])
+        base = solve_experimental(raw,SETTINGS,WAITS,3,12,0,CONFIGS['component_followup'])
+        def observer(plan, label): plan['node_to_subgraph'].clear()
+        actual = solve_experimental(raw,SETTINGS,WAITS,3,12,0,CONFIGS['component_followup'],on_proposal=observer)
+        self.assertEqual(base[0], actual[0])
+        self.assertEqual(base[1], actual[1])
+
     def test_incompatible_features_rejected(self):
         with self.assertRaisesRegex(ValueError, 'requires component_slot'):
             solve_experimental(fixture([(0,1)]), SETTINGS, WAITS, 2, 12, 0, CONFIGS['component_guard']+['component_followup'])
