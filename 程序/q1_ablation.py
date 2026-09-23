@@ -57,6 +57,7 @@ CONFIGS.update({
 for name, extra in {
     'component_guard': ['init_components', 'component_guard'],
     'component_slot': ['init_components', 'component_guard', 'component_slot'],
+    'component_followup': ['init_components', 'component_guard', 'component_slot', 'component_followup'],
     'seed_components': ['init_components'],
     'seed_batches': ['init_batches'],
     'seed_depth': ['init_depth'],

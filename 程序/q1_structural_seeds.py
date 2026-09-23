@@ -302,13 +302,15 @@ def initial_candidates(raw, settings, waits, cores, families):
     return plans, info
 
 
-def guarded_component_candidate(raw, settings, waits, cores):
+def guarded_component_candidate(raw, settings, waits, cores, *, max_candidates=1):
     """One statically ranked whole-component seed; no simulator or case-ID routing.
 
     Union footprint is a conservative routing hint, not a live-memory bound.
     If *every* component already has a footprint exceeding private capacity,
     avoid packing multiple such components into a large fused task.
     """
+    if max_candidates not in (1, 2):
+        raise ValueError("Component candidate limit must be 1 or 2")
     m = GraphModel(raw, settings, waits)
     vectors = [m.cost_vector(g) for g in m.components]
     weights = [max(v.values()) for v in vectors]
@@ -358,5 +360,19 @@ def guarded_component_candidate(raw, settings, waits, cores):
     info['ranked'] = [x[2] for x in ranked]
     winner = ranked[0]
     info['selected_compute_lower_bound'] = winner[2]['compute_lower_bound']
-    info['generated'] = [winner[2]['candidate']]
-    return [(winner[2]['candidate'], winner[3])], info
+    selected = [winner]
+    if max_candidates == 2:
+        # Different grouping, not just a permutation of identical core labels.
+        def grouping(plan):
+            groups = defaultdict(list)
+            for u, sid in plan['node_to_subgraph'].items():
+                groups[sid].append(int(u))
+            return tuple(sorted(tuple(sorted(nodes)) for nodes in groups.values()))
+        first_groups = grouping(winner[3])
+        alternative = next((x for x in ranked[1:] if grouping(x[3]) != first_groups), None)
+        if alternative is not None:
+            selected.append(alternative)
+        info['followup_diversity'] = 'different node grouping ignoring core labels'
+        info['candidate_compute_bounds'] = {x[2]['candidate']: x[2]['compute_lower_bound'] for x in selected}
+    info['generated'] = [x[2]['candidate'] for x in selected]
+    return [(x[2]['candidate'], x[3]) for x in selected], info

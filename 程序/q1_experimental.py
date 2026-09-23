@@ -9,7 +9,7 @@ import time
 from q1_solver import Graph, greedy_partition, multilevel, mutate, validate, topological
 
 FEATURES = frozenset({'local_cost', 'critical', 'adaptive', 'portfolio'})
-EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init', 'init_components', 'init_batches', 'init_depth', 'component_guard', 'component_slot'})
+EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init', 'init_components', 'init_batches', 'init_depth', 'component_guard', 'component_slot', 'component_followup'})
 
 
 class CostGraph(Graph):
@@ -287,6 +287,8 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         raise ValueError('Structural seeds require partition_guard, budget >= 12 and exclude resource_init')
     if features & {'component_guard', 'component_slot'} and (structural != {'init_components'} or 'component_guard' not in features):
         raise ValueError('Component routing requires only init_components and component_guard')
+    if 'component_followup' in features and 'component_slot' not in features:
+        raise ValueError('component_followup requires component_slot')
     from q1_search_tools import EvaluationCache, replay, diagnose, ranked_joint, choose_arm
     g = CostGraph(raw, settings, waits, bool({'local_cost', 'calibrated'} & features))
     g.fast_costs = evaluator_backend == 'counter'
@@ -376,11 +378,15 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
             evaluate(g.schedule(coarse, cores)[0], 'multilevel')
     structural_info = {}
     pending_component = []
+    followup_unlocked = False
     if structural and cores > 1:
         from q1_structural_seeds import initial_candidates, canonical_key
         if 'component_guard' in features:
             from q1_structural_seeds import guarded_component_candidate
-            proposals, structural_info = guarded_component_candidate(raw, settings, waits, cores)
+            if 'component_followup' in features:
+                proposals, structural_info = guarded_component_candidate(raw, settings, waits, cores, max_candidates=2)
+            else:
+                proposals, structural_info = guarded_component_candidate(raw, settings, waits, cores)
         else:
             proposals, structural_info = initial_candidates(raw, settings, waits, cores,
                 {feature.removeprefix('init_') for feature in structural})
@@ -388,7 +394,7 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         # least one normal search opportunity survive, in addition to old init.
         limit = max(0, min(4, evaluation_budget - len(history) - 5))
         if 'component_guard' in features:
-            limit = min(limit, 1)
+            limit = min(limit, 2 if 'component_followup' in features else 1)
         structural_info.update(limit=limit, evaluated=0, ledger=[])
         if 'component_slot' in features:
             pending_component = proposals
@@ -542,20 +548,39 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         # Construct the original random proposal first, preserving RNG draws.
         # A structural probe replaces one ordinary random opportunity, not a
         # directed/grain/local-reschedule/region opportunity.
-        if pending_component and arm == 'random' and not label.startswith('region_'):
+        ordinary_random = arm == 'random' and not label.startswith('region_')
+        duplicate_opportunity = False
+        if pending_component and followup_unlocked:
+            known = {canonical_key(json.loads(key)): index for key, index in cache.items()}
+            duplicate_opportunity = canonical_key(trial) in known
+        if pending_component and (ordinary_random or duplicate_opportunity):
             kind, component_plan = pending_component.pop(0)
             record = {'candidate': 'structural_' + kind, 'replaces_candidate': label}
+            if 'component_followup' in features:
+                record.update(probe_index=structural_info['evaluated'] + 1,
+                              opportunity='equivalent_duplicate' if duplicate_opportunity else 'ordinary_random',
+                              incumbent_makespan=best[0][0])
+                if duplicate_opportunity:
+                    record['replaced_equivalent_evaluation_id'] = known[canonical_key(trial)]
             structural_info['ledger'].append(record)
             known = {canonical_key(json.loads(key)) for key in cache}
             if canonical_key(component_plan) in known:
                 record['status'] = 'equivalent_duplicate'
-            elif structural_info['selected_compute_lower_bound'] > best[0][0]:
+            elif structural_info.get('candidate_compute_bounds', {}).get(kind, structural_info['selected_compute_lower_bound']) > best[0][0]:
                 record['status'] = 'compute_bound_exceeds_incumbent'
             else:
                 entry = evaluate(component_plan, record['candidate'], observe_improving_only=True)
                 record.update(proposal_ledger[-1])
                 if entry:
                     structural_info['evaluated'] += 1
+            if 'component_followup' in features and not followup_unlocked:
+                # Strict primary-objective improvement, not merely fewer bytes.
+                followup_unlocked = entry is not None and entry[0][0] < record['incumbent_makespan']
+                structural_info['followup_unlocked'] = followup_unlocked
+                record['unlocked_followup'] = followup_unlocked
+                if not followup_unlocked:
+                    structural_info['followup_skip_reason'] = 'first_probe_did_not_improve_makespan'
+                    pending_component.clear()
         if entry is None:
             entry = evaluate(trial, label)
         if grain_record is not None:
@@ -563,6 +588,8 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         if entry:
             # Count-based reward keeps seeded runs reproducible across machine speeds.
             rewards[arm] += max(0., before - entry[0][0]) / max(1, baseline)
+    if 'component_followup' in features and pending_component:
+        structural_info['followup_skip_reason'] = 'no_unprotected_opportunity_before_budget_end'
     stats = {'method': 'experimental', 'features': sorted(features), 'seed': seed,
              'evaluator_backend': evaluator_backend,
              'official_calls_semantics': 'full global scoring calls, original or equivalent derived backend',

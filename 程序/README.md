@@ -325,3 +325,15 @@ python 程序/q1_component_report.py --primary 图表/runs/component-reproduce-p
 ```
 
 `q1_seed_campaign.py` 新增可选 `--cases/--variants/--cores/--seeds/--protocol`，不传仍为原结构初解矩阵。正式 `q1_submit.py` 默认不变。原版 A 的最终复核开销与搜索秒数分开记录。
+
+
+## 首次改善后解锁第二布局
+
+实验配置 `component_followup` 在 `component_slot` 首次结构候选严格降低 Makespan 后，才允许评估另一份节点分组不同的完整分量布局。总预算仍为 12；第二评分只占普通随机或已评估等价方案的重复机会，没有机会就跳过。最多两次结构评分，官方接口和正式默认不变。
+
+```powershell
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/followup-reproduce-primary --workers 12 --variants component_slot component_followup --cases case_017 case_045 case_048 case_065 case_077 case_002 case_028 case_063 case_067 case_085 case_006 case_040 case_090 case_097 --protocol 审查/问题一条件第二布局实验协议_20260924.md
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/followup-reproduce-robust --workers 4 --variants component_slot component_followup --robustness --protocol 审查/问题一条件第二布局实验协议_20260924.md
+```
+
+输出目录须为新目录；保留固定单核与原版最终复核。报告程序 `q1_followup_report.py` 的 `--help` 列出本轮、上轮和历史结构实验的对照输入。不要用单核总时间/多核总时间替代逐用例平均加速比。
