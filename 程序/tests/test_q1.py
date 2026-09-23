@@ -82,6 +82,16 @@ class Q1Tests(unittest.TestCase):
         self.assertEqual(stats['speedup'], 1)
         self.assertEqual(len(stats['evaluations']), 1)
 
+    def test_refinement_preserves_incumbent_and_budget(self):
+        g = Graph(fixture([(0, 1), (0, 2), (1, 3), (2, 3)]), SETTINGS, WAITS)
+        _, before, _ = solve(g, 2, budget=3, seed=7, block_size=2)
+        p, after, stats = solve(g, 2, budget=3, seed=7, block_size=2, refine_budget=5)
+        validate(g, p)
+        self.assertLessEqual(after['makespan'], before['makespan'])
+        self.assertLessEqual(stats['refinement_evaluations'], 5)
+        p2, _, _ = solve(g, 2, budget=3, seed=7, block_size=2, refine_budget=5)
+        self.assertEqual(p, p2)
+
     def test_wide_graph_does_not_fragment_into_single_ops(self):
         raw = fixture([(u, u + 40) for u in range(40)])
         g = Graph(raw, SETTINGS, WAITS)

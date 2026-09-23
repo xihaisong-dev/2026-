@@ -20,6 +20,14 @@ python 程序/主程序.py solve --cases case_001 case_093 --cores 2 4 --method 
 python 程序/主程序.py solve --cases all --cores 2 3 4 5 --method alns --budget 12 --seed 0
 ```
 
+可选第二轮优化：
+
+```powershell
+python 程序/主程序.py solve --cases case_001 case_093 case_034 --cores 2 4 --budget 4 --refine-budget 8
+```
+
+`--refine-budget` 默认 0，保持原有策略。开启后，在原有最优方案之外尝试 1/4、1/2、2 倍分组粒度，再根据官方时间线中耗时较长的 Task，尝试按主要 Pipe 工作量均衡拆分及迁移。改进后追加新瓶颈邻域，也保留未尝试的其他候选，最终只接受更优方案作为交付。此项预算单独计数，最多增加指定次数的官方评估；不是免费优化。开启后相对于同一次基础求解不会退步，但不保证优于把相同次数全部交给随机 ALNS。样本对照见 `计算结果.md`。
+
 `prepare` 从仓库原始附件无损提取 code/data，逐图调用官方 validate_graph 并固化哈希；输入、配置和未修改的官方评估器保存在 `数据/processed/q1/`，可由原始 ZIP 重建，不随 Git 提交。已有导入仅核验，不覆盖。修改文件会导致求解拒绝启动。
 
 每次运行创建独立的 `图表/runs/<时间>-A-q1/`，也可通过 `--output` 指定一个尚不存在的目录。逐算例输出：

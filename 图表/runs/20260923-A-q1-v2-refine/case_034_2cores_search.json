@@ -1,0 +1,129 @@
+{
+  "method": "alns",
+  "seed": 0,
+  "budget": 4,
+  "refine_budget": 8,
+  "refinement_evaluations": 8,
+  "block_size": 64,
+  "singlecore_makespan": 842996,
+  "speedup": 1.7726423009552967,
+  "search_evaluations": 4,
+  "evaluations": [
+    {
+      "candidate": "single_task",
+      "makespan": 842996,
+      "added_copy_bytes": 1079832,
+      "evaluation_seconds": 3.1055151999462396
+    },
+    {
+      "candidate": "greedy",
+      "makespan": 492478,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.9340444999979809
+    },
+    {
+      "candidate": "multilevel",
+      "makespan": 651365,
+      "added_copy_bytes": 6122532,
+      "evaluation_seconds": 1.026833700016141
+    },
+    {
+      "candidate": "migrate",
+      "makespan": 508342,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.7266237000003457
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 492522,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.7572828999254853
+    },
+    {
+      "candidate": "migrate",
+      "makespan": 609856,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.7181948999641463
+    },
+    {
+      "candidate": "split",
+      "makespan": 495662,
+      "added_copy_bytes": 9909100,
+      "evaluation_seconds": 0.7599349999800324
+    },
+    {
+      "candidate": "granularity_16",
+      "makespan": 503091,
+      "added_copy_bytes": 13514012,
+      "evaluation_seconds": 1.1289747999981046
+    },
+    {
+      "candidate": "granularity_32",
+      "makespan": 480863,
+      "added_copy_bytes": 12183994,
+      "evaluation_seconds": 0.8536319000413641
+    },
+    {
+      "candidate": "granularity_128",
+      "makespan": 810271,
+      "added_copy_bytes": 7936226,
+      "evaluation_seconds": 0.6913380000041798
+    },
+    {
+      "candidate": "critical_split",
+      "makespan": 492573,
+      "added_copy_bytes": 9886060,
+      "evaluation_seconds": 0.7938404000597075
+    },
+    {
+      "candidate": "critical_split",
+      "makespan": 492478,
+      "added_copy_bytes": 9886060,
+      "evaluation_seconds": 0.7724191999295726
+    },
+    {
+      "candidate": "critical_split",
+      "makespan": 475559,
+      "added_copy_bytes": 9881964,
+      "evaluation_seconds": 0.8188909000018612
+    },
+    {
+      "candidate": "critical_split",
+      "makespan": 492802,
+      "added_copy_bytes": 9891180,
+      "evaluation_seconds": 0.7610855000093579
+    },
+    {
+      "candidate": "critical_migrate",
+      "makespan": 530328,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.9935687000397593
+    }
+  ],
+  "rejected_proposals": [
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 26 -> 27"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 56 -> 58"
+    },
+    {
+      "operation": "merge",
+      "reason": "子图收缩或执行顺序产生环"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 8 -> 9"
+    }
+  ],
+  "operator_weights": {
+    "merge": 1.0,
+    "split": 1.0,
+    "boundary": 1.0,
+    "migrate": 1.0,
+    "reorder": 1.0
+  },
+  "elapsed_seconds": 16.980541300028563
+}
