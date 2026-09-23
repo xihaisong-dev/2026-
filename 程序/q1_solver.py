@@ -288,10 +288,56 @@ def mutate(g, plan, cores, rng, kind):
     return g.schedule(mapping, cores)[0]
 
 
-def solve(g, cores=4, method='alns', budget=12, seed=0, block_size=64, on_evaluation=None):
+def bottleneck_candidates(g, plan, result, cores):
+    """按真实 Task 持续时间选拆分对象，并尝试将长 Task 移到较早结束的核。"""
+    mapping = {int(u): s for u, s in plan['node_to_subgraph'].items()}
+    groups, _, _, order = g.view(mapping)
+    tasks = sorted((t for c in result['per_core_timeline'] for t in c['tasks']),
+                   key=lambda t: (-t['duration'], -t['end'], t['task_id']))
+    for task in tasks[:4]:
+        s = task['task_id']
+        nodes = sorted(groups[s], key=g.pos.get)
+        if len(nodes) < 2:
+            continue
+        # Balance the dominant compute Pipe, rather than splitting by op count.
+        loads = defaultdict(int)
+        for u in nodes:
+            loads[g.ops[u]['pipe']] += g.ops[u]['cycles']
+        pipe = max(loads, key=lambda p: (loads[p], p))
+        partial = 0
+        cuts = []
+        for i, u in enumerate(nodes[:-1], 1):
+            if g.ops[u]['pipe'] == pipe:
+                partial += g.ops[u]['cycles']
+            cuts.append((abs(loads[pipe] / 2 - partial), i))
+        _, cut = min(cuts)
+        trial = dict(mapping)
+        for u in nodes[cut:]:
+            trial[u] = max(groups) + 1
+        try:
+            yield 'critical_split', g.schedule(trial, cores)[0]
+        except ValueError:
+            continue
+    finish = [max((t['end'] for t in c['tasks']), default=0) for c in result['per_core_timeline']]
+    positions = {s: i for i, s in enumerate(order)}
+    for task in tasks[:3]:
+        s = task['task_id']
+        source = next(i for i, seq in enumerate(plan['core_schedules']) if s in seq)
+        for target in sorted(range(cores), key=lambda c: (finish[c], c)):
+            if source == target:
+                continue
+            trial = copy.deepcopy(plan)
+            trial['core_schedules'][source].remove(s)
+            trial['core_schedules'][target].append(s)
+            trial['core_schedules'][target].sort(key=positions.get)
+            yield 'critical_migrate', trial
+
+
+def solve(g, cores=4, method='alns', budget=12, seed=0, block_size=64, on_evaluation=None,
+          refine_budget=0):
     """budget 是 ALNS 新候选的官方评估次数上限；初解另计。"""
     from multicore_cut_evaluate_problem_1 import evaluate_scene_a
-    if cores < 1 or budget < 0 or block_size < 1:
+    if cores < 1 or budget < 0 or block_size < 1 or refine_budget < 0:
         raise ValueError('cores/block_size 必须为正，budget 不得为负')
     if method not in {'greedy', 'multilevel', 'alns'}:
         raise ValueError('未知方法')
@@ -362,7 +408,36 @@ def solve(g, cores=4, method='alns', budget=12, seed=0, block_size=64, on_evalua
             if improved:
                 best, best_score, best_result = trial, score, result
             weights[k] = .8 * weights[k] + .2 * (5 if improved else 1)
+    # Optional non-regressing refinement, separately budgeted for honest comparisons.
+    refinement_evaluations = 0
+    if cores > 1 and refine_budget:
+        from itertools import chain
+        sizes = sorted({max(1, block_size // 4), max(1, block_size // 2), block_size * 2})
+        granular = ((f'granularity_{size}', g.schedule(greedy_partition(g, cores, size), cores)[0])
+                    for size in sizes)
+        pending = chain(granular, bottleneck_candidates(g, best, best_result, cores))
+        for _ in range(refine_budget * 20):
+            if refinement_evaluations >= refine_budget:
+                break
+            try:
+                label, trial = next(pending)
+            except StopIteration:
+                break
+            if json.dumps(trial, sort_keys=True) in cache:
+                continue
+            try:
+                validate(g, trial)
+            except (ValueError, RuntimeError) as exc:
+                failures.append({'operation': label, 'reason': str(exc)})
+                continue
+            score, result = evaluate(trial, label)
+            refinement_evaluations += 1
+            if score < best_score:
+                best, best_score, best_result = trial, score, result
+                # Recompute the bottleneck after improvement; retain untried granular candidates.
+                pending = chain(pending, bottleneck_candidates(g, best, best_result, cores))
     return best, best_result, {'method': method, 'seed': seed, 'budget': budget,
+            'refine_budget': refine_budget, 'refinement_evaluations': refinement_evaluations,
             'block_size': block_size, 'singlecore_makespan': single_time,
             'speedup': single_time / best_score[0] if best_score[0] else 1.0,
             'search_evaluations': evaluated, 'evaluations': records,

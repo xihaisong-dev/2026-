@@ -18,6 +18,8 @@ def main(argv=None):
     run.add_argument('--cores', nargs='+', type=int, default=[4])
     run.add_argument('--method', choices=['greedy', 'multilevel', 'alns'], default='alns')
     run.add_argument('--budget', type=int, default=12)
+    run.add_argument('--refine-budget', type=int, default=0,
+                     help='额外粒度/真实时间线瓶颈优化次数，0 保持初版算法')
     run.add_argument('--seed', type=int, default=0)
     run.add_argument('--block-size', type=int, default=64)
     run.add_argument('--output', type=Path)
@@ -26,7 +28,7 @@ def main(argv=None):
         m = prepare()
         print(f"已审计 {len(m['cases'])} 张图，输入目录：{PROCESSED}")
         return
-    if any(c < 1 or c > 5 for c in args.cores) or args.budget < 0 or args.block_size < 1:
+    if any(c < 1 or c > 5 for c in args.cores) or args.budget < 0 or args.block_size < 1 or args.refine_budget < 0:
         parser.error('核数须在 1～5，budget >= 0，block-size > 0')
     manifest = verify()
     official()
@@ -61,7 +63,8 @@ def main(argv=None):
                 print(f"  {record['candidate']}: {record['makespan']} cycles "
                       f"({record['evaluation_seconds']:.2f}s)", flush=True)
             plan, result, stats = solve(graph, cores, args.method, args.budget, args.seed,
-                                        args.block_size, on_evaluation=progress)
+                                        args.block_size, on_evaluation=progress,
+                                        refine_budget=args.refine_budget)
             write_json(output / (prefix + '_plan.json'), plan)
             write_json(output / (prefix + '_evaluation.json'), result)
             write_json(output / (prefix + '_search.json'), stats)
