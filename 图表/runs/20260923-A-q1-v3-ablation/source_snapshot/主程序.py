@@ -65,7 +65,7 @@ def main(argv=None):
         graph = Graph(json.loads(path.read_text(encoding='utf-8-sig')), settings, waits)
         for cores in args.cores:
             prefix = f'{path.stem}_{cores}cores'
-            print(f"开始 {prefix} / {'experimental' if args.experimental else args.method}", flush=True)
+            print(f'开始 {prefix} / {args.method}', flush=True)
             def progress(record):
                 print(f"  {record['candidate']}: {record['makespan']} cycles "
                       f"({record['evaluation_seconds']:.2f}s)", flush=True)

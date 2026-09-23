@@ -51,3 +51,36 @@ python 程序/主程序.py solve --cases case_001 case_093 case_034 --cores 2 4 
 ## 后续工作
 
 完成 100 图 × 4 核数评测、等预算比较和消融后，再冻结参数与正式结果。当前初版不保证全局最优；大图完整官方时间线可能较大，搜索也会受评估成本限制。勿将原型测试数值直接写成全量实验结论。
+
+## 文献启发的可消融实验框架
+
+`q1_experimental.py` 不替换旧算法，使用 `--experimental` 显式启动：
+
+```powershell
+python 程序/主程序.py solve --cases case_034 --cores 4 --experimental --evaluation-budget 12 --features local_cost critical adaptive portfolio
+python 程序/q1_ablation.py --cases case_001 case_093 case_034 --cores 4 --seeds 0 1 --evaluations 12
+python 程序/q1_ablation.py --configs legacy_alns --cases case_001 case_093 case_034 --cores 4 --seeds 0 1 --evaluations 12
+```
+
+四个开关：
+
+- `local_cost`：未观察子图补充内部计算依赖最长路径；已观察子图用官方 Step3 的独立 `local_makespan` 校准，按成员集合在本次求解内复用。缓存只对同一原图/配置/评估器有效，记录观测冲突数；不缓存并发 Task 时长，也不直接预测全局共享带宽时间。
+- `critical`：冻结官方已观察 Task 时长，在数据依赖与同核顺序联合图上反推余量；优先处理低余量瓶颈。最优方案变化后立即刷新定向候选，不继续消耗旧队列。余量只作启发式，调整后仍重新仿真。
+- `adaptive`：按区域主要 Pipe 工作量及数据驻留代理确定块边界，提供低搬运切点与局部合并候选。代理并非精确缓存峰值；原算子不会被重新切片或改写。
+- `portfolio`：保留至多 4 个时间/额外搬运互补方案和部分不同结构，随机邻域可从不同父方案出发；UCB 为粒度、定向、随机和局部重调度分配探索机会。收益按归一化完成时间改善、尝试次数更新，不使用墙钟时间驱动选择，以保持种子可复现。Pareto 仅用于管理存档，不宣称安全剪枝或全局最优。
+
+`--evaluation-budget` 是实验框架的**总官方调用次数**，包含单核兜底和初解，与旧 `--budget` 含义不同。非法或重复提案不消耗调用预算；有限尝试后仍未耗尽时明确报告 budget_exhausted=false，不能假装同预算。原版 ALNS 对照先确定其独特初解数量，再将剩余次数分给随机搜索。
+
+默认消融包含 control、逐步加功能的四个配置，以及 full 分别去掉 local_cost / critical / adaptive；去掉 portfolio 与 local_critical_adaptive 相同，不重复运行。control 是新共同驱动器关闭四开关，**不是原版 ALNS**，所以另外运行 legacy_alns。
+
+`q1_ablation.py` 每次创建新目录，每个实验保存 plan.json、search.json 和无损压缩的 evaluation.json.gz。summary.json 记录调用数、参数、输入/源码/产物哈希与逐次结果，最终检查 all_budgets_exhausted。
+
+方法依据：仓库 paper 中 T10（§4.3，局部代价与多候选权衡）、IsoSched（§III-C，合并拆分与探索策略）等；以上是针对题目接口的启发式改造，不复现其核间直连、NoC 路由、抢占或层内切片，也不引入题面没有的硬件能力。实验功能仍需消融支持，不能因来自论文就默认开启。
+
+本轮 54 次等预算运行中，`local_cost critical` 相对共同对照六组均改善，平均完成时间下降 1.274%；`adaptive` 在该组合上五组退步，完整组合不宜默认开启。当前建议试用以下组合，再扩大样本验证：
+
+```powershell
+python 程序/主程序.py solve --cases case_034 --cores 4 --experimental --evaluation-budget 12 --features local_cost critical
+```
+
+结果及限制见 `计算结果.md`。`q1_ablation_report.py --runs <实验目录> <旧算法对照目录> --output <新分析目录>` 会核对源码快照、产物哈希及配对预算，再生成描述性比较。旧运行的精确源码在各目录 source_snapshot 中保留；新运行自动保存源码快照。

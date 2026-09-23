@@ -1,0 +1,132 @@
+{
+  "method": "alns",
+  "seed": 0,
+  "budget": 9,
+  "refine_budget": 0,
+  "refinement_evaluations": 0,
+  "block_size": 64,
+  "singlecore_makespan": 842996,
+  "speedup": 1.893220083948876,
+  "search_evaluations": 9,
+  "evaluations": [
+    {
+      "candidate": "single_task",
+      "makespan": 842996,
+      "added_copy_bytes": 1079832,
+      "evaluation_seconds": 4.021481600007974
+    },
+    {
+      "candidate": "greedy",
+      "makespan": 460654,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 1.0727648000465706
+    },
+    {
+      "candidate": "multilevel",
+      "makespan": 651522,
+      "added_copy_bytes": 6122532,
+      "evaluation_seconds": 1.2477390000130981
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 462156,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 1.255544799962081
+    },
+    {
+      "candidate": "split",
+      "makespan": 451982,
+      "added_copy_bytes": 10056046,
+      "evaluation_seconds": 1.2761945999227464
+    },
+    {
+      "candidate": "migrate",
+      "makespan": 452017,
+      "added_copy_bytes": 10056046,
+      "evaluation_seconds": 1.1651946000056341
+    },
+    {
+      "candidate": "split",
+      "makespan": 445271,
+      "added_copy_bytes": 10096494,
+      "evaluation_seconds": 1.263162499992177
+    },
+    {
+      "candidate": "split",
+      "makespan": 445271,
+      "added_copy_bytes": 10096506,
+      "evaluation_seconds": 1.2986549999332055
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 445281,
+      "added_copy_bytes": 10096506,
+      "evaluation_seconds": 1.161571600008756
+    },
+    {
+      "candidate": "boundary",
+      "makespan": 445372,
+      "added_copy_bytes": 10100602,
+      "evaluation_seconds": 1.3358405999606475
+    },
+    {
+      "candidate": "split",
+      "makespan": 445372,
+      "added_copy_bytes": 10124154,
+      "evaluation_seconds": 1.296295000007376
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 445808,
+      "added_copy_bytes": 10124154,
+      "evaluation_seconds": 1.1080386999528855
+    }
+  ],
+  "rejected_proposals": [
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 13 -> 15"
+    },
+    {
+      "operation": "merge",
+      "reason": "子图收缩或执行顺序产生环"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 47 -> 50"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 2 -> 3"
+    },
+    {
+      "operation": "boundary",
+      "reason": "子图收缩或执行顺序产生环"
+    },
+    {
+      "operation": "merge",
+      "reason": "子图收缩或执行顺序产生环"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 28 -> 29"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 47 -> 50"
+    },
+    {
+      "operation": "reorder",
+      "reason": "task schedule: dependency cycle; 27 -[subgraph dependency]-> 60; 60 -[subgraph dependency]-> 28; 28 -[subgraph dependency]-> 44; 44 -[core 1 task order]-> 27"
+    }
+  ],
+  "operator_weights": {
+    "merge": 1.0,
+    "split": 1.9216000000000004,
+    "boundary": 1.0,
+    "migrate": 1.0,
+    "reorder": 1.0
+  },
+  "elapsed_seconds": 20.16045760002453,
+  "budget_exhausted": true
+}
