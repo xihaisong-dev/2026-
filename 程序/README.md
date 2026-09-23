@@ -212,3 +212,19 @@ python 程序/q1_ablation.py --cases case_017 case_045 case_048 case_065 case_07
 `shared_region_gap` 在 `shared_region` 上只增加 `region_gap`，将区域重建的核心队尾追加改为最早可行空隙插入，复用本仓库 `q1_insertion.earliest_gap`，保留间隙两侧同核等待、跨核释放及区域外核心/顺序约束。参考HEFT与mrocklin/heft的算法机制，未复制外部代码、未引入依赖。候选上限12、区域4任务/512算子、一次区域搜索机会、12次总官方评估均不变。
 
 实验 `20260923-A-q1-v13-*` 包含28组原回归，以及预先固定的新图006/064/090/040、2/5核、种子0/1，基础/区域/空隙三配置对照。原回归空隙版最终时间与区域版全部持平；不得将已有区域方案的改善归因于新插入改动。完整文献矩阵、结果与局限见 `审查/问题一第十三轮文献与空隙修复验证.md`。
+
+
+## 第十四轮：冻结排序审计、DDR代理与边界细化
+
+- `q1_frozen_audit.py --runs <已有运行目录...> --output <新目录>`：从已验证当前方案重建仅含当前方案局部观察的成本快照；不冒称恢复历史完整状态。所有候选评分在官方新评估前计算，保存状态哈希、计划和官方结果；审计评估次数单独计数。
+- `shared_fluid`：原区域池按冻结的粗粒度共享DDR代理重排；边界数据量均匀摊到Task时间，按聚合需求超过带宽时的减速做事件跳跃。系数仅由已评当前方案拟合到[0,2]，不能解释为DDR因果归因，尚未描述突发COPY和溢出阶段。
+- `shared_refine`：不启用DDR修正，仅增加至多3步×每步4个边界移动探测，每步保留代理严格改善且无环的方案，保持区域外划分、核心和相对顺序。
+- `shared_fluid_refine`：组合两项。最多24次区域重建/15个保留候选，仍只有一次区域官方提案机会，总官方预算12；代理开销增大，不等于相同墙钟预算。原默认不变。
+
+所有增强依赖region与partition_guard；为独立消融，本轮不与region_gap组合。运行方式例如：
+
+```powershell
+python 程序/q1_ablation.py --cases case_017 case_045 case_048 case_065 --cores 2 5 --seeds 0 --evaluations 12 --configs shared_fluid shared_refine shared_fluid_refine --output 图表/runs/请使用新目录
+```
+
+结果及限制见 `审查/问题一第十四轮冻结成本与边界细化验证.md`。
