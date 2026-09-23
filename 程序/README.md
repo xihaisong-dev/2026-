@@ -130,3 +130,19 @@ python 程序/主程序.py solve --cases case_001 --cores 4 --experimental --eva
 `--cache-dir` 可选，默认关闭。缓存键覆盖原图、硬件/等待配置、整个官方Python评估源码集合、Python版本和完整方案；结果带校验哈希、gzip压缩、临时文件原子落盘，损坏报错。缓存不信任人工编辑的数据。不要把私人缓存目录作为正式成绩。命中仍占一个候选名额，不增加搜索预算；日志分别给出 `official_calls` 与 `cache_hits`，二者相加为候选评价数。关闭缓存时与先前总官方调用预算一致。跨实验复用只节约求解时间，不直接改变Task执行时间。
 
 当前是可消融原型，四项联合并不保证优于原算法。正式实验应关闭缓存，或同时报告真实调用与缓存命中，不把命中冒充重新仿真。默认full及旧八配置消融不包含这些新开关。
+
+## 分层覆盖与保留基础搜索预算
+
+`q1_structure.py --output <新目录>` 核验并统计全部100图，按算子数排名分四层，以规模、计算关键路径占比、张量字节/计算周期、最大扇出四个维度归一化后选择距层内中位数最近的未调参图；只用结构，不用求解成绩。profile.json固定算法源码哈希、输入哈希、核数2～5、种子0、预算12、关闭缓存及每运行90秒上限。仅四个代表不能覆盖全部极端结构。
+
+`q1_stratified_run.py --profile <profile.json> --output <新目录>` 按该协议运行，最多两个子进程；超时终止单次运行，保留日志及不完整目录，不填写完成时间。batch.json区分实验已结束与所有求解均成功。comparison.json只纳入双方完成的配对，并列出被排除项；幸存配对可能存在规模偏差，不能外推到全部100图。墙钟超时受机器负载影响，不是算法不可解的证明。
+
+新开关 `guarded_joint` 与基础 `local_cost critical insertion comm_rank` 配合。前ceil(0.75×候选预算)次评价保持基础搜索行为，只收集校准信息；之后开启成本校准，并每四个提案机会引入一次联合候选。不可与旧calibrated/joint/portfolio等提前改变搜索的开关混用。保留前段历史最好解，但不保证胜过同总预算全部用于基础搜索的结果。若预算12，保护的是前9次，不能宣称完整保留基础12次结果。
+
+```powershell
+python 程序/q1_structure.py --output 图表/runs/<新结构目录>
+python 程序/q1_stratified_run.py --profile 图表/runs/<新结构目录>/profile.json --output 图表/runs/<新评测目录>
+python 程序/q1_ablation.py --configs insertion_rank guarded_joint --cases case_001 case_093 --cores 4 --seeds 1
+```
+
+本轮另按全部结构统计选择计算关键路径占比最大、张量字节/工作量最大两图作补充，名单在其求解前保存为独立profile；这是顺序开展的探索，不是事前注册的统计验证。实验期间不修改已冻结的求解文件。
