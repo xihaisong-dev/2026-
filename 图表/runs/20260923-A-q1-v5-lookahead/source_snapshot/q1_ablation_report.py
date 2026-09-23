@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from statistics import mean
 
-from q1_io import sha, write_json, official, verify, PROCESSED
+from q1_io import sha, write_json
 
 
 def collect(folder):
@@ -49,7 +49,6 @@ def main():
     p.add_argument('--runs', nargs='+', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--pairs', nargs='+', help='Explicit comparisons: before:after')
-    p.add_argument('--bounds', action='store_true', help='Add verified conservative structural bounds')
     args = p.parse_args()
     summaries = [collect(f) for f in args.runs]
     if len({s['evaluation_budget'] for s in summaries}) != 1:
@@ -77,28 +76,6 @@ def main():
               'official_evaluations': sum(r['evaluations'] for r in rows),
               'verified_summaries': {str(f): sha((f/'summary.json').read_bytes()) for f in args.runs},
               'comparisons': comparisons, 'results': rows}
-    if args.bounds:
-        verify()
-        official()
-        from q1_solver import Graph
-        from q1_bounds import structural_bound
-        from evaluation_validation import read_evaluation_config
-        from multicore_cut_evaluate_problem_1 import read_scene_a_config
-        config = str(PROCESSED / 'data/config.txt')
-        settings, waits = read_evaluation_config(config), read_scene_a_config(config)
-        bounds = {}
-        for case, cores in sorted({(r['case'], r['cores']) for r in rows}):
-            path = PROCESSED / 'data' / (case+'.json')
-            if sha(path.read_bytes()) != inputs[path.name]:
-                raise ValueError('Bound input mismatch')
-            g = Graph(json.loads(path.read_text(encoding='utf-8-sig')), settings, waits)
-            bounds[f'{case}/{cores}'] = structural_bound(g, cores)
-        output['structural_bounds'] = bounds
-        for r in rows:
-            lb = bounds[f"{r['case']}/{r['cores']}"]['lower_bound_cycles']
-            if r['makespan'] < lb:
-                raise ValueError('Reported makespan violates structural bound')
-            r['makespan_over_lower_bound'] = r['makespan']/lb if lb else None
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(args.output / 'comparison.json', output)
     lines = ['# 问题一同预算消融', '',
@@ -114,15 +91,6 @@ def main():
     for case, cores, seed in sorted({(r['case'], r['cores'], r['seed']) for r in rows}):
         values = {r['config']: r['makespan'] for r in rows if (r['case'], r['cores'], r['seed']) == (case, cores, seed)}
         lines.append(f'| {case}/{cores}/{seed} | ' + ' | '.join(str(values.get(c, 'NOT_RUN')) for c in configs) + ' |')
-    if args.bounds:
-        lines += ['', '## 结构下界（不保证可达）', '',
-                  '| 图/核数 | 下界 cycles | 已观察最佳时间 | 最佳时间/下界 |', '| --- | ---: | ---: | ---: |']
-        for key, b in bounds.items():
-            case, cores = key.split('/')
-            best = min(r['makespan'] for r in rows if r['case'] == case and r['cores'] == int(cores))
-            lb = b['lower_bound_cycles']
-            lines.append(f'| {key} | {lb} | {best} | {best/lb:.3f} |' if lb else f'| {key} | 0 | {best} | N/A |')
-        lines += ['', '下界忽略新增搬运、溢出和等待等约束；时间/下界不是已证明的次优倍数，也不是保证可获得的优化空间。']
     lines += ['', '共同对照 control 也包含固定粒度探索，与旧 ALNS 不同。相对旧算法的改善不能全部归因于四项开关。',
               '开关效果依赖组合与样本，不能把局部结果推广为全量结论；旧默认行为不变。',
               '计数相等不代表墙钟时间相等。每次耗时、逐候选记录和完整官方时间线均保留在原实验目录。',

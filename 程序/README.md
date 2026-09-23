@@ -99,3 +99,14 @@ python 程序/q1_ablation.py --configs local_critical insertion comm_rank insert
 参考 [HEFT 原论文](https://ieeexplore.ieee.org/document/993206/) 的插入式 EFT 思路和 [公开 Python 实现](https://github.com/mackncheesiest/heft)；本项目独立实现题目适配逻辑，未复制第三方代码。原版 HEFT 的异构计算/边通信模型不能直接代替本题共享 DDR 仿真。另检索了 [dagP](https://github.com/GT-TDAlab/dagP) 与 [Multilevel Acyclic Hypergraph Partitioning](https://arxiv.org/abs/2002.02962)，本轮没有新增外部划分器依赖。
 
 报告器可通过 `--pairs local_critical:insertion local_critical:comm_rank local_critical:insertion_rank` 指定比较；仍强制相同算例、核数、种子的配对和相同官方调用预算。新开关未加入默认八配置消融，避免悄悄改变旧实验含义。
+
+## 瓶颈前瞻与结构下界
+
+可选 `lookahead` 在四个低余量瓶颈 Task 上按主导Pipe负载的1/4、1/2、3/4切点试构造至多12种拆分，并以代理完成时间排序；候选仍由官方评价计入总调用预算，构造与排序会额外占用CPU时间。第五轮同预算结果四胜四负，不默认开启。
+
+```powershell
+python 程序/q1_ablation.py --cases case_001 case_093 case_078 case_034 --seeds 0 1 --configs insertion_rank lookahead
+python 程序/q1_ablation_report.py --runs <实验目录> --pairs insertion_rank:lookahead --bounds --output <新分析目录>
+```
+
+`--bounds` 核验本地输入后计算不可删除的非COPY算子Pipe工作量/核数与计算依赖最长路径下界；不包含预测等待、额外搬运或溢出。下界不保证可达。报告中的时间/下界不是实际次优程度的证明。审核报告的逐项复核见 `审查/问题一初版审核复核.md`。
