@@ -67,6 +67,10 @@ for name, extra in {
     CONFIGS[name] = CONFIGS['shared_region'] + extra
 
 
+CONFIGS['component_fast'] = CONFIGS['component_local_rank'] + ['fast_contractions']
+CONFIGS['component_memory'] = CONFIGS['component_local_rank'] + ['memory_route']
+CONFIGS['component_hybrid'] = CONFIGS['component_local_rank'] + ['hybrid_route']
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--cases', nargs='+', default=['case_001', 'case_093', 'case_034'])

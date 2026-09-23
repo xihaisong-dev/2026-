@@ -1,0 +1,176 @@
+{
+  "verified": true,
+  "scope": "six targeted development graphs, two large protection graphs; not full100",
+  "variants": {
+    "component_memory": {
+      "wins": 12,
+      "ties": 0,
+      "losses": 0,
+      "time_reduction_pct": 14.617308894449888,
+      "bytes_reduction_pct": 45.16327608322999,
+      "per_core": {
+        "2": {
+          "before": 1.7616953385419454,
+          "after": 2.0150442405448525
+        },
+        "3": {
+          "before": 2.4177613837288936,
+          "after": 2.9840299748007664
+        },
+        "4": {
+          "before": 2.896052322712967,
+          "after": 3.853111518213545
+        },
+        "5": {
+          "before": 3.2500759952323794,
+          "after": 4.268354311748145
+        }
+      },
+      "protection_matches": 7,
+      "protection_regressions": [
+        {
+          "config": "component_memory",
+          "case": "case_028",
+          "cores": 4,
+          "target": false,
+          "before": 10676362,
+          "after": 10694242,
+          "single": 43836040,
+          "before_bytes": 310848768,
+          "after_bytes": 310848768,
+          "after_spill": 165888,
+          "solve_seconds": 137.03200496546924,
+          "validation_seconds": 13.232065016403794,
+          "structural_evaluations": 1,
+          "best_candidate": "directed_split",
+          "plan_matches_baseline": false
+        }
+      ]
+    },
+    "component_hybrid": {
+      "wins": 10,
+      "ties": 2,
+      "losses": 0,
+      "time_reduction_pct": 20.712949743794063,
+      "bytes_reduction_pct": 81.2900737615318,
+      "per_core": {
+        "2": {
+          "before": 1.7101383593521764,
+          "after": 1.8776168868486567
+        },
+        "3": {
+          "before": 1.6158449802520678,
+          "after": 2.18275797311564
+        },
+        "4": {
+          "before": 1.6960176722974272,
+          "after": 2.18230859861093
+        },
+        "5": {
+          "before": 1.6806296055571726,
+          "after": 2.1822687370498963
+        }
+      },
+      "protection_matches": 8,
+      "protection_regressions": []
+    }
+  },
+  "formal_runs": 40,
+  "score_calls": 440,
+  "reference_hits": 40,
+  "final_official_replays": 40,
+  "diagnostic_score_calls": 50,
+  "runtime": {
+    "four_core_checks": [
+      {
+        "cores": 2,
+        "fast": true,
+        "seconds": 267.8985619544983,
+        "checks": {
+          "plan": true,
+          "result": true,
+          "trajectory": true
+        },
+        "full_score_calls": 11,
+        "reference_hits": 1,
+        "historical_solve_seconds": 862.6602316237986,
+        "archived_official_result_sha256": "9086006478c90aa2b63ffe253f3e72e4b96e2132136026694947e3e406e9f7c1"
+      },
+      {
+        "cores": 3,
+        "fast": true,
+        "seconds": 288.00937214680016,
+        "checks": {
+          "plan": true,
+          "result": true,
+          "trajectory": true
+        },
+        "full_score_calls": 11,
+        "reference_hits": 1,
+        "historical_solve_seconds": 864.2981308680028,
+        "archived_official_result_sha256": "db007a127c97c7790ecbcd45695b55a7e39058425a737a6bca13a3760e7be18a"
+      },
+      {
+        "cores": 4,
+        "fast": true,
+        "seconds": 288.889452919364,
+        "checks": {
+          "plan": true,
+          "result": true,
+          "trajectory": true
+        },
+        "full_score_calls": 11,
+        "reference_hits": 1,
+        "historical_solve_seconds": 855.9367509260774,
+        "archived_official_result_sha256": "29c88574cbf411060618993a74065fc4170adb152179f65e450a9afe0e68b9a7"
+      },
+      {
+        "cores": 5,
+        "fast": true,
+        "seconds": 270.9230803512037,
+        "checks": {
+          "plan": true,
+          "result": true,
+          "trajectory": true
+        },
+        "full_score_calls": 11,
+        "reference_hits": 1,
+        "historical_solve_seconds": 846.1307574715465,
+        "archived_official_result_sha256": "90baa43d4343f7fa65951f09814b7d92284a7199fc9c7dc0f8275192ac93cbae"
+      }
+    ],
+    "paired": [
+      {
+        "cores": 5,
+        "fast": false,
+        "seconds": 493.71386144682765,
+        "checks": {
+          "plan": true,
+          "result": true,
+          "trajectory": true
+        },
+        "full_score_calls": 11,
+        "reference_hits": 1,
+        "historical_solve_seconds": 846.1307574715465,
+        "archived_official_result_sha256": "90baa43d4343f7fa65951f09814b7d92284a7199fc9c7dc0f8275192ac93cbae"
+      },
+      {
+        "cores": 5,
+        "fast": true,
+        "seconds": 167.23238417692482,
+        "checks": {
+          "plan": true,
+          "result": true,
+          "trajectory": true
+        },
+        "full_score_calls": 11,
+        "reference_hits": 1,
+        "historical_solve_seconds": 846.1307574715465,
+        "archived_official_result_sha256": "90baa43d4343f7fa65951f09814b7d92284a7199fc9c7dc0f8275192ac93cbae"
+      }
+    ],
+    "paired_speedup": 2.9522622898475164,
+    "paired_time_reduction_pct": 66.12767085638419,
+    "scope": "single host sequential single-worker pair; background campaign load not constant; reference cold computation and original final replay excluded"
+  }
+}

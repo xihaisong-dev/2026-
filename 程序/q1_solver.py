@@ -200,11 +200,18 @@ def multilevel(g, initial, cores, levels=3):
         for (a, b), weight in sorted(affinity.items(), key=lambda x: (-x[1], x[0])):
             if a in used or b in used or len(groups[a]) + len(groups[b]) > 1024:
                 continue
-            trial = {u: a if s == b else s for u, s in mapping.items()}
-            try:
-                g.view(trial)
-            except ValueError:
-                continue
+            if getattr(g, 'fast_contractions', False):
+                from q1_contraction import can_contract, contract
+                if not can_contract(pred, succ, a, b):
+                    continue
+                trial = {u: a if s == b else s for u, s in mapping.items()}
+                contract(pred, succ, a, b)
+            else:
+                trial = {u: a if s == b else s for u, s in mapping.items()}
+                try:
+                    g.view(trial)
+                except ValueError:
+                    continue
             hierarchy.append((a, b, set(groups[b])))
             mapping = trial
             used.update((a, b))

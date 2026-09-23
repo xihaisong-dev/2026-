@@ -9,7 +9,7 @@ import time
 from q1_solver import Graph, greedy_partition, multilevel, mutate, validate, topological
 
 FEATURES = frozenset({'local_cost', 'critical', 'adaptive', 'portfolio'})
-EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init', 'init_components', 'init_batches', 'init_depth', 'component_guard', 'component_slot', 'component_followup', 'component_local_rank'})
+EXTRA_FEATURES = frozenset({'insertion', 'comm_rank', 'lookahead', 'calibrated', 'joint', 'budget_adapt', 'ddr', 'guarded_joint', 'beam', 'partition_guard', 'shared_input', 'local_repair', 'repair_move', 'region', 'region_gap', 'fluid_rank', 'boundary_refine', 'exact_region', 'wide_region', 'uphill_region', 'phase_rank', 'event_rank', 'chain_joint', 'late_chain', 'resource_init', 'init_components', 'init_batches', 'init_depth', 'component_guard', 'component_slot', 'component_followup', 'component_local_rank', 'memory_route', 'hybrid_route', 'fast_contractions'})
 
 
 class CostGraph(Graph):
@@ -287,6 +287,8 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         raise ValueError('Structural seeds require partition_guard, budget >= 12 and exclude resource_init')
     if features & {'component_guard', 'component_slot'} and (structural != {'init_components'} or 'component_guard' not in features):
         raise ValueError('Component routing requires only init_components and component_guard')
+    if features & {'memory_route','hybrid_route'} and ('component_local_rank' not in features or {'memory_route','hybrid_route'} <= features):
+        raise ValueError('Choose one route with component_local_rank')
     if 'component_local_rank' in features and 'component_followup' not in features:
         raise ValueError('component_local_rank requires component_followup')
     if 'component_followup' in features and 'component_slot' not in features:
@@ -294,6 +296,7 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
     from q1_search_tools import EvaluationCache, replay, diagnose, ranked_joint, choose_arm
     g = CostGraph(raw, settings, waits, bool({'local_cost', 'calibrated'} & features))
     g.fast_costs = evaluator_backend == 'counter'
+    g.fast_contractions = 'fast_contractions' in features
     g.insertion = 'insertion' in features
     g.beam = 'beam' in features
     g.communication_rank = 'comm_rank' in features
@@ -387,7 +390,10 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
         from q1_structural_seeds import initial_candidates, canonical_key
         if 'component_guard' in features:
             from q1_structural_seeds import guarded_component_candidate
-            if 'component_local_rank' in features:
+            if features & {'memory_route','hybrid_route'}:
+                from q1_memory_routes import routed_candidates
+                proposals, structural_info = routed_candidates(raw, settings, waits, cores, 'memory' if 'memory_route' in features else 'hybrid')
+            elif 'component_local_rank' in features:
                 proposals, structural_info = guarded_component_candidate(raw, settings, waits, cores, max_candidates=2, ranking='local')
             elif 'component_followup' in features:
                 proposals, structural_info = guarded_component_candidate(raw, settings, waits, cores, max_candidates=2)

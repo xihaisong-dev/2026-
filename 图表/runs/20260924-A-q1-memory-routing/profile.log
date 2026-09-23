@@ -1,0 +1,31 @@
+Traceback (most recent call last):
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_memory_audit.py", line 76, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_memory_audit.py", line 68, in main
+    if args.profile:profile(args.output);return
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_memory_audit.py", line 58, in profile
+    plan,result,stats=pr.runcall(solve_experimental,raw,settings,waits,5,12,0,CONFIGS['component_local_rank'],single_reference=fixed,evaluator_backend='counter')
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-runtime/python-3.12.14/lib/python3.12/cProfile.py", line 111, in runcall
+    return func(*args, **kw)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_experimental.py", line 391, in solve_experimental
+    proposals, structural_info = guarded_component_candidate(raw, settings, waits, cores, max_candidates=2, ranking='local')
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_structural_seeds.py", line 369, in guarded_component_candidate
+    value, _, _ = ranker.score(item[3])
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_local_rank.py", line 26, in score
+    tasks, _, traffic, _ = self.preparer._build(
+                           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/memory-routing-20260924-r01/程序/q1_exact_placement.py", line 38, in _build
+    built = self.module._build_scene_a_tasks(raw, plan, bandwidth, capacity)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/component-budget-20260924-r01/数据/processed/q1/code/multicore_cut_evaluate_problem_1.py", line 176, in _build_scene_a_tasks
+    result2 = step2_spill_insertion(graph, seq, capacity=capacity)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/xihs/q1-campaigns/component-budget-20260924-r01/数据/processed/q1/code/schedule_step2.py", line 432, in step2_spill_insertion
+    rewired_edges.append({
+KeyboardInterrupt

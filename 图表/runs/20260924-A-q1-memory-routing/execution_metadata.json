@@ -1,0 +1,20 @@
+{
+  "python": "3.12.14",
+  "diagnostic_command": "python 程序/q1_memory_audit.py --output diagnostics",
+  "profile_command": "python 程序/q1_memory_audit.py --output runtime-profile --profile",
+  "profile_status": "interrupted after collecting 749 sampled stacks; incomplete run, not used for speedup or equal-budget comparison",
+  "profile_sampling": "tools/bin/py-spy record --pid 14317 --duration 15 --rate 50 --format raw --output runtime-profile/samples.txt",
+  "runtime_commands": [
+    "python runtime/程序/q1_contraction_benchmark.py --output runtime/fast-check --previous /home/xihs/q1-campaigns/ranking-full100-20260924-r01/validation/图表/runs/20260924-A-q1-ranking-full100",
+    "python runtime/程序/q1_contraction_benchmark.py --output runtime/paired-check --paired --previous /home/xihs/q1-campaigns/ranking-full100-20260924-r01/validation/图表/runs/20260924-A-q1-ranking-full100"
+  ],
+  "runtime_workers": {
+    "fast-check": 4,
+    "paired-check": 1
+  },
+  "package_sha256": {
+    "diagnostic.zip": "37960827a0d8f5e0d31f955e78c1ef6f7a4a58dda75a1502fa287be48182f7f7",
+    "validation.zip": "a478d1237a6606a0e49a739118649bf73a95e1e281b132d53e1bb953d31bc37d",
+    "runtime.zip": "7f57322d5918b90b6e43a38c23519d57385acf4e938dc7a37722525abd893804"
+  }
+}

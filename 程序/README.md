@@ -348,3 +348,16 @@ python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-
 ```
 
 输出必须为新目录。完整审计与验证命令在 `图表/runs/20260924-A-q1-ranking-execution/full_execution.json` 和 `audit_command.json`；服务器绝对路径按本机工作目录调整。分析脚本 `q1_ranking_full_report.py --help` 列出所需历史对照和冻结证据；绘图脚本使用可选matplotlib，不属于求解器依赖。
+
+
+## 内存路由和主导分量实验
+
+新增可选配置 `component_memory`、`component_hybrid`，分别只替换原内存拒绝路由、主导分量拒绝路由，保护基础预算。`component_fast` 只加速成环检查，保持上一轮解质量。默认均不变；不按case编号选择算法。memory存在保护组退步，不能直接全局采用。
+
+```powershell
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/memory-reproduce --workers 6 --variants component_memory --cases case_058 case_039 case_072 case_028 case_067 --protocol 审查/问题一内存路由与主导分量验证协议_20260924.md
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/hybrid-reproduce --workers 6 --variants component_hybrid --cases case_009 case_100 case_040 case_028 case_067 --protocol 审查/问题一内存路由与主导分量验证协议_20260924.md
+python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-merged --output 图表/runs/fast-reproduce --workers 4 --variants component_fast --cases case_091 --protocol 审查/问题一内存路由与主导分量验证协议_20260924.md
+```
+
+目录必须新建。上述fast命令会额外重复原版最终复核，耗时不在已报告搜索秒数内；本轮的精确结果复用基准脚本为q1_contraction_benchmark.py，服务器执行命令与输入包哈希见memory-routing/execution_metadata.json。报告命令见交接单；90测试命令为 `python -m unittest discover -s 程序/tests -p "test_q1*.py"`。
