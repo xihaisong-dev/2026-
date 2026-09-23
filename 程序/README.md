@@ -183,3 +183,12 @@ partition_guard保持旧轮转顺序，在剩余预算即将不足时预留未�
 shared_input只改变multilevel候选：考虑无内部生产者的共享输入复用，扣除计算并行损失代理，并限制合并规模及全图代理不恶化。真实候选仍官方评价。local_repair保留未受影响Task的核和相对顺序，非法修复拒绝；子Task继承父核可能抑制并行，当前不默认推荐。新配置均为独立消融，默认组合不变。
 
 q1_partition_report.py核验预算、四档尝试和初始前缀；--baseline-runs仅提取经校验的insertion_rank历史行，报告调用合计包含复用参考，不能当成本轮新增调用。v10a前置所有粒度的失败与v10b修订均保留，见计算结果.md第十轮。
+
+
+## 有界局部重分配（第十一轮，实验开关）
+
+```powershell
+python 程序/q1_ablation.py --cases case_045 --cores 4 5 --seeds 0 --evaluations 12 --configs shared_input shared_repair_move
+```
+
+repair_move要求partition_guard，不能与local_repair同时启用。最多2个受影响Task×2个候选目标核×1个插入位置，加全局和继承候选，每次编辑至多6个代理方案。保留全局代理兜底，实际评价总预算不变。当前28组总计只少7 cycles，不能视为稳定收益，因此默认不启用。所有结果和反例见计算结果.md第十一轮。
