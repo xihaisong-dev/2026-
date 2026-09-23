@@ -1,0 +1,122 @@
+{
+  "status": "prototype_ablation",
+  "completed": true,
+  "python": "3.14.6",
+  "command": [
+    "程序/q1_ablation.py",
+    "--cases",
+    "case_034",
+    "--seeds",
+    "1",
+    "--configs",
+    "local_critical",
+    "insertion",
+    "comm_rank",
+    "insertion_rank",
+    "--output",
+    "图表/runs/20260923-A-q1-v4-medium-seed1"
+  ],
+  "configs": {
+    "local_critical": [
+      "local_cost",
+      "critical"
+    ],
+    "insertion": [
+      "local_cost",
+      "critical",
+      "insertion"
+    ],
+    "comm_rank": [
+      "local_cost",
+      "critical",
+      "comm_rank"
+    ],
+    "insertion_rank": [
+      "local_cost",
+      "critical",
+      "insertion",
+      "comm_rank"
+    ]
+  },
+  "evaluation_budget": 12,
+  "source_zip_sha256": "3112331344df7dcf2dcef2ff5f789669c0419e32cefbbc6e2742b9e36d5c43c9",
+  "input_sha256": {
+    "case_034.json": "c4128788442a023c2224d582f7114181ca9e9439a5978deaec6a1c52c0d729d6"
+  },
+  "code_sha256": {
+    "q1_ablation.py": "5f65d8b82efdadcbdce0f1b5921f9d44c5609c2477218e1db0a94bafa1154d53",
+    "q1_ablation_report.py": "b67d2e594768f63ff61686d9d4fb6adffe9eda0966c2257458d4f52c64d13217",
+    "q1_experimental.py": "d35a5c54ebeb7ef084d9c63608900aeb4c2d1747685e7fa79754e9b40499e7d0",
+    "q1_insertion.py": "f8e37996ad56b5b3fa218a18e4cbf4c507e8bb4384a56046c09ed055134e09c5",
+    "q1_io.py": "baf660f7de19b25cd9c0f0aebc204e46b7030b99d5a6d8af4011a2b4c9ba6f7e",
+    "q1_solver.py": "fdbfdb81d8d722c2324ee344e46a9b2a8566f8644b4a3cd5dea5a40ea525e8b0",
+    "主程序.py": "052ddd623fd1e697ab5295f2407dca754d9cd603b863b63db3d981f565421f1a"
+  },
+  "runs": [
+    {
+      "case": "case_034",
+      "cores": 4,
+      "seed": 1,
+      "config": "local_critical",
+      "makespan": 281941,
+      "speedup": 2.9899730794740744,
+      "evaluations": 12,
+      "seconds": 14.817790000000969,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "259da3f1dcb1d4ce63b5aa9870ee5e5aab8a4c0e2c1353f26f97f112bdb39c45",
+        "plan.json": "2f7a208431ed55eba4dad074bd1f0274607573a690d4e3a4c1bfb6c668ccce5e",
+        "search.json": "a652c8b071046c7a700e874e605d3252302ac5783d6ad6e2143cd18eda96ab8c"
+      }
+    },
+    {
+      "case": "case_034",
+      "cores": 4,
+      "seed": 1,
+      "config": "insertion",
+      "makespan": 276323,
+      "speedup": 3.050763056278341,
+      "evaluations": 12,
+      "seconds": 14.804325899924152,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "2d1736752e5d22ff77dc02a03cd458695ee9853e3dcf06868f4055385dd5d99a",
+        "plan.json": "5fe50b28ea52589b0b7b95e3c7115f995e5bc3632b9a538a99153ae3a3d5a3b2",
+        "search.json": "2decda49fc9838b158ada1b64aa0062db6afd25119de4a29f83c4134cbb2e8d7"
+      }
+    },
+    {
+      "case": "case_034",
+      "cores": 4,
+      "seed": 1,
+      "config": "comm_rank",
+      "makespan": 280408,
+      "speedup": 3.006319363213603,
+      "evaluations": 12,
+      "seconds": 17.430209600017406,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "989fe99af30b4861d7e7c5b2a3be38e86c076d97c3decdf4042a01f77dd90d9e",
+        "plan.json": "6c53cf97d641a07b5f66404f93554bc84a9b10d5ee7bdfe30177eed76bf86729",
+        "search.json": "e2ad2b1a876337be06161209c0312ec7a7ab4643a39d727ec43c70317326a346"
+      }
+    },
+    {
+      "case": "case_034",
+      "cores": 4,
+      "seed": 1,
+      "config": "insertion_rank",
+      "makespan": 275899,
+      "speedup": 3.055451451436939,
+      "evaluations": 12,
+      "seconds": 19.365358000039123,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "f5c3c9ef60776d9a8b7c899d1e2c6b82a4fd4ab974c2a246f85bdd6b2a8c652f",
+        "plan.json": "5806560667cc7f3bedb51a53748c0ffd87a60d370e40ec2c7ae07a236d80d27b",
+        "search.json": "43fa63b4b08ee6a99c258165e5181a76b2e14fd0e52505e9ce20a97c2eb47622"
+      }
+    }
+  ],
+  "all_budgets_exhausted": true
+}

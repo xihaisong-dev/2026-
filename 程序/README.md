@@ -84,3 +84,18 @@ python 程序/主程序.py solve --cases case_034 --cores 4 --experimental --eva
 ```
 
 结果及限制见 `计算结果.md`。`q1_ablation_report.py --runs <实验目录> <旧算法对照目录> --output <新分析目录>` 会核对源码快照、产物哈希及配对预算，再生成描述性比较。旧运行的精确源码在各目录 source_snapshot 中保留；新运行自动保存源码快照。
+
+## 插入式调度与通信优先级
+
+在 `local_cost critical` 上可独立加 `insertion` 和 `comm_rank`：
+
+```powershell
+python 程序/主程序.py solve --cases case_034 --cores 4 --experimental --evaluation-budget 12 --features local_cost critical insertion comm_rank
+python 程序/q1_ablation.py --configs local_critical insertion comm_rank insertion_rank
+```
+
+`insertion` 将就绪 Task 放入核队列中满足依赖的最早空隙，同时预留左右两侧的同核等待；不再只能追加到末尾。`comm_rank` 在向上优先级中用 `(same + (N-1)*cross)/N` 估计同步等待，实际选核仍按已分配核心逐依赖计算。该平均值是启发式，不代表实际跨核概率。两个开关都不免除 DDR 流量，官方评估器最终决定完成时间。关闭时仍走原调度器。
+
+参考 [HEFT 原论文](https://ieeexplore.ieee.org/document/993206/) 的插入式 EFT 思路和 [公开 Python 实现](https://github.com/mackncheesiest/heft)；本项目独立实现题目适配逻辑，未复制第三方代码。原版 HEFT 的异构计算/边通信模型不能直接代替本题共享 DDR 仿真。另检索了 [dagP](https://github.com/GT-TDAlab/dagP) 与 [Multilevel Acyclic Hypergraph Partitioning](https://arxiv.org/abs/2002.02962)，本轮没有新增外部划分器依赖。
+
+报告器可通过 `--pairs local_critical:insertion local_critical:comm_rank local_critical:insertion_rank` 指定比较；仍强制相同算例、核数、种子的配对和相同官方调用预算。新开关未加入默认八配置消融，避免悄悄改变旧实验含义。
