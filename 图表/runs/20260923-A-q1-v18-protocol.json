@@ -1,0 +1,38 @@
+{
+  "base_commit": "dd2916f",
+  "cases": 100,
+  "cores": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "seed": 0,
+  "configs": [
+    "shared_region",
+    "shared_resource"
+  ],
+  "official_evaluations_per_solver": 12,
+  "fixed_singlecore": true,
+  "primary": "arithmetic mean of per-case singlecore/multicore ratios",
+  "secondary": [
+    "sum makespan",
+    "sum added_copy_bytes",
+    "worst regression",
+    "solve wall time"
+  ],
+  "constructor": {
+    "width": 8,
+    "max_ops": 512,
+    "target": "max(4*same_wait,max_pipe_work/(8*cores),1)"
+  },
+  "only_changed": "initial greedy partition and the coarsening derived from it; grain and regional search unchanged",
+  "no_retuning_after_full_results": true,
+  "independent_holdout": false,
+  "all_case_descriptive_evaluation": true,
+  "source_zip_sha256": "3112331344df7dcf2dcef2ff5f789669c0419e32cefbbc6e2742b9e36d5c43c9",
+  "workers": 4,
+  "large_workers": 1,
+  "same_wall_budget": false,
+  "default_promotion": false
+}

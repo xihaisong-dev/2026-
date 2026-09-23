@@ -1,0 +1,73 @@
+{
+  "status": "exploratory_protocol_recorded_after_run_launch",
+  "baseline": "insertion_rank",
+  "configs": [
+    "insertion_rank",
+    "partition_guard",
+    "shared_input",
+    "local_repair"
+  ],
+  "candidate_budget": 12,
+  "cache": false,
+  "regression_cases": [
+    "case_017",
+    "case_045",
+    "case_048",
+    "case_065",
+    "case_077"
+  ],
+  "cores": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "regression_seeds": [
+    0
+  ],
+  "supplement_cases": [
+    "case_004",
+    "case_044"
+  ],
+  "supplement_cores": [
+    4,
+    5
+  ],
+  "supplement_seeds": [
+    0,
+    1
+  ],
+  "source_commit": "04bd1a63e66c2e4b14157655f5e47a6937e9a6ed",
+  "code_sha256": {
+    "q1_ablation.py": "e65652251019c11f88e4892b5acf123011f83971ebc5ebfbc4afdd462c3ff2f9",
+    "q1_ablation_report.py": "119c7c8ecfea3f678f5180dc3242df93c0ba9a902752542259bf98f8a6a6cdc8",
+    "q1_beam.py": "2c97b326f7e1ed9a58f2040edc82b12f52d815982bbfd1731ef11f933f61fa78",
+    "q1_bounds.py": "3a0182e776b055da4c7745f656674e078d7af240bda130850d80f0ce4fbca885",
+    "q1_exact_placement.py": "bd2787d4895987a763274dd7a5c5b05e0d1d064089029c5230770cb83d960912",
+    "q1_exact_polish.py": "40ad980081dfe5362a07e10b5c69fd2c87e0f8fd285a73f2818e1ffcce75c281",
+    "q1_exact_report.py": "880a958a00d56c83410fa7a81f3ec9d39fe1064d846a289b51b0cdc7ffdc0dd9",
+    "q1_experimental.py": "3a7b486ed45af4ba1c687741c1062b727f4454b4940a06200419da31581179fa",
+    "q1_insertion.py": "f8e37996ad56b5b3fa218a18e4cbf4c507e8bb4384a56046c09ed055134e09c5",
+    "q1_io.py": "baf660f7de19b25cd9c0f0aebc204e46b7030b99d5a6d8af4011a2b4c9ba6f7e",
+    "q1_lookahead.py": "daf1b3f6bbff9c8d15354d512561139e5f4bbf975f628309821284aeedad9265",
+    "q1_partition.py": "148248743dd63a8b774b3a2afae2491ac08da50803d0f2693811ac4ce92b55b2",
+    "q1_placement_probe.py": "ed06a2740ba2cff946b7c1b976ece451401d93de100333f076a18974d864fe01",
+    "q1_search_tools.py": "2f2fdc3b06243229393654ede9f6201a029b71d874d5c0ef97a1cef040ab9cc0",
+    "q1_solver.py": "200e3731ae2699b8bf430df4abf61934d56c64a6cb0d5a789380434214388b09",
+    "q1_stratified_report.py": "9e57f970d1b728279954b397d398028c607223086fe6ec8110489692e1c30bb6",
+    "q1_stratified_run.py": "0d62ad8e3f3624c5cb843bfec5660e3a6268d059f32598f023633cc687f24594",
+    "q1_structure.py": "5e66b126d57589ffb29e997704f80fdff8a9d705e570682dabbb20f3625ef993",
+    "主程序.py": "fd1df33ed3d341f745c782c6f4053fcd8fcf5826800723cffaddbb04a8a446aa"
+  },
+  "definitions": {
+    "partition_guard": "Try scales 0.5,1,2,0.25 before other neighborhoods; duplicates/invalid plans do not consume official evaluation budget",
+    "shared_input": "Modify only multilevel candidate after existing coarsening; consumer-only affinities, compute parallel-loss screening, max16 trials, max1024 members, proxy non-worsening acceptance",
+    "local_repair": "For split/merge/boundary retain existing task IDs on their cores, assign new child to parent position, reject cycles; migrate/reorder unchanged"
+  },
+  "limitations": [
+    "No preset guarantee of improvement at equal total budget",
+    "Shared-input change alters early observations, so later search paths may differ",
+    "Local inherited split does not itself migrate children",
+    "Both supplements are known development cases, not blind test cases"
+  ]
+}

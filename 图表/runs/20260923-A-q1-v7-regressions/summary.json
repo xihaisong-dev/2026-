@@ -1,0 +1,130 @@
+{
+  "status": "prototype_ablation",
+  "completed": true,
+  "python": "3.14.6",
+  "command": [
+    "程序/q1_ablation.py",
+    "--cases",
+    "case_001",
+    "case_093",
+    "--cores",
+    "4",
+    "--seeds",
+    "1",
+    "--configs",
+    "insertion_rank",
+    "guarded_joint",
+    "--output",
+    "图表/runs/20260923-A-q1-v7-regressions"
+  ],
+  "configs": {
+    "insertion_rank": [
+      "local_cost",
+      "critical",
+      "insertion",
+      "comm_rank"
+    ],
+    "guarded_joint": [
+      "local_cost",
+      "critical",
+      "insertion",
+      "comm_rank",
+      "guarded_joint"
+    ]
+  },
+  "evaluation_budget": 12,
+  "source_zip_sha256": "3112331344df7dcf2dcef2ff5f789669c0419e32cefbbc6e2742b9e36d5c43c9",
+  "input_sha256": {
+    "case_001.json": "a634cd1151c0e918dd3a143eba421b88907f7f0334bfe6a5ca0412342307f09f",
+    "case_093.json": "3a68ca960cc21b10a94b0524f5c16d2ee4995f2e5a75e667d58099571a7cdc36"
+  },
+  "code_sha256": {
+    "q1_ablation.py": "eb4ed72db97dcdcb30064a35410f084144a5b9cd5d4655245a1a1e8909c34dcd",
+    "q1_ablation_report.py": "119c7c8ecfea3f678f5180dc3242df93c0ba9a902752542259bf98f8a6a6cdc8",
+    "q1_bounds.py": "3a0182e776b055da4c7745f656674e078d7af240bda130850d80f0ce4fbca885",
+    "q1_experimental.py": "97bc8dff5f46684852623e495fa371f1bdb5feb3df9b9c040c7639ac5e981df7",
+    "q1_insertion.py": "f8e37996ad56b5b3fa218a18e4cbf4c507e8bb4384a56046c09ed055134e09c5",
+    "q1_io.py": "baf660f7de19b25cd9c0f0aebc204e46b7030b99d5a6d8af4011a2b4c9ba6f7e",
+    "q1_lookahead.py": "daf1b3f6bbff9c8d15354d512561139e5f4bbf975f628309821284aeedad9265",
+    "q1_search_tools.py": "2f2fdc3b06243229393654ede9f6201a029b71d874d5c0ef97a1cef040ab9cc0",
+    "q1_solver.py": "fdbfdb81d8d722c2324ee344e46a9b2a8566f8644b4a3cd5dea5a40ea525e8b0",
+    "q1_stratified_run.py": "0d62ad8e3f3624c5cb843bfec5660e3a6268d059f32598f023633cc687f24594",
+    "q1_structure.py": "5e66b126d57589ffb29e997704f80fdff8a9d705e570682dabbb20f3625ef993",
+    "主程序.py": "e481f75d714ef15507fbc663f1ed97170d4984fa2d83496d40ed929a66cc87d2"
+  },
+  "runs": [
+    {
+      "case": "case_001",
+      "cores": 4,
+      "seed": 1,
+      "config": "insertion_rank",
+      "makespan": 65256,
+      "speedup": 3.5722385681010174,
+      "evaluations": 12,
+      "seconds": 1.3151432999875396,
+      "official_calls": 12,
+      "cache_hits": 0,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "8196b9522bdd46ade82b9bca9976bb6c48b153a65e5e2db903bf6b292cb06f49",
+        "plan.json": "f61621221890b09b00077273a94ad55894467e0b8f1c0f8bbaaa56eca1a04618",
+        "search.json": "d04a58e5e51d909a75b59a504a7d9f07fc0599f51b747fee64f734bf75239260"
+      }
+    },
+    {
+      "case": "case_001",
+      "cores": 4,
+      "seed": 1,
+      "config": "guarded_joint",
+      "makespan": 67313,
+      "speedup": 3.4630754831904684,
+      "evaluations": 12,
+      "seconds": 1.6565959999570623,
+      "official_calls": 12,
+      "cache_hits": 0,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "e6bb98e8c235ff6bfb07b8b306051c2c07f0650d67e380f9c0f7182f3846ef01",
+        "plan.json": "f967a56e9d46b85fb1e47db91e14c4e746dd1ff773b1626ee6150f8fdb0640a4",
+        "search.json": "fe5eeaf9aca97e4110cd8fdf4c4631d9bc61c9f6fb51ebbedef09e313bdae786"
+      }
+    },
+    {
+      "case": "case_093",
+      "cores": 4,
+      "seed": 1,
+      "config": "insertion_rank",
+      "makespan": 30692,
+      "speedup": 2.4177310048221035,
+      "evaluations": 12,
+      "seconds": 2.0717546000378206,
+      "official_calls": 12,
+      "cache_hits": 0,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "00632cb862f10892db33d3a23a99533424c1090f5f696663b18bacf0f2288cb5",
+        "plan.json": "d535e8ad4bdff8d1e9ef2712b2f40fc4d69cd810637a31b38a2f083d530977fb",
+        "search.json": "a09c292e87c8e75a4b09dc309ef0dfa231d518243d8c8982f6745836bb14a612"
+      }
+    },
+    {
+      "case": "case_093",
+      "cores": 4,
+      "seed": 1,
+      "config": "guarded_joint",
+      "makespan": 30480,
+      "speedup": 2.434547244094488,
+      "evaluations": 12,
+      "seconds": 2.3403531000949442,
+      "official_calls": 12,
+      "cache_hits": 0,
+      "budget_exhausted": true,
+      "artifacts": {
+        "evaluation.json.gz": "5e845987f5402c071beb086f216adb37c07b34f2e4a7f8b1662ccd9c3f1bee66",
+        "plan.json": "3ffb1c76f6c574c14b55da03c877f8880fec209d5e0b597e1fb4596e7d7021c1",
+        "search.json": "6893338e4661ecf5a113f24bfe70b44b15486d5a3e2da9b14df6b6b5466bfdd3"
+      }
+    }
+  ],
+  "all_budgets_exhausted": true
+}

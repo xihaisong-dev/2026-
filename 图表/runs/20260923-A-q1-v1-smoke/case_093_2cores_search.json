@@ -1,0 +1,71 @@
+{
+  "method": "alns",
+  "seed": 0,
+  "budget": 4,
+  "block_size": 64,
+  "singlecore_makespan": 74205,
+  "speedup": 1.5560518369401106,
+  "search_evaluations": 4,
+  "evaluations": [
+    {
+      "candidate": "single_task",
+      "makespan": 74205,
+      "added_copy_bytes": 0,
+      "evaluation_seconds": 0.11855030001606792
+    },
+    {
+      "candidate": "greedy",
+      "makespan": 48342,
+      "added_copy_bytes": 1056768,
+      "evaluation_seconds": 0.10835200001019984
+    },
+    {
+      "candidate": "multilevel",
+      "makespan": 59125,
+      "added_copy_bytes": 925696,
+      "evaluation_seconds": 0.10875190002843738
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 48586,
+      "added_copy_bytes": 1056768,
+      "evaluation_seconds": 0.11415499995928258
+    },
+    {
+      "candidate": "merge",
+      "makespan": 62983,
+      "added_copy_bytes": 1015808,
+      "evaluation_seconds": 0.10434809990692884
+    },
+    {
+      "candidate": "split",
+      "makespan": 47688,
+      "added_copy_bytes": 1064960,
+      "evaluation_seconds": 0.10219550004694611
+    },
+    {
+      "candidate": "reorder",
+      "makespan": 47769,
+      "added_copy_bytes": 1064960,
+      "evaluation_seconds": 0.11190939997322857
+    }
+  ],
+  "rejected_proposals": [
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 2 -> 4"
+    },
+    {
+      "operation": "reorder",
+      "reason": "dependency order violation on core 0: 2 -> 7"
+    }
+  ],
+  "operator_weights": {
+    "merge": 1.0,
+    "split": 1.8,
+    "boundary": 1.0,
+    "migrate": 1.0,
+    "reorder": 1.0
+  },
+  "elapsed_seconds": 0.8808860999997705
+}

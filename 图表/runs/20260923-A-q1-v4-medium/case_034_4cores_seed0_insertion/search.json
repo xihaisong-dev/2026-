@@ -1,0 +1,132 @@
+{
+  "method": "experimental",
+  "features": [
+    "critical",
+    "insertion",
+    "local_cost"
+  ],
+  "seed": 0,
+  "evaluation_budget": 12,
+  "evaluations": [
+    {
+      "candidate": "single_task",
+      "makespan": 842996,
+      "added_copy_bytes": 1079832,
+      "evaluation_seconds": 2.378273700014688,
+      "best_makespan": 842996
+    },
+    {
+      "candidate": "greedy",
+      "makespan": 450337,
+      "added_copy_bytes": 9837932,
+      "evaluation_seconds": 0.9371770999860018,
+      "best_makespan": 450337
+    },
+    {
+      "candidate": "multilevel",
+      "makespan": 651522,
+      "added_copy_bytes": 6122532,
+      "evaluation_seconds": 0.8841999999713153,
+      "best_makespan": 450337
+    },
+    {
+      "candidate": "grain_0.5",
+      "makespan": 306125,
+      "added_copy_bytes": 13514012,
+      "evaluation_seconds": 1.1787180000683293,
+      "best_makespan": 306125
+    },
+    {
+      "candidate": "directed_split",
+      "makespan": 303591,
+      "added_copy_bytes": 13526300,
+      "evaluation_seconds": 1.1446357000386342,
+      "best_makespan": 303591
+    },
+    {
+      "candidate": "local_reschedule",
+      "makespan": 300987,
+      "added_copy_bytes": 13526300,
+      "evaluation_seconds": 1.2797293999465182,
+      "best_makespan": 300987
+    },
+    {
+      "candidate": "grain_1.0",
+      "makespan": 277357,
+      "added_copy_bytes": 12183994,
+      "evaluation_seconds": 0.9379145000129938,
+      "best_makespan": 277357
+    },
+    {
+      "candidate": "directed_split",
+      "makespan": 278474,
+      "added_copy_bytes": 12195258,
+      "evaluation_seconds": 0.9298864000011235,
+      "best_makespan": 277357
+    },
+    {
+      "candidate": "local_reschedule",
+      "makespan": 280129,
+      "added_copy_bytes": 12183994,
+      "evaluation_seconds": 0.900527699966915,
+      "best_makespan": 277357
+    },
+    {
+      "candidate": "directed_split",
+      "makespan": 276323,
+      "added_copy_bytes": 12202426,
+      "evaluation_seconds": 0.8986895000562072,
+      "best_makespan": 276323
+    },
+    {
+      "candidate": "random_reorder",
+      "makespan": 276031,
+      "added_copy_bytes": 12202426,
+      "evaluation_seconds": 0.9101703999331221,
+      "best_makespan": 276031
+    },
+    {
+      "candidate": "grain_0.25",
+      "makespan": 321346,
+      "added_copy_bytes": 14654092,
+      "evaluation_seconds": 1.672488399897702,
+      "best_makespan": 276031
+    }
+  ],
+  "budget_exhausted": true,
+  "singlecore_makespan": 842996,
+  "speedup": 3.0539903126822714,
+  "rejected_proposals": [
+    {
+      "candidate": "random_migrate",
+      "reason": "task schedule: dependency cycle; 226 -[core 2 task order]-> 63; 63 -[subgraph dependency]-> 72; 72 -[subgraph dependency]-> 80; 80 -[subgraph dependency]-> 90; 90 -[subgraph dependency]-> 93; 93 -[subgraph dependency]-> 105; 105 -[subgraph dependency]-> 106; 106 -[subgraph dependency]-> 108; 108 -[subgraph dependency]-> 109; 109 -[subgraph dependency]-> 110; 110 -[subgraph dependency]-> 111; 111 -[subgraph dependency]-> 177; 177 -[core 0 task order]-> 190; 190 -[core 0 task order]-> 202; 202 -[subgraph dependency]-> 226"
+    },
+    {
+      "candidate": "random_migrate",
+      "reason": "task schedule: dependency cycle; 8 -[subgraph dependency]-> 13; 13 -[core 1 task order]-> 16; 16 -[subgraph dependency]-> 17; 17 -[subgraph dependency]-> 18; 18 -[subgraph dependency]-> 20; 20 -[core 2 task order]-> 23; 23 -[subgraph dependency]-> 24; 24 -[core 2 task order]-> 25; 25 -[core 2 task order]-> 26; 26 -[subgraph dependency]-> 34; 34 -[subgraph dependency]-> 40; 40 -[core 3 task order]-> 8"
+    }
+  ],
+  "local_cost_entries": 901,
+  "local_cost_hits": 1098,
+  "local_cost_conflicts": 0,
+  "critical_refreshes": 2,
+  "arm_pulls": {
+    "grain": 4,
+    "directed": 3,
+    "random": 3,
+    "local_reschedule": 3
+  },
+  "arm_rewards": {
+    "grain": 0.19910177509739074,
+    "directed": 0.00423252304874519,
+    "local_reschedule": 0.003088982628624572,
+    "random": 0.000346383612733631
+  },
+  "elite_scores": [
+    [
+      276031,
+      12202426
+    ]
+  ],
+  "elapsed_seconds": 15.563314600032754
+}
