@@ -29,6 +29,32 @@ class OpportunityTests(unittest.TestCase):
         self.assertEqual(record['opportunity_comparison']['full_score_calls'],0)
         self.assertEqual(actual[2]['protected_grain_attempts'],[.5,1.,2.,.25])
 
+    def test_event_gate_same_plan_is_tie_without_global_evaluation(self):
+        from q1_opportunity import compare_event_profiles
+        from q1_experimental import CostGraph
+        raw=fixture([(0,1),(2,3)])
+        plan={'node_to_subgraph':{str(i):i//2 for i in range(4)},'core_schedules':[[0],[1]]}
+        with patch('q1_exact_placement.PartitionEvaluator.evaluate',side_effect=AssertionError('global score forbidden')):
+            allowed,d=compare_event_profiles(raw,CostGraph(raw,SETTINGS,WAITS,False),plan,plan)
+        self.assertFalse(allowed);self.assertEqual(d['candidate_event'],d['incumbent_event'])
+        self.assertEqual(d['full_score_calls'],0);self.assertEqual(d['local_preparation_calls'],2)
+        self.assertEqual(d['preparation']['partition_misses'],1)
+
+    def test_event_rejection_keeps_baseline_trajectory_and_replacement_identity(self):
+        raw=fixture([(i,i+1) for i in range(24)]+[(40,41),(50,51),(60,61)])
+        base=solve_experimental(raw,SETTINGS,WAITS,3,12,0,CONFIGS['component_fast'])
+        poor={'node_to_subgraph':{str(o['id']):100 if o['id'] in [40,41] else 99 for o in raw['ops']},'core_schedules':[[99],[100],[]]}
+        info=dict(route='memory',gate='fixture',ranked=[dict(candidate='poor',local_prediction=0)],selected_compute_lower_bound=0)
+        with patch('q1_memory_routes.routed_candidates',return_value=([('poor',poor)],info)),patch('q1_opportunity.compare_event_profiles',return_value=(False,{'allowed':False})):
+            actual=solve_experimental(raw,SETTINGS,WAITS,3,12,0,CONFIGS['routes_event_guarded'])
+        self.assertEqual(base[0],actual[0]);self.assertEqual(base[1],actual[1])
+        sig=lambda v:[(r['candidate'],r['makespan']) for r in v[2]['evaluations']]
+        self.assertEqual(sig(base),sig(actual))
+        rec=actual[2]['structural_seed_stats']['ledger'][0]
+        self.assertEqual(rec['status'],'screened_no_event_gain')
+        self.assertEqual(len(rec['replaced_plan_sha256']),64)
+        self.assertIsInstance(rec['replacement_at_evaluation'],int)
+
     def test_verification_reuse_requires_exact_plan_result_and_original_check(self):
         with tempfile.TemporaryDirectory() as temp:
             p=Path(temp);data=p/'data';data.mkdir();(data/'config.txt').write_bytes(b'fixed');(data/'case_001.json').write_bytes(b'input')

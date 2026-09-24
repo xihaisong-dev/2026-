@@ -374,3 +374,14 @@ python 程序/q1_seed_campaign.py --reference-run 图表/runs/20260923-A-q1-v18-
 python 程序/q1_opportunity_report.py --run 图表/runs/20260924-A-q1-opportunity-budget --output _tmp/opportunity-review
 ```
 冻结启动命令及参数：`图表/runs/20260924-A-q1-opportunity-budget/launch.py`、`execution.json`。16图扩展因开发门槛失败未运行。
+
+
+### 全局成本机制校准实验
+
+`routes_event_guarded`继承`routes_unguarded`候选池及排序，以固定三轮Pipe/依赖/DDR回放比较候选与当前解。每次比较两次核内准备、0次全局评分，耗时记录于`event_comparison`。95项测试通过，开发32组1胜31平，扩展64组全平；不替换默认。新增被替代方案hash、评分位置及已有精确评分编号，可区分不可行/重复试探与真正消耗的基础评分。
+
+```powershell
+python 程序/q1_global_calibration_report.py --run 图表/runs/20260924-A-q1-global-calibration --output _tmp/global-calibration-review
+```
+
+output必须不存在。正式批次完整命令、冻结源与日志见该run的`execution.json`、`launch.py`和`runs/*/source_snapshot`。报告以`global-calibration-analysis-v2`为准，中间版尚未将未评分提议从实际预算消耗中区分。
