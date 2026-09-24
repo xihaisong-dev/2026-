@@ -277,6 +277,11 @@
       "academic_name": "考虑共享DDR与缓存约束的有向无环图划分—多处理器调度组合优化模型",
       "canonical_model_family": "有向无环图划分与带前驱约束的多处理器调度组合优化",
       "solver_algorithm": "贪心初始划分、多层次无环粗化与关键区域贪心修复的有界多邻域搜索"
+    },
+    "Q3": {
+      "academic_name": "共享FIFO缓存约束下的多处理器调度离散事件优化模型",
+      "canonical_model_family": "多处理器调度与离散事件仿真优化",
+      "solver_algorithm": "Q2种子保护的缓存事件引导有界邻域搜索"
     }
   },
   "writing_handoff": {
@@ -1868,5 +1873,957 @@
       "q2_delivery_r07.py": "18ff04c5a205a0074054fcf6d26a2ac318d23815b433461afa49b5346d600cae",
       "q2_package_r07.py": "d5490698486cf84130a6df6bc0a6ee70a0ad4405d4a663a637c81da220d718ab"
     }
+  },
+  "question_3_r02": {
+    "status": "computed_and_checked_not_formal_gate",
+    "summary": {
+      "count": 500,
+      "curve": [
+        {
+          "cores": 1,
+          "no_l2_speedup": 1.0,
+          "fixed_l2_speedup": 1.0086217156663206,
+          "selected_l2_speedup": 1.0086217156663206,
+          "hardware_ratio": 1.0086217156663206,
+          "combined_ratio": 1.0086217156663206,
+          "search_ratio": 1.0,
+          "mean_fixed_hit_rate": 0.09203711809342652,
+          "mean_selected_hit_rate": 0.09203711809342652,
+          "pooled_fixed_hit_rate": 0.09053940512661394,
+          "no_l2_total_cycles": 312479373,
+          "fixed_l2_total_cycles": 311669310,
+          "selected_l2_total_cycles": 311669310,
+          "hardware_wins": 25,
+          "hardware_ties": 75,
+          "hardware_losses": 0,
+          "search_wins": 0,
+          "search_ties": 100
+        },
+        {
+          "cores": 2,
+          "no_l2_speedup": 1.9811129510073953,
+          "fixed_l2_speedup": 1.984988782736405,
+          "selected_l2_speedup": 1.9867214241969464,
+          "hardware_ratio": 1.0017495020159868,
+          "combined_ratio": 1.0024672722274839,
+          "search_ratio": 1.0007066565849072,
+          "mean_fixed_hit_rate": 0.13589595167003302,
+          "mean_selected_hit_rate": 0.13807084647557213,
+          "pooled_fixed_hit_rate": 0.17022699068044952,
+          "no_l2_total_cycles": 153876051,
+          "fixed_l2_total_cycles": 153835706,
+          "selected_l2_total_cycles": 153824098,
+          "hardware_wins": 51,
+          "hardware_ties": 45,
+          "hardware_losses": 4,
+          "search_wins": 14,
+          "search_ties": 86
+        },
+        {
+          "cores": 3,
+          "no_l2_speedup": 2.815713606118654,
+          "fixed_l2_speedup": 2.828518003602509,
+          "selected_l2_speedup": 2.834212850748586,
+          "hardware_ratio": 1.0048103020155537,
+          "combined_ratio": 1.0066710071423857,
+          "search_ratio": 1.0018069419826188,
+          "mean_fixed_hit_rate": 0.19401019255393898,
+          "mean_selected_hit_rate": 0.20375425402959296,
+          "pooled_fixed_hit_rate": 0.28508225171662255,
+          "no_l2_total_cycles": 103980830,
+          "fixed_l2_total_cycles": 103101443,
+          "selected_l2_total_cycles": 103060720,
+          "hardware_wins": 56,
+          "hardware_ties": 43,
+          "hardware_losses": 1,
+          "search_wins": 20,
+          "search_ties": 80
+        },
+        {
+          "cores": 4,
+          "no_l2_speedup": 3.550821967883242,
+          "fixed_l2_speedup": 3.586809919323453,
+          "selected_l2_speedup": 3.59819371801018,
+          "hardware_ratio": 1.0116988610911726,
+          "combined_ratio": 1.0149233561077178,
+          "search_ratio": 1.0031037273661019,
+          "mean_fixed_hit_rate": 0.22652144484116926,
+          "mean_selected_hit_rate": 0.23205023422600857,
+          "pooled_fixed_hit_rate": 0.3202260359952821,
+          "no_l2_total_cycles": 79744878,
+          "fixed_l2_total_cycles": 78650750,
+          "selected_l2_total_cycles": 78583168,
+          "hardware_wins": 60,
+          "hardware_ties": 39,
+          "hardware_losses": 1,
+          "search_wins": 16,
+          "search_ties": 84
+        },
+        {
+          "cores": 5,
+          "no_l2_speedup": 4.159974257393023,
+          "fixed_l2_speedup": 4.227368014230467,
+          "selected_l2_speedup": 4.240374854733234,
+          "hardware_ratio": 1.0190901374260883,
+          "combined_ratio": 1.022567029061557,
+          "search_ratio": 1.003286298575804,
+          "mean_fixed_hit_rate": 0.255036023305182,
+          "mean_selected_hit_rate": 0.2659208483390405,
+          "pooled_fixed_hit_rate": 0.34741037877406666,
+          "no_l2_total_cycles": 65769876,
+          "fixed_l2_total_cycles": 64721316,
+          "selected_l2_total_cycles": 64562282,
+          "hardware_wins": 71,
+          "hardware_ties": 29,
+          "hardware_losses": 0,
+          "search_wins": 18,
+          "search_ties": 82
+        }
+      ],
+      "ratio_aggregation": "arithmetic mean of per-case ratios; common no-L2 single-core denominator for speedup curves",
+      "hardware_losses": [
+        {
+          "case": 53,
+          "cores": 2,
+          "no_l2": 723016,
+          "fixed_l2": 723023,
+          "selected_l2": 723023,
+          "fixed_hit_rate": 0.23971681033136522
+        },
+        {
+          "case": 56,
+          "cores": 2,
+          "no_l2": 172836,
+          "fixed_l2": 172843,
+          "selected_l2": 172799,
+          "fixed_hit_rate": 0.0445347900878317
+        },
+        {
+          "case": 67,
+          "cores": 2,
+          "no_l2": 32040130,
+          "fixed_l2": 32217720,
+          "selected_l2": 32217720,
+          "fixed_hit_rate": 0.2150925330082749
+        },
+        {
+          "case": 84,
+          "cores": 2,
+          "no_l2": 1175864,
+          "fixed_l2": 1176757,
+          "selected_l2": 1176657,
+          "fixed_hit_rate": 0.005222165603888107
+        },
+        {
+          "case": 92,
+          "cores": 3,
+          "no_l2": 1348585,
+          "fixed_l2": 1349050,
+          "selected_l2": 1345074,
+          "fixed_hit_rate": 0.11199573550035805
+        },
+        {
+          "case": 97,
+          "cores": 4,
+          "no_l2": 2622394,
+          "fixed_l2": 2622413,
+          "selected_l2": 2622413,
+          "fixed_hit_rate": 0.09031471631205673
+        }
+      ],
+      "combined_losses": [
+        {
+          "case": 53,
+          "cores": 2,
+          "no_l2": 723016,
+          "fixed_l2": 723023,
+          "selected_l2": 723023,
+          "selected_hit_rate": 0.23971681033136522
+        },
+        {
+          "case": 67,
+          "cores": 2,
+          "no_l2": 32040130,
+          "fixed_l2": 32217720,
+          "selected_l2": 32217720,
+          "selected_hit_rate": 0.2150925330082749
+        },
+        {
+          "case": 84,
+          "cores": 2,
+          "no_l2": 1175864,
+          "fixed_l2": 1176757,
+          "selected_l2": 1176657,
+          "selected_hit_rate": 0.00522295768526363
+        },
+        {
+          "case": 97,
+          "cores": 4,
+          "no_l2": 2622394,
+          "fixed_l2": 2622413,
+          "selected_l2": 2622413,
+          "selected_hit_rate": 0.09031471631205673
+        }
+      ],
+      "total_search_improved": 68,
+      "baseline_total_added": 5630069992,
+      "selected_total_added": 5634488280,
+      "source_sha256": "82729ec5b962b85db126f5b7f5bd6107b6bcde8953815429ae99444b318c98dc",
+      "formal_gate": "NOT_RUN"
+    },
+    "run": "图表/runs/20260924-A-q3-full-r02",
+    "delivery": "图表/runs/20260924-A-q3-delivery-r03",
+    "evidence": [
+      {
+        "path": "图表/runs/20260924-A-q3-full-r02/progress.json",
+        "sha256": "82729ec5b962b85db126f5b7f5bd6107b6bcde8953815429ae99444b318c98dc"
+      },
+      {
+        "path": "图表/runs/20260924-A-q3-full-r02/contract.json",
+        "sha256": "12077fb81ce883c668e33ab3fbd31e15d37e54bf769a9d05185bcabe45ce89aa"
+      },
+      {
+        "path": "图表/runs/20260924-A-q3-full-r02/verification.json",
+        "sha256": "9c38d6e09b722c1631332c3bfab755603488f2346444950f3321bd069aab912d"
+      },
+      {
+        "path": "图表/runs/20260924-A-q3-delivery-r03/summary.json",
+        "sha256": "ad0723f36324c42c3e72832e805914e69a8767791243e74215888f76a1fb1e6d"
+      }
+    ]
+  },
+  "question_3_exploration_r01": {
+    "status": "pilot_complete_not_promoted",
+    "run": "图表/runs/20260924-A-q3-explore-r01",
+    "summary": {
+      "families": {
+        "ordinary": {
+          "discovery": {
+            "count": 8,
+            "wins": 1,
+            "losses": 0,
+            "mean_ratio": 1.0000907224618447,
+            "candidate_calls": 48,
+            "strict_wins_vs_ordinary": 0
+          },
+          "validation": {
+            "count": 4,
+            "wins": 1,
+            "losses": 0,
+            "mean_ratio": 1.0000224914922677,
+            "candidate_calls": 32,
+            "strict_wins_vs_ordinary": 0
+          }
+        },
+        "event": {
+          "discovery": {
+            "count": 8,
+            "wins": 3,
+            "losses": 0,
+            "mean_ratio": 1.0016352908899577,
+            "candidate_calls": 26,
+            "strict_wins_vs_ordinary": 3
+          },
+          "validation": {
+            "count": 4,
+            "wins": 2,
+            "losses": 0,
+            "mean_ratio": 1.0056394722562918,
+            "candidate_calls": 16,
+            "strict_wins_vs_ordinary": 2
+          }
+        },
+        "affinity": {
+          "discovery": {
+            "count": 8,
+            "wins": 3,
+            "losses": 0,
+            "mean_ratio": 1.0013385367122638,
+            "candidate_calls": 48,
+            "strict_wins_vs_ordinary": 3
+          },
+          "validation": {
+            "count": 4,
+            "wins": 1,
+            "losses": 0,
+            "mean_ratio": 1.0006780047650428,
+            "candidate_calls": 32,
+            "strict_wins_vs_ordinary": 1
+          }
+        },
+        "split": {
+          "discovery": {
+            "count": 8,
+            "wins": 3,
+            "losses": 0,
+            "mean_ratio": 1.0019425504396708,
+            "candidate_calls": 50,
+            "strict_wins_vs_ordinary": 3
+          },
+          "validation": {
+            "count": 4,
+            "wins": 2,
+            "losses": 0,
+            "mean_ratio": 1.0092815698359134,
+            "candidate_calls": 32,
+            "strict_wins_vs_ordinary": 2
+          }
+        }
+      },
+      "promoted": [],
+      "official_replay_and_audit_count": 48,
+      "baseline_unchanged": true,
+      "scope": "Predeclared pilot only; validation is case holdout for new methods, not an unseen source dataset. Candidate counts are caps; structurally distinct moves may be exhausted.",
+      "invalid_candidates": 0
+    },
+    "baseline": "20260924-A-q3-full-r02",
+    "baseline_replaced": false
+  },
+  "question_3_research_r02": {
+    "status": "pilot_checked_not_promoted",
+    "summary": {
+      "families": {
+        "control": {
+          "discovery": {
+            "wins": 5,
+            "mean_ratio": 1.009360554504448,
+            "mean_time_reduction": 0.009157579420950837,
+            "calls": 88
+          },
+          "validation": {
+            "wins": 1,
+            "mean_ratio": 1.000016977352212,
+            "mean_time_reduction": 1.6975623005362667e-05,
+            "calls": 54
+          }
+        },
+        "window": {
+          "discovery": {
+            "wins": 5,
+            "mean_ratio": 1.0081115121777646,
+            "mean_time_reduction": 0.00783947616283979,
+            "calls": 80
+          },
+          "validation": {
+            "wins": 1,
+            "mean_ratio": 1.000042000427344,
+            "mean_time_reduction": 4.1989845795342706e-05,
+            "calls": 16
+          }
+        },
+        "joint": {
+          "discovery": {
+            "wins": 5,
+            "mean_ratio": 1.0105188602827995,
+            "mean_time_reduction": 0.0102128572139449,
+            "calls": 81
+          },
+          "validation": {
+            "wins": 1,
+            "mean_ratio": 1.000039417266013,
+            "mean_time_reduction": 3.940794589207819e-05,
+            "calls": 41
+          }
+        }
+      },
+      "promoted": [],
+      "audited": 36,
+      "candidate_calls": 360,
+      "invalid": 0,
+      "baseline_unchanged": true
+    },
+    "run": "图表/runs/20260924-A-q3-research-r02",
+    "parameter_runs": [
+      "图表/runs/20260924-A-q3-parameter-reopt-r01",
+      "图表/runs/20260924-A-q3-parameter-followup-r01"
+    ],
+    "baseline_replaced": false
+  },
+  "question_3_adaptive_r03": {
+    "status": "checked_not_promoted",
+    "run": "图表/runs/20260924-A-q3-adaptive-r03",
+    "summary": {
+      "summary": {
+        "single": {
+          "discovery": {
+            "wins": 5,
+            "mean_ratio": 1.0101941942088146,
+            "mean_reduction": 0.009903461896910382,
+            "calls": 144,
+            "diagnoses": 6,
+            "seconds": 1272.5122716929764
+          },
+          "validation": {
+            "wins": 2,
+            "mean_ratio": 1.0010680953524176,
+            "mean_reduction": 0.0010646061679885725,
+            "calls": 144,
+            "diagnoses": 6,
+            "seconds": 699.2777709122747
+          }
+        },
+        "iterative": {
+          "discovery": {
+            "wins": 5,
+            "mean_ratio": 1.0103776674734042,
+            "mean_reduction": 0.010084316861042053,
+            "calls": 144,
+            "diagnoses": 17,
+            "seconds": 1450.0485423412174
+          },
+          "validation": {
+            "wins": 2,
+            "mean_ratio": 1.0008581666101177,
+            "mean_reduction": 0.0008539954422978613,
+            "calls": 144,
+            "diagnoses": 9,
+            "seconds": 698.2406031228602
+          }
+        },
+        "unclassified_iterative": {
+          "discovery": {
+            "wins": 5,
+            "mean_ratio": 1.0087928192405886,
+            "mean_reduction": 0.008517055004935012,
+            "calls": 144,
+            "diagnoses": 19,
+            "seconds": 1491.301508007571
+          },
+          "validation": {
+            "wins": 2,
+            "mean_ratio": 1.0024255524102434,
+            "mean_reduction": 0.0024012360394654597,
+            "calls": 144,
+            "diagnoses": 11,
+            "seconds": 691.6868640109897
+          }
+        }
+      },
+      "comparisons": {
+        "discovery": {
+          "single": {
+            "wins": 3,
+            "ties": 2,
+            "losses": 1
+          },
+          "unclassified_iterative": {
+            "wins": 3,
+            "ties": 2,
+            "losses": 1
+          }
+        },
+        "validation": {
+          "single": {
+            "wins": 1,
+            "ties": 4,
+            "losses": 1
+          },
+          "unclassified_iterative": {
+            "wins": 0,
+            "ties": 4,
+            "losses": 2
+          }
+        }
+      },
+      "promote": false,
+      "audited": 36,
+      "candidate_calls": 864,
+      "invalid": 0,
+      "baseline_unchanged": true
+    },
+    "baseline_replaced": false,
+    "parameter_analysis_preserved": true
+  },
+  "question_3_asap_r04": {
+    "run": "图表/runs/20260924-A-q3-asap-r04",
+    "report": "审查/问题三ASAP流水线压缩试验_r04.md",
+    "summary": {
+      "stats": {
+        "discovery": {
+          "single": {
+            "wins": 4,
+            "mean_reduction": 0.013972100701979545,
+            "calls": 83,
+            "seconds": 653.5546805988997
+          },
+          "beam": {
+            "wins": 4,
+            "mean_reduction": 0.013823802345562602,
+            "calls": 83,
+            "seconds": 958.8603572528809
+          },
+          "control": {
+            "wins": 4,
+            "mean_reduction": 0.012377178799608396,
+            "calls": 96,
+            "seconds": 567.0885314829648
+          }
+        },
+        "validation": {
+          "single": {
+            "wins": 3,
+            "mean_reduction": 0.001681267291947619,
+            "calls": 96,
+            "seconds": 566.0809860564768
+          },
+          "beam": {
+            "wins": 3,
+            "mean_reduction": 0.00241486655208506,
+            "calls": 96,
+            "seconds": 615.3503113761544
+          },
+          "control": {
+            "wins": 4,
+            "mean_reduction": 0.0007167225817630111,
+            "calls": 144,
+            "seconds": 753.7099156249315
+          }
+        }
+      },
+      "validation_wins_vs": {
+        "single": 3,
+        "control": 3
+      },
+      "promotion_criteria_met": true,
+      "expanded": false,
+      "formal_gate": "NOT_RUN"
+    },
+    "baseline_replaced": false
+  },
+  "question_3_portfolio_r05": {
+    "run": "图表/runs/20260924-A-q3-portfolio-r05",
+    "summary": {
+      "stats": {
+        "discovery": {
+          "beam": {
+            "wins": 4,
+            "mean_reduction": 0.004250886425535366,
+            "calls": 96,
+            "seconds": 832.0956504233181
+          },
+          "reserved": {
+            "wins": 4,
+            "mean_reduction": 0.004187671935443393,
+            "calls": 96,
+            "seconds": 456.4160950202495
+          },
+          "fixed": {
+            "wins": 4,
+            "mean_reduction": 0.003765320880982026,
+            "calls": 96,
+            "seconds": 484.79210175573826
+          },
+          "adaptive": {
+            "wins": 4,
+            "mean_reduction": 0.0038087171982358337,
+            "calls": 96,
+            "seconds": 491.201751569286
+          }
+        },
+        "validation": {
+          "beam": {
+            "wins": 2,
+            "mean_reduction": 0.0006490707192309819,
+            "calls": 48,
+            "seconds": 1344.8645546548069
+          },
+          "reserved": {
+            "wins": 2,
+            "mean_reduction": 0.000705663232555942,
+            "calls": 48,
+            "seconds": 226.4537471216172
+          },
+          "fixed": {
+            "wins": 2,
+            "mean_reduction": 0.000496656791298955,
+            "calls": 55,
+            "seconds": 274.1829157676548
+          },
+          "adaptive": {
+            "wins": 2,
+            "mean_reduction": 0.000496656791298955,
+            "calls": 55,
+            "seconds": 271.73076093383133
+          }
+        }
+      },
+      "validation_wins_vs": {
+        "beam": 0,
+        "reserved": 0,
+        "fixed": 0
+      },
+      "promotion_criteria_met": false,
+      "expanded": false,
+      "formal_gate": "NOT_RUN"
+    },
+    "verification": {
+      "fifo_ledgers": 32,
+      "replays": [
+        {
+          "case": 58,
+          "cores": 2,
+          "makespan": 2257877,
+          "checks": {
+            "cache": {
+              "fifo_ledger": true,
+              "peak_bytes": 1048576,
+              "hit_bytes": 4292608,
+              "miss_bytes": 31956992,
+              "physical_ddr_bytes_derived": 33001472
+            },
+            "global_memory_peak": {
+              "0": {
+                "L1": 524288,
+                "UB": 0
+              },
+              "1": {
+                "L1": 524288,
+                "UB": 0
+              }
+            },
+            "synchronization": true,
+            "traffic_identity": true
+          }
+        },
+        {
+          "case": 53,
+          "cores": 4,
+          "makespan": 388118,
+          "checks": {
+            "cache": {
+              "fifo_ledger": true,
+              "peak_bytes": 1048576,
+              "hit_bytes": 2036642,
+              "miss_bytes": 7171832,
+              "physical_ddr_bytes_derived": 9638396
+            },
+            "global_memory_peak": {
+              "0": {
+                "L1": 489984,
+                "UB": 38374
+              },
+              "1": {
+                "L1": 485008,
+                "UB": 97110
+              },
+              "2": {
+                "L1": 484864,
+                "UB": 52274
+              },
+              "3": {
+                "L1": 506496,
+                "UB": 72324
+              }
+            },
+            "synchronization": true,
+            "traffic_identity": true
+          }
+        },
+        {
+          "case": 53,
+          "cores": 4,
+          "makespan": 387793,
+          "checks": {
+            "cache": {
+              "fifo_ledger": true,
+              "peak_bytes": 1048576,
+              "hit_bytes": 2036642,
+              "miss_bytes": 7171832,
+              "physical_ddr_bytes_derived": 9638396
+            },
+            "global_memory_peak": {
+              "0": {
+                "L1": 489984,
+                "UB": 38374
+              },
+              "1": {
+                "L1": 485008,
+                "UB": 97110
+              },
+              "2": {
+                "L1": 484864,
+                "UB": 52274
+              },
+              "3": {
+                "L1": 506496,
+                "UB": 72324
+              }
+            },
+            "synchronization": true,
+            "traffic_identity": true
+          }
+        }
+      ],
+      "baseline_files_unchanged": 3005,
+      "parameter_files_unchanged": 198
+    },
+    "baseline_replaced": false,
+    "report": "审查/问题三预算分配与组合搜索_r05.md"
+  },
+  "question_3_eviction_r07": {
+    "run": "图表/runs/20260924-A-q3-eviction-r07",
+    "report": "审查/问题三关键再读与淘汰来源干预_r07.md",
+    "summary": {
+      "stats": {
+        "discovery": {
+          "consumer": {
+            "wins": 3,
+            "mean_reduction": 0.003793852750986019,
+            "calls": 52,
+            "seconds": 1071.1510965451598
+          },
+          "source": {
+            "wins": 3,
+            "mean_reduction": 0.005349898981635663,
+            "calls": 56,
+            "seconds": 1168.2836179640144
+          },
+          "joint": {
+            "wins": 3,
+            "mean_reduction": 0.004559310051789407,
+            "calls": 72,
+            "seconds": 1586.029470069334
+          }
+        },
+        "validation": {
+          "consumer": {
+            "wins": 2,
+            "mean_reduction": 0.002248358496006825,
+            "calls": 40,
+            "seconds": 929.8886879924685
+          },
+          "source": {
+            "wins": 3,
+            "mean_reduction": 0.00034497113258502576,
+            "calls": 48,
+            "seconds": 1010.1120219826698
+          },
+          "joint": {
+            "wins": 2,
+            "mean_reduction": 0.00011439825484191313,
+            "calls": 62,
+            "seconds": 1120.997710319236
+          }
+        }
+      },
+      "validation_wins_vs": {
+        "consumer": 0,
+        "source": 0
+      },
+      "promotion_criteria_met": false,
+      "expanded": false,
+      "formal_gate": "NOT_RUN",
+      "historical_comparison": [
+        {
+          "case": 67,
+          "cores": 5,
+          "prior": {
+            "makespan": 13133609,
+            "source": "frozen full-r02"
+          },
+          "new_best": 12938661
+        },
+        {
+          "case": 72,
+          "cores": 5,
+          "prior": {
+            "makespan": 4803888,
+            "source": "frozen full-r02"
+          },
+          "new_best": 4791524
+        },
+        {
+          "case": 76,
+          "cores": 5,
+          "prior": {
+            "makespan": 1226178,
+            "source": "鍥捐〃\\runs\\20260924-A-q3-research-r02\\case_076\\5\\window\\metrics.json"
+          },
+          "new_best": 1226178
+        },
+        {
+          "case": 73,
+          "cores": 5,
+          "prior": {
+            "makespan": 2578536,
+            "source": "frozen full-r02"
+          },
+          "new_best": 2559340
+        },
+        {
+          "case": 14,
+          "cores": 5,
+          "prior": {
+            "makespan": 3607077,
+            "source": "frozen full-r02"
+          },
+          "new_best": 3601490
+        },
+        {
+          "case": 3,
+          "cores": 5,
+          "prior": {
+            "makespan": 187997,
+            "source": "frozen full-r02"
+          },
+          "new_best": 187997
+        },
+        {
+          "case": 66,
+          "cores": 5,
+          "prior": {
+            "makespan": 100249,
+            "source": "frozen full-r02"
+          },
+          "new_best": 100184
+        }
+      ]
+    },
+    "verification": {
+      "fifo_ledgers": 21,
+      "replays": [
+        {
+          "case": 67,
+          "cores": 5,
+          "makespan": 12938661,
+          "checks": {
+            "cache": {
+              "fifo_ledger": true,
+              "peak_bytes": 1048576,
+              "hit_bytes": 110662272,
+              "miss_bytes": 115887872,
+              "physical_ddr_bytes_derived": 124874496
+            },
+            "global_memory_peak": {
+              "0": {
+                "L1": 524288,
+                "UB": 0
+              },
+              "1": {
+                "L1": 521216,
+                "UB": 0
+              },
+              "2": {
+                "L1": 521216,
+                "UB": 0
+              },
+              "3": {
+                "L1": 524288,
+                "UB": 0
+              },
+              "4": {
+                "L1": 521216,
+                "UB": 0
+              }
+            },
+            "synchronization": true,
+            "traffic_identity": true
+          }
+        },
+        {
+          "case": 73,
+          "cores": 5,
+          "makespan": 2559340,
+          "checks": {
+            "cache": {
+              "fifo_ledger": true,
+              "peak_bytes": 1048576,
+              "hit_bytes": 34508288,
+              "miss_bytes": 64605568,
+              "physical_ddr_bytes_derived": 65779840
+            },
+            "global_memory_peak": {
+              "0": {
+                "L1": 522752,
+                "UB": 0
+              },
+              "1": {
+                "L1": 524032,
+                "UB": 0
+              },
+              "2": {
+                "L1": 524032,
+                "UB": 0
+              },
+              "3": {
+                "L1": 524288,
+                "UB": 0
+              },
+              "4": {
+                "L1": 523520,
+                "UB": 0
+              }
+            },
+            "synchronization": true,
+            "traffic_identity": true
+          }
+        },
+        {
+          "case": 73,
+          "cores": 5,
+          "makespan": 2578512,
+          "checks": {
+            "cache": {
+              "fifo_ledger": true,
+              "peak_bytes": 1048576,
+              "hit_bytes": 32072192,
+              "miss_bytes": 67041664,
+              "physical_ddr_bytes_derived": 68215936
+            },
+            "global_memory_peak": {
+              "0": {
+                "L1": 522752,
+                "UB": 0
+              },
+              "1": {
+                "L1": 524032,
+                "UB": 0
+              },
+              "2": {
+                "L1": 524032,
+                "UB": 0
+              },
+              "3": {
+                "L1": 524288,
+                "UB": 0
+              },
+              "4": {
+                "L1": 523520,
+                "UB": 0
+              }
+            },
+            "synchronization": true,
+            "traffic_identity": true
+          }
+        }
+      ],
+      "baseline_files_unchanged": 3005,
+      "parameter_files_unchanged": 198
+    },
+    "baseline_replaced": false
+  },
+  "question_3_theory_r08": {
+    "evidence": "图表/runs/20260924-A-q3-theory-r08-v3/evidence.json",
+    "report": "审查/问题三状态负载收益界与非单调核验_r08.md",
+    "checks": {
+      "fifo_ledgers": 178,
+      "official_replays": 6,
+      "old_bandwidth_full_replay_equal": 4,
+      "all_lower_bounds_pass": true
+    },
+    "aggregate": {
+      "mean_byte_hit_rate": 0.2659208483390405,
+      "pooled_byte_hit_rate": 0.3591820660585346,
+      "mean_count_hit_rate": 0.21793617014128944,
+      "pooled_count_hit_rate": 0.2951458598837311,
+      "min_plan_bound_ratio": 1.0038606438136446,
+      "max_plan_bound_ratio": 2.9829261885999476
+    },
+    "freeze_checks": {
+      "baseline_files": 3005,
+      "parameter_files": 198
+    },
+    "global_optimum_solved": false,
+    "baseline_replaced": false
   }
 }

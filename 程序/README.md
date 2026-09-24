@@ -417,3 +417,90 @@ output必须不存在。正式批次完整命令、冻结源与日志见该run�
 ### Q2 当前入口 r07
 
 当前计算交付切换到`q2_current_submit.py`；单例支持-n 1至5及可选--migration。批量入口`q2_r07_reproduce.py`默认100图×1至5核，--workers 1串行；输出须新目录。完整命令、冷启动与冻结种子口径见`output/q2-r07-portable/README.md`，包内先运行verify_package.py。历史入口与结果保留。
+
+## 问题三（Q3）：共享FIFO缓存下的继承与优化
+
+当前入口 `python 程序/主程序.py q3 <图.json> -n 3 --output <新目录>`，与 `程序/q3_submit.py` 等价。默认先生成Q2 r07种子，再用固定官方L2评价及4候选缓存事件引导邻域搜索；没有随机性。可用 `--seed <Q2方案.json>` 省去上游种子生成，种子耗时和Q3耗时分别记录。输入仍须先 `python 程序/主程序.py prepare`。
+
+```powershell
+python 程序/q3_submit.py 数据/processed/q1/data/case_005.json -n 3 --seed 图表/runs/20260924-A-q2-delivery-r07/solutions/3cores/case_005_multicore_res.json --output new-q3-005
+python 程序/q3_campaign.py --workers 1 --budget 4 --output new-q3-full
+python -m unittest discover -s 程序/tests -p test_q3.py -v
+```
+
+全量批次以main中Q2 r07的500份方案为冻结种子，并重新运行官方B，不借用缓存成绩。每配置依次保存 `no_l2.json.gz`、`fixed_l2.json.gz`、`selected_l2.json.gz`、标准方案、候选记录与指标。官方Q3源码无修改；最终全量及交付证据见Q3写作交接。
+
+参数扫描 `q3_sensitivity.py` 与事后机制诊断 `q3_cache_sources.py` 分别写新目录，不更改config.txt。无L2、同计划L2、重新优化L2是三列不同实验，`hardware_ratio` 与 `combined_ratio` 不可互换。官方额外COPY量不扣命中；派生DDR量仅用于辅助解释。Cache命中率按字节，不按次数。问题三单核也实际模拟，可能因spill reload命中而获益。
+
+`q3_neighborhood.py` 是Q2邻域顺序的惰性等价实现，不改Q2源文件；主算法继承Q2划分，新增步骤调整分核与合法插入次序，不宣称重新穷举切图或全局最优。冷启动计入Q1和Q2种子生成成本，冻结种子实验只衡量新增步骤。运行资源由`q2_resources.py`检查，服务器并行是独立case/core工作进程，不是B/C Agent。
+
+
+### Q3 小规模定向优化试验
+
+`q3_explore.py` 从冻结的Q3 full-r02选中方案开始，分别测试普通邻域、事件时间引导、共享输入亲和迁移、拓扑二分后迁移。预先固定8组发现案例与4组验证案例，每种方法每组最多8个不同候选；目录必须不存在。实际候选数不足时保留真实数量。调用官方评价器的回放和全局内存/FIFO核验通过后，由 `q3_explore_report.py` 判断是否达到运行前固定的全量扩展条件，不能把单个案例收益外推至全部100图。
+
+```powershell
+python 程序/q3_explore.py --baseline 图表/runs/20260924-A-q3-full-r02 --output 图表/runs/NEW-q3-explore --workers 1 --budget 8
+python 程序/q3_explore_report.py 图表/runs/NEW-q3-explore
+```
+
+本次实际在Linux服务器以12进程执行；原500组文件哈希保存在 `审查/证据/20260924-A-q3/baseline-freeze-r02.json`。不修改原结果，不提交或发送写作交接材料。
+
+
+### Q3 瓶颈分类与迭代试验 r03
+
+`q3_adaptive.py` 在每次接受一批候选的改进后重新提取官方轨迹关键链、FIFO窗口及分类，并使用新的候选邻域。分类是观测周期占比标签，不是因果瓶颈证明。`q3_adaptive_run.py` 固定12组、三种消融、每组最多24个不同候选，保存每轮分类、基准方案哈希和候选记录；全量扩展需通过运行前合同。
+
+```powershell
+python 程序/q3_adaptive_run.py --baseline 图表/runs/20260924-A-q3-full-r02 --output 图表/runs/NEW-q3-adaptive --workers 1
+python 程序/q3_adaptive_report.py 图表/runs/NEW-q3-adaptive
+python -m unittest discover -s 程序/tests -p test_q3_adaptive.py -v
+```
+
+`q3_cache_search_fast.py` 保持原候选输出次序并延迟生成，支持同一已评估方案共用诊断；不跨接受后的方案复用旧诊断。历史r02源码和原始结果不覆盖。
+
+
+### Q3 ASAP 式关键等待压缩 r04
+只生成关键队首阻塞驱动的同核子图前移，不修改官方核内调度。beam 保留根分支，避免接受改进后丢弃原邻域。每项最多24个不同候选，实际调用数可因邻域耗尽而降低。
+
+```powershell
+python 程序/q3_asap_run.py --baseline 图表/runs/20260924-A-q3-full-r02 --output 图表/runs/NEW-q3-asap --workers 1
+python 程序/q3_asap_report.py 图表/runs/NEW-q3-asap
+python -m unittest discover -s 程序/tests -p test_q3_asap.py -v
+```
+
+本次服务器使用12进程，运行目录 results-asap-r04。保留原500组及参数分析，不提交或派稿。
+
+
+### Q3 预算与组合邻域试验 r05
+`q3_portfolio.py`比较原方案16次预算保留、固定ASAP/cache组合和观察收益分配。`q3_asap_fast.py`按原顺序惰性构造候选，合法区间仅在同一父方案内缓存。均保留官方评分与终选审计，实际调用不足24时如实报告。
+
+```powershell
+python 程序/q3_portfolio_run.py --baseline 图表/runs/20260924-A-q3-full-r02 --output 图表/runs/NEW-q3-portfolio --workers 1
+python 程序/q3_portfolio_report.py 图表/runs/NEW-q3-portfolio
+python -m unittest discover -s 程序/tests -p test_q3_portfolio.py -v
+```
+
+服务器实际12进程，输出results-portfolio-r05。原500组与参数结果保持不变。
+
+`q3_asap_accelerated.solve`保留r04搜索规则，只替换为同序惰性候选生成。case12与case49候选完整一致；case49的24次搜索记录、最终方案及所有官方结果字段均与r04相同。本机case49单次候选生成5.71秒→1.03秒；这是局部测试，不宣称整体求解同等倍数加速。证据见`审查/证据/20260924-A-q3/portfolio-r05-tests.json`。
+
+
+### Q3 关键再读与淘汰来源三臂试验 r07
+
+```powershell
+python 程序/q3_eviction_screen.py --baseline 图表/runs/20260924-A-q3-full-r02 --output 图表/runs/NEW-eviction-screen --workers 1
+python 程序/q3_eviction_run.py --baseline 图表/runs/20260924-A-q3-full-r02 --selection 图表/runs/NEW-eviction-screen/selection-amended.json --output 图表/runs/NEW-eviction --workers 1
+python 程序/q3_eviction_report.py 图表/runs/NEW-eviction
+```
+
+筛选原定4+4，但实际仅3个既往案例符合条件；原程序不足检查停止。在未评估候选前，单独冻结修订记录，仅采用3个发现案例，4个验证案例与条件不变。不得在结果出来后修改selection。每臂至多24个唯一候选，固定同一起点，保存直接淘汰事件、组级逻辑张量读轨迹与官方审计。不扩量、不覆盖原500组。
+
+
+### Q3 理论与参数事件核验 r08
+
+```powershell
+python 程序/q3_theory_audit.py --output 图表/runs/NEW-q3-theory
+```
+
+只读核验100份五核冻结方案和72份既有参数结果，再将6次官方参数重放写入新目录。输出须不存在。包含全部输入与源码哈希、FIFO账本、服务负载界、四种命中率、两种非单调的事件差异；不运行新方案搜索。当前成功输出为20260924-A-q3-theory-r08-v3。

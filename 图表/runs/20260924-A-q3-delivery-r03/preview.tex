@@ -1,0 +1,43 @@
+\documentclass[UTF8,a4paper,12pt]{ctexart}
+\usepackage[left=22.5mm,right=22.5mm,top=24mm,bottom=20mm]{geometry}
+\usepackage{graphicx,longtable,booktabs,placeins}
+\begin{document}
+\section*{问题三计算交付预览}
+本预览核对已完成的百图计算、图表及逐例附录，不是正式参赛论文。
+继承问题二模型，引入共享FIFO缓存与独立DDR/L2带宽池。100图在1至5核下均已重新评估，500组无L2指标与问题二冻结结果一致，缓存事件、全局容量和独立重放检查通过。
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule 核数 & 无L2加速比 & 同方案L2加速比 & 优化L2加速比\\\midrule
+1 & 1.000000 & 1.008622 & 1.008622\\
+2 & 1.981113 & 1.984989 & 1.986721\\
+3 & 2.815714 & 2.828518 & 2.834213\\
+4 & 3.550822 & 3.586810 & 3.598194\\
+5 & 4.159974 & 4.227368 & 4.240375\\\bottomrule
+\end{tabular}
+\end{center}
+各列采用共同的无L2单核周期作为分母，先逐例求比值再取算术平均。
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.85\linewidth,height=0.70\textheight,keepaspectratio]{speedup.pdf}
+\caption{无L2与只读L2的五点加速比对照}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.85\linewidth,height=0.70\textheight,keepaspectratio]{cache_gain.pdf}
+\caption{相同核数下，无L2周期与L2周期之比的逐例算术平均}
+\end{figure}
+新增调度搜索改善68组周期，其余配置保留不劣方案；同方案启用L2有6组变慢，优化后仍有4组慢于无L2。这些反例均保留。500组逻辑额外搬运从5630069992增至5634488280字节，不能宣称周期和搬运同时全面改善。
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.85\linewidth,height=0.70\textheight,keepaspectratio]{singlecore_capacity.pdf}
+\caption{case044单核的容量影响：收益来自spill reload命中}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htbp]\centering
+\includegraphics[width=1.0\linewidth,height=0.70\textheight,keepaspectratio]{sensitivity.pdf}
+\caption{case005固定方案的容量与带宽诊断，分母为固定配置周期}
+\end{figure}
+主实验始终使用1MiB与250 bytes/cycle。参数扫描只用于解释机制；FIFO与后续访问时序会产生阈值及非单调变化，不能外推为普遍规律。
+\FloatBarrier
+\section*{逐用例附录}
+周期单位为cycles，额外搬运为逻辑COPY字节；无L2不定义Cache命中率。相同方案的逻辑额外搬运字典在无L2与L2下完全相同，故只列一次。Cache命中率按字节统计。
+{\small\setlength{\tabcolsep}{4pt}\input{appendix_table.tex}}
+\end{document}

@@ -98,4 +98,8 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv)>1 and sys.argv[1]=='q3':
+        from q3_submit import main as q3_main
+        q3_main(sys.argv[2:])
+    else:
+        main()

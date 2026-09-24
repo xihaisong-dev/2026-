@@ -1,0 +1,931 @@
+{
+  "scope": "frozen Q3 full-r02, all 100 five-core selected plans; posthoc diagnostic only",
+  "definitions": {
+    "after_prior_insert": "miss following any prior insertion; includes concurrent re-reads after eviction",
+    "overlapping_cold_read": "never inserted before; an earlier miss on same tensor has end > now",
+    "first_cold_read": "eligible tensor with no prior insertion or unfinished earlier miss",
+    "oversized": "individual transfer size exceeds current capacity"
+  },
+  "bytes": {
+    "first_cold_read": 300177876,
+    "overlapping_cold_read": 40641484,
+    "hit": 428427518,
+    "after_prior_insert": 423539618
+  },
+  "fractions_of_reads": {
+    "first_cold_read": 0.2516610281946049,
+    "overlapping_cold_read": 0.03407272310366599,
+    "hit": 0.3591820660585346,
+    "after_prior_insert": 0.3550841826431945
+  },
+  "warning": "Traffic composition only. Does not imply criticality, feasible elimination or cycle savings.",
+  "rows": [
+    {
+      "case": 1,
+      "bytes": {
+        "first_cold_read": 820352,
+        "overlapping_cold_read": 4608
+      }
+    },
+    {
+      "case": 2,
+      "bytes": {
+        "first_cold_read": 1477632,
+        "hit": 4608
+      }
+    },
+    {
+      "case": 3,
+      "bytes": {
+        "first_cold_read": 3819266,
+        "overlapping_cold_read": 54852,
+        "hit": 2034228,
+        "after_prior_insert": 83970
+      }
+    },
+    {
+      "case": 4,
+      "bytes": {
+        "first_cold_read": 451584,
+        "overlapping_cold_read": 442368
+      }
+    },
+    {
+      "case": 5,
+      "bytes": {
+        "first_cold_read": 845190,
+        "overlapping_cold_read": 62024,
+        "hit": 374316
+      }
+    },
+    {
+      "case": 6,
+      "bytes": {
+        "first_cold_read": 611884,
+        "overlapping_cold_read": 1152,
+        "hit": 81536
+      }
+    },
+    {
+      "case": 7,
+      "bytes": {
+        "first_cold_read": 880128,
+        "overlapping_cold_read": 110592
+      }
+    },
+    {
+      "case": 8,
+      "bytes": {
+        "first_cold_read": 1990872
+      }
+    },
+    {
+      "case": 9,
+      "bytes": {
+        "first_cold_read": 783730,
+        "overlapping_cold_read": 10786,
+        "hit": 243958
+      }
+    },
+    {
+      "case": 10,
+      "bytes": {
+        "first_cold_read": 545736,
+        "hit": 229894,
+        "overlapping_cold_read": 9216
+      }
+    },
+    {
+      "case": 11,
+      "bytes": {
+        "first_cold_read": 1286144,
+        "overlapping_cold_read": 71680,
+        "hit": 471040
+      }
+    },
+    {
+      "case": 12,
+      "bytes": {
+        "first_cold_read": 484096,
+        "hit": 25344
+      }
+    },
+    {
+      "case": 13,
+      "bytes": {
+        "first_cold_read": 2023424,
+        "overlapping_cold_read": 32768
+      }
+    },
+    {
+      "case": 14,
+      "bytes": {
+        "first_cold_read": 9911640,
+        "overlapping_cold_read": 3070704,
+        "hit": 22526400,
+        "after_prior_insert": 36846312
+      }
+    },
+    {
+      "case": 15,
+      "bytes": {
+        "first_cold_read": 884482,
+        "hit": 326144
+      }
+    },
+    {
+      "case": 16,
+      "bytes": {
+        "first_cold_read": 400840,
+        "hit": 427808
+      }
+    },
+    {
+      "case": 17,
+      "bytes": {
+        "first_cold_read": 535118,
+        "overlapping_cold_read": 229248,
+        "hit": 102528
+      }
+    },
+    {
+      "case": 18,
+      "bytes": {
+        "first_cold_read": 1592596,
+        "overlapping_cold_read": 356352,
+        "hit": 3948544,
+        "after_prior_insert": 1015808
+      }
+    },
+    {
+      "case": 19,
+      "bytes": {
+        "first_cold_read": 260162,
+        "hit": 117824
+      }
+    },
+    {
+      "case": 20,
+      "bytes": {
+        "first_cold_read": 1179648
+      }
+    },
+    {
+      "case": 21,
+      "bytes": {
+        "first_cold_read": 2355200,
+        "overlapping_cold_read": 1566720,
+        "hit": 7858176,
+        "after_prior_insert": 2007040
+      }
+    },
+    {
+      "case": 22,
+      "bytes": {
+        "first_cold_read": 213540,
+        "hit": 20736
+      }
+    },
+    {
+      "case": 23,
+      "bytes": {
+        "first_cold_read": 434122,
+        "overlapping_cold_read": 98304,
+        "hit": 182688
+      }
+    },
+    {
+      "case": 24,
+      "bytes": {
+        "first_cold_read": 395740,
+        "hit": 426584
+      }
+    },
+    {
+      "case": 25,
+      "bytes": {
+        "first_cold_read": 4122624,
+        "overlapping_cold_read": 110592
+      }
+    },
+    {
+      "case": 26,
+      "bytes": {
+        "first_cold_read": 756076,
+        "hit": 245512,
+        "overlapping_cold_read": 49152
+      }
+    },
+    {
+      "case": 27,
+      "bytes": {
+        "first_cold_read": 11169792,
+        "overlapping_cold_read": 446464,
+        "hit": 2848768
+      }
+    },
+    {
+      "case": 28,
+      "bytes": {
+        "first_cold_read": 21415296,
+        "overlapping_cold_read": 13608,
+        "hit": 36532440,
+        "after_prior_insert": 1887744
+      }
+    },
+    {
+      "case": 29,
+      "bytes": {
+        "first_cold_read": 290908
+      }
+    },
+    {
+      "case": 30,
+      "bytes": {
+        "first_cold_read": 2393088,
+        "overlapping_cold_read": 126464,
+        "hit": 7357952
+      }
+    },
+    {
+      "case": 31,
+      "bytes": {
+        "first_cold_read": 2184820,
+        "hit": 5389824,
+        "overlapping_cold_read": 202752,
+        "after_prior_insert": 2339328
+      }
+    },
+    {
+      "case": 32,
+      "bytes": {
+        "first_cold_read": 279156,
+        "hit": 12360
+      }
+    },
+    {
+      "case": 33,
+      "bytes": {
+        "first_cold_read": 2902064,
+        "hit": 3350112,
+        "overlapping_cold_read": 247296,
+        "after_prior_insert": 4272672
+      }
+    },
+    {
+      "case": 34,
+      "bytes": {
+        "first_cold_read": 2279984,
+        "hit": 3363840,
+        "overlapping_cold_read": 123904
+      }
+    },
+    {
+      "case": 35,
+      "bytes": {
+        "first_cold_read": 735118,
+        "overlapping_cold_read": 30272,
+        "hit": 287382
+      }
+    },
+    {
+      "case": 36,
+      "bytes": {
+        "first_cold_read": 3277952,
+        "overlapping_cold_read": 4608
+      }
+    },
+    {
+      "case": 37,
+      "bytes": {
+        "first_cold_read": 532480,
+        "overlapping_cold_read": 319488,
+        "hit": 622592
+      }
+    },
+    {
+      "case": 38,
+      "bytes": {
+        "first_cold_read": 2868234,
+        "hit": 4999680,
+        "overlapping_cold_read": 46080,
+        "after_prior_insert": 4399104
+      }
+    },
+    {
+      "case": 39,
+      "bytes": {
+        "first_cold_read": 4202496,
+        "overlapping_cold_read": 184320,
+        "hit": 8704000,
+        "after_prior_insert": 5648384
+      }
+    },
+    {
+      "case": 40,
+      "bytes": {
+        "first_cold_read": 1461576,
+        "hit": 708626,
+        "overlapping_cold_read": 41540,
+        "after_prior_insert": 2
+      }
+    },
+    {
+      "case": 41,
+      "bytes": {
+        "first_cold_read": 4948992,
+        "hit": 14481408,
+        "overlapping_cold_read": 258048,
+        "after_prior_insert": 25890816
+      }
+    },
+    {
+      "case": 42,
+      "bytes": {
+        "first_cold_read": 2372384,
+        "overlapping_cold_read": 79872,
+        "after_prior_insert": 2995200,
+        "hit": 6845280
+      }
+    },
+    {
+      "case": 43,
+      "bytes": {
+        "first_cold_read": 3309354,
+        "overlapping_cold_read": 282624,
+        "hit": 2220292,
+        "after_prior_insert": 438
+      }
+    },
+    {
+      "case": 44,
+      "bytes": {
+        "first_cold_read": 1062880,
+        "overlapping_cold_read": 114336,
+        "hit": 315104
+      }
+    },
+    {
+      "case": 45,
+      "bytes": {
+        "first_cold_read": 278528
+      }
+    },
+    {
+      "case": 46,
+      "bytes": {
+        "first_cold_read": 1511008,
+        "overlapping_cold_read": 308160,
+        "hit": 1564096
+      }
+    },
+    {
+      "case": 47,
+      "bytes": {
+        "first_cold_read": 1232934,
+        "overlapping_cold_read": 76866,
+        "hit": 648534
+      }
+    },
+    {
+      "case": 48,
+      "bytes": {
+        "first_cold_read": 820966,
+        "overlapping_cold_read": 108608,
+        "hit": 193304
+      }
+    },
+    {
+      "case": 49,
+      "bytes": {
+        "first_cold_read": 1374738,
+        "overlapping_cold_read": 11428,
+        "hit": 252404,
+        "after_prior_insert": 5248
+      }
+    },
+    {
+      "case": 50,
+      "bytes": {
+        "first_cold_read": 878088,
+        "overlapping_cold_read": 2368,
+        "hit": 148086
+      }
+    },
+    {
+      "case": 51,
+      "bytes": {
+        "first_cold_read": 393814,
+        "hit": 426122
+      }
+    },
+    {
+      "case": 52,
+      "bytes": {
+        "first_cold_read": 810044,
+        "hit": 270848,
+        "overlapping_cold_read": 62464
+      }
+    },
+    {
+      "case": 53,
+      "bytes": {
+        "first_cold_read": 4764410,
+        "overlapping_cold_read": 2938402,
+        "hit": 2628870,
+        "after_prior_insert": 28672
+      }
+    },
+    {
+      "case": 54,
+      "bytes": {
+        "first_cold_read": 4939436,
+        "overlapping_cold_read": 28322,
+        "hit": 988052,
+        "after_prior_insert": 1600
+      }
+    },
+    {
+      "case": 55,
+      "bytes": {
+        "first_cold_read": 625692,
+        "hit": 132096,
+        "overlapping_cold_read": 41472
+      }
+    },
+    {
+      "case": 56,
+      "bytes": {
+        "first_cold_read": 1916634,
+        "overlapping_cold_read": 17670,
+        "hit": 393488,
+        "after_prior_insert": 24576
+      }
+    },
+    {
+      "case": 57,
+      "bytes": {
+        "first_cold_read": 336588,
+        "overlapping_cold_read": 13824,
+        "hit": 576
+      }
+    },
+    {
+      "case": 58,
+      "bytes": {
+        "first_cold_read": 6623232,
+        "overlapping_cold_read": 6397952,
+        "after_prior_insert": 13721600,
+        "hit": 11984896
+      }
+    },
+    {
+      "case": 59,
+      "bytes": {
+        "first_cold_read": 1081344,
+        "overlapping_cold_read": 356352,
+        "hit": 1716224
+      }
+    },
+    {
+      "case": 60,
+      "bytes": {
+        "first_cold_read": 2098728,
+        "hit": 3049856,
+        "after_prior_insert": 684032
+      }
+    },
+    {
+      "case": 61,
+      "bytes": {
+        "first_cold_read": 546084,
+        "overlapping_cold_read": 3200,
+        "hit": 103296
+      }
+    },
+    {
+      "case": 62,
+      "bytes": {
+        "first_cold_read": 14436864,
+        "after_prior_insert": 672768
+      }
+    },
+    {
+      "case": 63,
+      "bytes": {
+        "first_cold_read": 5591040,
+        "hit": 59904,
+        "after_prior_insert": 336384
+      }
+    },
+    {
+      "case": 64,
+      "bytes": {
+        "first_cold_read": 77942,
+        "hit": 28498,
+        "overlapping_cold_read": 20256
+      }
+    },
+    {
+      "case": 65,
+      "bytes": {
+        "first_cold_read": 299720,
+        "hit": 46656,
+        "overlapping_cold_read": 9216
+      }
+    },
+    {
+      "case": 66,
+      "bytes": {
+        "first_cold_read": 2411414,
+        "overlapping_cold_read": 155206,
+        "hit": 757818,
+        "after_prior_insert": 23176
+      }
+    },
+    {
+      "case": 67,
+      "bytes": {
+        "first_cold_read": 12588416,
+        "overlapping_cold_read": 39168,
+        "hit": 78664320,
+        "after_prior_insert": 135256192
+      }
+    },
+    {
+      "case": 68,
+      "bytes": {
+        "first_cold_read": 4009382,
+        "overlapping_cold_read": 1220550,
+        "hit": 1261992,
+        "after_prior_insert": 4
+      }
+    },
+    {
+      "case": 69,
+      "bytes": {
+        "first_cold_read": 245494,
+        "overlapping_cold_read": 26982,
+        "hit": 91594
+      }
+    },
+    {
+      "case": 70,
+      "bytes": {
+        "first_cold_read": 419858,
+        "overlapping_cold_read": 184832,
+        "hit": 264192
+      }
+    },
+    {
+      "case": 71,
+      "bytes": {
+        "first_cold_read": 184518,
+        "hit": 82478,
+        "overlapping_cold_read": 42720
+      }
+    },
+    {
+      "case": 72,
+      "bytes": {
+        "first_cold_read": 11093006,
+        "overlapping_cold_read": 754688,
+        "hit": 20671832,
+        "after_prior_insert": 55818696
+      }
+    },
+    {
+      "case": 73,
+      "bytes": {
+        "first_cold_read": 4886912,
+        "overlapping_cold_read": 4455936,
+        "hit": 32072192,
+        "after_prior_insert": 57698816
+      }
+    },
+    {
+      "case": 74,
+      "bytes": {
+        "first_cold_read": 3776536,
+        "overlapping_cold_read": 409600,
+        "hit": 5152768,
+        "after_prior_insert": 1589248
+      }
+    },
+    {
+      "case": 75,
+      "bytes": {
+        "first_cold_read": 5141606,
+        "overlapping_cold_read": 1476870,
+        "hit": 2343504,
+        "after_prior_insert": 130
+      }
+    },
+    {
+      "case": 76,
+      "bytes": {
+        "first_cold_read": 4269056,
+        "overlapping_cold_read": 12288,
+        "hit": 16590848,
+        "after_prior_insert": 5708800
+      }
+    },
+    {
+      "case": 77,
+      "bytes": {
+        "first_cold_read": 2141260,
+        "hit": 172032
+      }
+    },
+    {
+      "case": 78,
+      "bytes": {
+        "first_cold_read": 3179136,
+        "overlapping_cold_read": 425736,
+        "hit": 8415960,
+        "after_prior_insert": 32256
+      }
+    },
+    {
+      "case": 79,
+      "bytes": {
+        "first_cold_read": 5812224,
+        "overlapping_cold_read": 927744,
+        "hit": 18540544,
+        "after_prior_insert": 14815232
+      }
+    },
+    {
+      "case": 80,
+      "bytes": {
+        "first_cold_read": 1904640,
+        "overlapping_cold_read": 524288,
+        "hit": 2158592,
+        "after_prior_insert": 364544
+      }
+    },
+    {
+      "case": 81,
+      "bytes": {
+        "first_cold_read": 1044820
+      }
+    },
+    {
+      "case": 82,
+      "bytes": {
+        "first_cold_read": 3012262,
+        "hit": 1510324,
+        "overlapping_cold_read": 287792,
+        "after_prior_insert": 132
+      }
+    },
+    {
+      "case": 83,
+      "bytes": {
+        "first_cold_read": 3120736,
+        "overlapping_cold_read": 2451424,
+        "hit": 1286560,
+        "after_prior_insert": 57344
+      }
+    },
+    {
+      "case": 84,
+      "bytes": {
+        "first_cold_read": 9927786
+      }
+    },
+    {
+      "case": 85,
+      "bytes": {
+        "first_cold_read": 14744134,
+        "hit": 6069874,
+        "overlapping_cold_read": 1136480,
+        "after_prior_insert": 29826
+      }
+    },
+    {
+      "case": 86,
+      "bytes": {
+        "first_cold_read": 1103734,
+        "overlapping_cold_read": 67588,
+        "hit": 418384
+      }
+    },
+    {
+      "case": 87,
+      "bytes": {
+        "first_cold_read": 5918684,
+        "hit": 5561856,
+        "after_prior_insert": 6925824
+      }
+    },
+    {
+      "case": 88,
+      "bytes": {
+        "first_cold_read": 2250844,
+        "overlapping_cold_read": 836288,
+        "hit": 269392,
+        "after_prior_insert": 196
+      }
+    },
+    {
+      "case": 89,
+      "bytes": {
+        "first_cold_read": 1016192,
+        "overlapping_cold_read": 672840,
+        "hit": 281608
+      }
+    },
+    {
+      "case": 90,
+      "bytes": {
+        "first_cold_read": 2793792,
+        "overlapping_cold_read": 2575152,
+        "hit": 4429008,
+        "after_prior_insert": 8448
+      }
+    },
+    {
+      "case": 91,
+      "bytes": {
+        "first_cold_read": 6709178,
+        "overlapping_cold_read": 1088512,
+        "hit": 41298432,
+        "after_prior_insert": 28300800
+      }
+    },
+    {
+      "case": 92,
+      "bytes": {
+        "first_cold_read": 10079840,
+        "overlapping_cold_read": 2880,
+        "hit": 3829312,
+        "after_prior_insert": 230400
+      }
+    },
+    {
+      "case": 93,
+      "bytes": {
+        "first_cold_read": 573440,
+        "overlapping_cold_read": 32768
+      }
+    },
+    {
+      "case": 94,
+      "bytes": {
+        "first_cold_read": 471328,
+        "overlapping_cold_read": 202752,
+        "hit": 222048
+      }
+    },
+    {
+      "case": 95,
+      "bytes": {
+        "first_cold_read": 8516508
+      }
+    },
+    {
+      "case": 96,
+      "bytes": {
+        "first_cold_read": 311668,
+        "overlapping_cold_read": 73728,
+        "hit": 172352
+      }
+    },
+    {
+      "case": 97,
+      "bytes": {
+        "first_cold_read": 4259840,
+        "overlapping_cold_read": 1222656,
+        "hit": 6270976,
+        "after_prior_insert": 13817856
+      }
+    },
+    {
+      "case": 98,
+      "bytes": {
+        "first_cold_read": 1027334,
+        "hit": 458812,
+        "overlapping_cold_read": 24582
+      }
+    },
+    {
+      "case": 99,
+      "bytes": {
+        "first_cold_read": 2993418,
+        "overlapping_cold_read": 45056,
+        "hit": 6119424
+      }
+    },
+    {
+      "case": 100,
+      "bytes": {
+        "first_cold_read": 852646,
+        "overlapping_cold_read": 65024,
+        "hit": 665156
+      }
+    }
+  ],
+  "sources": {
+    "图表\\runs\\20260924-A-q3-full-r02\\case_001\\5\\selected_l2.json.gz": "1e5fc7c67011af7e4a270fe403f4092c01a8292b18226ae7c53bdd2298c7c267",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_002\\5\\selected_l2.json.gz": "3f4f1ed2d88a2ef62f72318e4cc0b711f5a16a56d3ec424c545fb1476b1f65c1",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_003\\5\\selected_l2.json.gz": "b83b8aa0f6d27167fb1cd7edc5fb10186acc2640561e36de302a8adcac4f8abf",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_004\\5\\selected_l2.json.gz": "422a2f98859205f38eab9dc4da8d1540a5195f025feedb7b0b46c41f6f56d342",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_005\\5\\selected_l2.json.gz": "c7a574288d2553a4cc76dd2fc45f1dea6aac33826da97dda1f7e979cfd91c7ff",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_006\\5\\selected_l2.json.gz": "487c0edecadb36b00c983bf7ca8e5075346e027e86a13680a50f91086599331f",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_007\\5\\selected_l2.json.gz": "05461051a437fc33d47ef53fa7edb0721a214b76ef9702c5e0b924c2ac9d73e1",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_008\\5\\selected_l2.json.gz": "f9c694cbd03b1e4764af7d7cdba56208271f51362c4e2d335c066dd3c4a37dc9",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_009\\5\\selected_l2.json.gz": "b564dad85abc4190560280c44f0812eac8c86b9b8e98855a0d4f7abbd0c12165",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_010\\5\\selected_l2.json.gz": "a05db090e88e29d2d479ac2882f25867aa9ecb65a478b84b56e3f6dce5347e34",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_011\\5\\selected_l2.json.gz": "e9f510c9d9efa6b0c5be663b50a55fe57fc7a0c0ed3f3b3097133caa33734ff3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_012\\5\\selected_l2.json.gz": "36f4efd2fb25815574c10d599babb1abe6aa0225c9a9844826875af81d7c7da3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_013\\5\\selected_l2.json.gz": "8cb200e90d77bbe71d05ad1637b6e278baf6f60af29af0883d8d0d46a992444f",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_014\\5\\selected_l2.json.gz": "bfd71247e12da2db4439b6a73daf4e1ae637b939a14a58ea28612e2ec2206573",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_015\\5\\selected_l2.json.gz": "6cd472c9c76d39114ad914ba1a855fb73ecb5aa12adda5a1c1f42ca37ad7f0a1",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_016\\5\\selected_l2.json.gz": "3a9e6db88523c027b09c0615588e87939df8d273963ac81940151fa080c8ec26",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_017\\5\\selected_l2.json.gz": "12dc60c235d0b657ec22fafc1fd9dc48bf1eea2a7fd84bc8ace135555749d39a",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_018\\5\\selected_l2.json.gz": "34ac4002c654ba87abc010a0d903ec2e03913cba1ee839a99e7c76508bf7fc4a",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_019\\5\\selected_l2.json.gz": "fd0baf6af9bdc6e798d75116b31c6fe6e6ebd02055b35b6d48ec4eafb5b3cf91",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_020\\5\\selected_l2.json.gz": "ab78595fe71b87da4d49a801e89c7d4278afdee442c97758cf893a531a40e3a2",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_021\\5\\selected_l2.json.gz": "78af83802a5eec44fab75faf0840a7c46caf8be6b1721914b58da58c256a1661",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_022\\5\\selected_l2.json.gz": "aca0e8e5eb1a94f5bfe24f849853a96e5e9280d4ca4ea74f31275319b5cb7f84",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_023\\5\\selected_l2.json.gz": "02d11854d536f257bd471d347714310d7809a56a416fa6d37a5f97b74b30f84c",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_024\\5\\selected_l2.json.gz": "df62136f833f7e16cffef8f1b5cdbc8989b184152d3c132771aad9bc8e8c9fec",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_025\\5\\selected_l2.json.gz": "d954cd46a40b61f48bf14fc3b0eff0a874e3aee6a86d04a197837ef9d0768bdb",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_026\\5\\selected_l2.json.gz": "c423dc4de2bd3b17066a320c521f80e821148b7a29b7d158ba64667294aa7eb7",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_027\\5\\selected_l2.json.gz": "63d98e68813fa9629785302bb943bf8abbb2bd5c19c3524a43c6af1b52398fcb",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_028\\5\\selected_l2.json.gz": "f04b159b8fc4162ed103c0d362713ae322668280faf8fc9be4ac4ca0abfe2e9a",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_029\\5\\selected_l2.json.gz": "1e09e93c4fe0345effa97970f18f2d1edbaccdd71d21b9f964a1b343eecd5156",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_030\\5\\selected_l2.json.gz": "e55210abb94d8a7fa922545d53f97d205ff263445e1207431664c8d6d8819abd",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_031\\5\\selected_l2.json.gz": "fc9add9ccc2e0560b7c7ed229060f1bc0b5126349a41e035d1066ec4570d58ce",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_032\\5\\selected_l2.json.gz": "9ad0528a90adaf7222b10763ce118f03f70b8997419a8c9c7ffd84bd5bbfa44e",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_033\\5\\selected_l2.json.gz": "d8c8dc11e22073a46899e172958c9099e0580e0cc9f2fabc273141d8e65fbac5",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_034\\5\\selected_l2.json.gz": "dd1f84518ce832556934fa4692da0533cbec86128f5a6733ab1a860b17cb9c7d",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_035\\5\\selected_l2.json.gz": "56755998be82495edf7883fe4b98fb98bcb4a28552e15de7238044d0b7c3b75c",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_036\\5\\selected_l2.json.gz": "d32e2a3d7093a6b60915af77e8db730751845cbd0a9cdd52885fb61a5262df5d",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_037\\5\\selected_l2.json.gz": "8a62bf11203c40819bf659da110eef128419ce814d362e752ed65386a85d1f65",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_038\\5\\selected_l2.json.gz": "390e82b2701d80d4902fe05342055de69ba9aa40ca7feae4b4ea775c357c1287",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_039\\5\\selected_l2.json.gz": "0c4628ecb801a161c74079f5124b0b107f73f12dcf5f36e09b7792979bd2e425",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_040\\5\\selected_l2.json.gz": "83b7252ea16bbdb82d4fdc9e01d38f0d33462c86898ca8794cb92deb13a7c8d7",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_041\\5\\selected_l2.json.gz": "0eefbdb6d2c476b7f3eab843150fdc80321c9c72f870b4c0b67a2fad0d5844b5",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_042\\5\\selected_l2.json.gz": "45c7f6af118feed44485e38db7e8ad5475ee0ce220963d30c975975800b855d9",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_043\\5\\selected_l2.json.gz": "68b965b4378da3082fa91b6c3a9eca0d80a992468fe4788424e3fe96645463b4",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_044\\5\\selected_l2.json.gz": "0fed994e02e08d14f972cc283fd35c6f4d4390da6f63e3b7779b41b3f1d6e066",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_045\\5\\selected_l2.json.gz": "a44521072ea2e8769716149b0e43213d1895fe4c9eef72a258ba142a720733de",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_046\\5\\selected_l2.json.gz": "754ed89f4a3ba940f8ecd9cf903ec2994b869a5a598f5583f545a8c0b3ddf856",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_047\\5\\selected_l2.json.gz": "cb4002ec55e54a00d1361c9c3efdf7920b03d5b1ad967e19df5a8da5ca0ea7ae",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_048\\5\\selected_l2.json.gz": "23e895849c540f459c8e4c535f62be59a0835f462b69a51ce0dd309af1e35e78",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_049\\5\\selected_l2.json.gz": "2f65226aade2605ae6ed71da9a647de25a47290a72448c7a057ac46d19a2a8c3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_050\\5\\selected_l2.json.gz": "27bb8992df0ade63ef2368287fbfa011596af8519839c4e2c96745dbdcae74d3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_051\\5\\selected_l2.json.gz": "73c6c28e721983f2ca6af9510c9bb512ef5ae2387cf2c42861eb77b8abf738e4",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_052\\5\\selected_l2.json.gz": "07464f5231a98b7bba817de718d166a6f8530166bd8775cc95ac99ff08fc4943",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_053\\5\\selected_l2.json.gz": "5924dfe4a5ca5a9ffe48bf458e82dc63097f8ba1a121a28c881b2ce1ce88d4fe",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_054\\5\\selected_l2.json.gz": "b96530b66127d0184d620127484140023528df97dd774249bbb8721fac58ae5a",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_055\\5\\selected_l2.json.gz": "f1030536f406643db82908bd30b513252d497d0c58aaaa0eef93495549c94c8c",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_056\\5\\selected_l2.json.gz": "c1ff99afa2df52a2c7e3df010349bf93ad67458217626780c0f82a8e54464111",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_057\\5\\selected_l2.json.gz": "8f393ec3117ee567dc447930ce12f8d8fa55b58984376e85d9e56ed4c157d068",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_058\\5\\selected_l2.json.gz": "416182d4970170ff815e5ec425695cf7e2b3f1b16c5bb4113be381cecd259cb9",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_059\\5\\selected_l2.json.gz": "7877985bbc90a4f48e134bb5f2045e3c2559412ace95ca062f52e5ee6d2fc0f0",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_060\\5\\selected_l2.json.gz": "d38b0d7d51c3ff7dbd52a6c788399f6753d69131dcdbda1410d80fa4c9cf564b",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_061\\5\\selected_l2.json.gz": "705c6848ade4a5e515d54bd1b78267c9146085ab3fc8a5551c68f1c052046935",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_062\\5\\selected_l2.json.gz": "02d12f311f4529010f436899c1b6d17a55e11cada26e6b768227bdfc01dc6d0d",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_063\\5\\selected_l2.json.gz": "9d27a6b8885d4e9af5c420014a53e12c3e3916f558976b28050ee142cacfe952",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_064\\5\\selected_l2.json.gz": "a4744a806446141ccdd8617028adccebe51d4ca48f8609e3db52a4dbba80ee31",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_065\\5\\selected_l2.json.gz": "c5d509bdae0da3251c056c9721fcec19bbb2fef7227d4485dde2db81d789b268",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_066\\5\\selected_l2.json.gz": "1d27b529102a0ca6fc2aee2d0c7bdc5baab557077e19ad5340898decf38c747e",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_067\\5\\selected_l2.json.gz": "1d1a9f467d8d9905654c7a10e2db1909ebe219ff7aae0510107643d7c26660c3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_068\\5\\selected_l2.json.gz": "a7bf3cc1121bf4593aec653d100c468346aaf856ecd1b2e1f58d1a9e9bac1c6b",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_069\\5\\selected_l2.json.gz": "d85ac526a6c162b4c8d1cfa13307346485eeb675455406b2f791bf420e00d5ff",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_070\\5\\selected_l2.json.gz": "6029ebc6e03d924144dfa2c8e0b425cdb67c9fd27062b6cc94181090570ab21b",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_071\\5\\selected_l2.json.gz": "48d4f657409a3d37cd2b51a7fc92f850800f3c7016ad7f0b20aa32db8cce6971",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_072\\5\\selected_l2.json.gz": "c4d49e064c5bb2dcef61070458c4bfdefd4e31a858d46e459fefd1d715170c02",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_073\\5\\selected_l2.json.gz": "e96416c35971ae3e6120c97dd9da27433a3fcf4d05b1d8986dcb7fe66d0d2791",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_074\\5\\selected_l2.json.gz": "8482b4eb5d0a5b3c5a192a6b35ee564a6f3802feab402f248ef1f5650487bc66",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_075\\5\\selected_l2.json.gz": "31a99eaeaf08f29367464de91d74adfed09f8ff8a674be79546b599ccbbaa22a",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_076\\5\\selected_l2.json.gz": "fc01ff344744a6dbe6a09c7d5513ac45cfdabcb0cf19c6de9f16bee95982545b",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_077\\5\\selected_l2.json.gz": "088e49b12922fb99846df2a1e32c6ae134f16d7b73be3a396a17457d14d7b647",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_078\\5\\selected_l2.json.gz": "e33210609edb359510aa95bae9a924895551542030d18cb481223f35680396b9",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_079\\5\\selected_l2.json.gz": "168b09c9d8487820de8c9b78bfea051feeddfad11daa776158fa23649caf96df",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_080\\5\\selected_l2.json.gz": "20ced0bd86107e7125b7b651dfd61beaff6f1b2487c80453ded0b326138c294a",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_081\\5\\selected_l2.json.gz": "c08d394e1541d51d171070303f958003dcfb491d0b906940c78268f7720138e3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_082\\5\\selected_l2.json.gz": "4f88c8c05342bb84bd764936001928d234b8a9ed136ad5c0e66c848e23b44ac4",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_083\\5\\selected_l2.json.gz": "cac60bb24b4ed3b4f597393fe248a6ec032907d60bdac3fd716ad90818134fd5",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_084\\5\\selected_l2.json.gz": "afb8bbaf9534e54b67b8e6ae2cda8af4acac1c5ed42d9fdb111884dae82ff288",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_085\\5\\selected_l2.json.gz": "05b09b4e2a995f6f8774877fcd8b141b32977c3381c1ddd23a22f4dfaf0d52ba",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_086\\5\\selected_l2.json.gz": "8d5bf90ff3dc07b29ba81333a384adb9a23787be461652d34158a785703ef3e3",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_087\\5\\selected_l2.json.gz": "9e390f1402e17dd3bfb0130492a0a5ab120a787f56099ba1ac2d942455da6543",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_088\\5\\selected_l2.json.gz": "21c676ca333360a8ae95cdd0fd3ecfd9376840db4fe0d67e1c0e7b2e5a1d5407",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_089\\5\\selected_l2.json.gz": "379a02c20d08fc380782444755291c213b9767f9cce2b8d9283682c30f61498b",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_090\\5\\selected_l2.json.gz": "43bb89d6597abb99e6597eb0371de7be8f1462a94dca6ecc92b2587ac57673c0",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_091\\5\\selected_l2.json.gz": "ca5b9ebc887a718d0026ec1f3eccab34d74559bf30ab1bed702d7a1ad5e0bf2c",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_092\\5\\selected_l2.json.gz": "3c8f9b74fc295a822e213f020afab0a8760a41b3c9f6b5560a2d4778662ca579",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_093\\5\\selected_l2.json.gz": "d31259957f81303c152bfc82781c4362deb839e59a777ec70588e69e02f637dc",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_094\\5\\selected_l2.json.gz": "2f1f4193f255369accd3466a1970941dac50027ce506cbdea31be9ff3f38a1b9",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_095\\5\\selected_l2.json.gz": "4e42c62c4b268c5962db97115135428d27d7747f0318b443a4230ec565aa76cf",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_096\\5\\selected_l2.json.gz": "7aa0e6a26b8707f1f975dddbcd131ba568769b965db4c0c87a2680e67bf060c7",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_097\\5\\selected_l2.json.gz": "afcbdbe9949ae1a637d37e9c61c97ec6792f7a498e9339a9bcd79003b08ac292",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_098\\5\\selected_l2.json.gz": "653e8fbd4cd818dc67ad6a1c7d0326a824fd2f8b4a299788a150f475a7acf8c4",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_099\\5\\selected_l2.json.gz": "43b717e7fb75f7171554e71795aa83f1f36dcef0f3e2493b04df8d1806e6e3ec",
+    "图表\\runs\\20260924-A-q3-full-r02\\case_100\\5\\selected_l2.json.gz": "7768199fad21678e2df0f1f2116a97c2ec04d3cc09e5b510bbd996eec123de71"
+  }
+}
