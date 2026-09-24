@@ -1,0 +1,71 @@
+% 2026 format adaptation; compile with XeLaTeX. See README.md.
+\documentclass[12pt,withoutpreface,bwprint]{gmcmthesis}
+\makeatletter
+\def\@cite#1#2{\textsuperscript{[{#1\if@tempswa , #2\fi}]}}
+\makeatother
+\newcommand{\PaperTitle}{通用神经网络处理器的多核切图与调度优化}
+\newcommand{\PaperKeywords}{有向无环图划分；多处理器调度；离散事件仿真；共享缓存}
+% The official rules do not require a separate contents page; default off.
+\newif\ifgmcmtoc
+\gmcmtocfalse
+% This flag is managed by mm.py ai. A preview does not declare contest AI use.
+\newif\ifgmcmaidisclosure
+\gmcmaidisclosurefalse
+\setcounter{tocdepth}{3}
+\begin{document}
+% GMCM_COVER_START
+% Fill only these five cover fields. Keep identities out of the rest of the paper.
+\newcommand{\SchoolName}{}
+\newcommand{\TeamNumber}{}
+\newcommand{\MemberOne}{}
+\newcommand{\MemberTwo}{}
+\newcommand{\MemberThree}{}
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=west] at ([xshift=72mm,yshift=-133mm]current page.north west) {\zihao{4}\SchoolName};
+    \node[anchor=west] at ([xshift=72mm,yshift=-153.5mm]current page.north west) {\zihao{4}\TeamNumber};
+    \node[anchor=west] at ([xshift=75mm,yshift=-166.5mm]current page.north west) {\zihao{4}\MemberOne};
+    \node[anchor=west] at ([xshift=75mm,yshift=-178mm]current page.north west) {\zihao{4}\MemberTwo};
+    \node[anchor=west] at ([xshift=75mm,yshift=-189.4mm]current page.north west) {\zihao{4}\MemberThree};
+  \end{tikzpicture}}]{assets/official-cover-2026.pdf}
+% GMCM_COVER_END
+\pagenumbering{arabic}
+\label{AbstractStart}
+\begin{center}
+\vspace*{10mm}
+\includegraphics[width=123.5mm,height=31mm,keepaspectratio]{assets/official-heading-2026.pdf}\par
+\vspace{10mm}
+{\heiti\zihao{3}题目：\PaperTitle\par}
+\vspace{5mm}
+{\heiti\zihao{4}摘要：\par}
+\end{center}
+% GMCM_ABSTRACT_START
+\input{章节/0_abstract}
+% GMCM_ABSTRACT_END
+\par\medskip\noindent 关键词：\PaperKeywords\par
+\label{AbstractEnd}
+\clearpage
+\ifgmcmtoc\tableofcontents\clearpage\fi
+\label{BodyStart}
+% GMCM_BODY_START
+\input{章节/1_restatement}
+  \input{章节/2_analysis}
+  \input{章节/3_assumptions}
+  \input{章节/4_symbols}
+  % Actual question count and roles control the chapters; add/remove as needed.
+  \input{章节/5_problem1}
+  \input{章节/6_problem2}
+  \input{章节/7_problem3}
+  \input{章节/8_sensitivity}
+  \input{章节/9_evaluation}
+  \input{章节/references}
+% GMCM_BODY_END
+\label{BodyEnd}
+\clearpage
+\begin{appendices}
+\renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+\input{章节/A_code}
+\ifgmcmaidisclosure\input{章节/B_ai_disclosure}\fi
+\end{appendices}
+\end{document}

@@ -1,0 +1,18 @@
+\section{符号说明}
+\begin{table}[!htbp]\centering
+\caption{主要符号}\label{tab:symbols}
+\begin{tabularx}{\linewidth}{p{0.25\linewidth}X}
+\toprule
+符号 & 含义\\
+\midrule
+$G=(V,E)$，$V_c$ & 原计算 DAG 及其中的非 COPY 算子集合\\
+$\pi:V_c\to\{1,\ldots,q\}$ & 操作至子图的划分；$q$ 为子图数\\
+$m:\{1,\ldots,q\}\to\{1,\ldots,k\}$ & 子图至核心的映射；$\sigma_c$ 为核心 $c$ 上的合法顺序\\
+$p=(\pi,m,\sigma)$ & 一份完整调度方案；$\mathcal P_A,\mathcal P_B$ 为对应场景的合法方案集\\
+$T_i^{A}(p),T_i^{B}(p),T_i^{L2}(p)$ & 第 $i$ 图在三种语义下的官方完成周期\\
+$D_i(p)$ & 相对原始图 COPY 总量的逻辑额外搬运字节数\\
+$Q(t),C,b_D,b_L$ & 时刻 $t$ 的共享 FIFO 队列、L2 容量、DDR 与 L2 带宽\\
+$h_e,s_e,a_e,f_e$ & COPY 事件 $e$ 的命中标志、字节数、发射和完成时刻\\
+\bottomrule
+\end{tabularx}
+\end{table}
