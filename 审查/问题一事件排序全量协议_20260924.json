@@ -1,0 +1,90 @@
+{
+  "development": [
+    "case_058",
+    "case_039",
+    "case_072",
+    "case_009",
+    "case_100",
+    "case_040",
+    "case_028",
+    "case_067"
+  ],
+  "extension": [
+    "case_010",
+    "case_021",
+    "case_026",
+    "case_027",
+    "case_035",
+    "case_043",
+    "case_044",
+    "case_046",
+    "case_054",
+    "case_057",
+    "case_068",
+    "case_078",
+    "case_079",
+    "case_083",
+    "case_097",
+    "case_098"
+  ],
+  "local_development": [
+    "case_009",
+    "case_040",
+    "case_100"
+  ],
+  "server_development": [
+    "case_058",
+    "case_039",
+    "case_072",
+    "case_028",
+    "case_067"
+  ],
+  "local_extension": [
+    "case_010",
+    "case_026",
+    "case_035",
+    "case_057",
+    "case_098"
+  ],
+  "server_extension": [
+    "case_021",
+    "case_027",
+    "case_043",
+    "case_044",
+    "case_046",
+    "case_054",
+    "case_068",
+    "case_078",
+    "case_079",
+    "case_083",
+    "case_097"
+  ],
+  "development_variants": [
+    "routes_event_rank",
+    "routes_event_reuse"
+  ],
+  "extension_variants": [
+    "routes_event_reuse"
+  ],
+  "cores": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "seeds": [
+    0
+  ],
+  "budget": 12,
+  "workers": {
+    "local": 2,
+    "server": 14
+  },
+  "crossplatform_probe": {
+    "case": "case_009",
+    "cores": 2,
+    "variant": "routes_event_reuse",
+    "extra_server_run": true
+  },
+  "selection_rule": "event_reuse if exact cache equivalence and per-stage aggregate time and each-core mean speedup no worse than prior event_guarded and 028/067 no regression; otherwise gate_reuse after equivalence check; no per-case oracle selection"
+}

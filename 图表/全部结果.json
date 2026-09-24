@@ -1295,5 +1295,174 @@
       "search_over_600": [],
       "scope": "16 workers; search excludes fixed-single cold generation and final original replay; comparison records per-run values, not speed guarantee"
     }
+  },
+  "q1_event_ranking_full100_20260924": {
+    "status": "completed_experimental_not_formal_default",
+    "variant": "routes_gate_reuse",
+    "report": "图表/runs/20260924-A-q1-event-ranking-full100/report.md",
+    "cases": 100,
+    "configurations": 400,
+    "mean_speedup": [
+      1,
+      1.8349172085192071,
+      2.54623792713394,
+      3.1610089647895614,
+      3.665902693939215
+    ],
+    "per_core": [
+      {
+        "cores": 2,
+        "mean_speedup": 1.8349172085192071,
+        "old_mean_speedup": 1.8143489159580755,
+        "reference_mean_speedup": 1.833900713364713,
+        "total_cycles": 158746394,
+        "reference_total_cycles": 162740573,
+        "reference_time_reduction_pct": 2.4543228073800605,
+        "added_bytes": 1972107414,
+        "vs_old": {
+          "count": 100,
+          "wins": 9,
+          "ties": 91,
+          "losses": 0,
+          "time_reduction_pct": 0.995792902292969,
+          "added_reduction_pct": 8.225992895578427
+        },
+        "reference_wins": 31,
+        "reference_ties": 31,
+        "reference_losses": 38,
+        "old_added_bytes": 2148873604,
+        "reference_added_bytes": 1677898386
+      },
+      {
+        "cores": 3,
+        "mean_speedup": 2.54623792713394,
+        "old_mean_speedup": 2.481664517259766,
+        "reference_mean_speedup": 2.5473944171191025,
+        "total_cycles": 109880862,
+        "reference_total_cycles": 115450560,
+        "reference_time_reduction_pct": 4.8243144078296325,
+        "added_bytes": 1848970300,
+        "vs_old": {
+          "count": 100,
+          "wins": 16,
+          "ties": 83,
+          "losses": 1,
+          "time_reduction_pct": 1.6807018869077317,
+          "added_reduction_pct": 16.659839935678722
+        },
+        "reference_wins": 39,
+        "reference_ties": 27,
+        "reference_losses": 34,
+        "old_added_bytes": 2218582612,
+        "reference_added_bytes": 1673182336
+      },
+      {
+        "cores": 4,
+        "mean_speedup": 3.1610089647895614,
+        "old_mean_speedup": 3.0717973382279005,
+        "reference_mean_speedup": 3.1625774732317504,
+        "total_cycles": 86330529,
+        "reference_total_cycles": 92078188,
+        "reference_time_reduction_pct": 6.242150421118186,
+        "added_bytes": 1764926118,
+        "vs_old": {
+          "count": 100,
+          "wins": 21,
+          "ties": 78,
+          "losses": 1,
+          "time_reduction_pct": 2.7518763630551057,
+          "added_reduction_pct": 23.016971190356784
+        },
+        "reference_wins": 28,
+        "reference_ties": 35,
+        "reference_losses": 37,
+        "old_added_bytes": 2292617146,
+        "reference_added_bytes": 1707728240
+      },
+      {
+        "cores": 5,
+        "mean_speedup": 3.665902693939215,
+        "old_mean_speedup": 3.545442821443056,
+        "reference_mean_speedup": 3.651513346924406,
+        "total_cycles": 73170501,
+        "reference_total_cycles": 78825871,
+        "reference_time_reduction_pct": 7.174510003194257,
+        "added_bytes": 1767728284,
+        "vs_old": {
+          "count": 100,
+          "wins": 22,
+          "ties": 78,
+          "losses": 0,
+          "time_reduction_pct": 3.667808909101289,
+          "added_reduction_pct": 23.261092799460403
+        },
+        "reference_wins": 36,
+        "reference_ties": 28,
+        "reference_losses": 36,
+        "old_added_bytes": 2303561972,
+        "reference_added_bytes": 1746883238
+      }
+    ],
+    "event_pool_ranking_adopted": false,
+    "preparation_reuse_serial_observed_reduction_pct": 0.39812484499673895,
+    "regressions": [
+      {
+        "case": "case_006",
+        "cores": 3,
+        "before": 31819,
+        "after": 32925
+      },
+      {
+        "case": "case_006",
+        "cores": 4,
+        "before": 31094,
+        "after": 31129
+      }
+    ],
+    "budget": {
+      "logical_search_scores": 4400,
+      "fixed_single_references": 400,
+      "reused_complete_validation_records": 0,
+      "new_full_search_scores": 4400,
+      "final_original_replays_in_selected_records": 16,
+      "additional_diagnostics": {
+        "v1_validation_runs": 129,
+        "v1_search_calls": 1419,
+        "v2_probe_runs": 26,
+        "v2_probe_search_calls": 286,
+        "total_additional_search_calls": 1705
+      }
+    },
+    "audit": {
+      "status": "PASS_computational_checks_only_not_formal_stage_gate",
+      "case_core_unique": 400,
+      "fixed_single_cases": 100,
+      "scenario": "A",
+      "uniform_variant": "routes_gate_reuse",
+      "all_result_and_input_hashes_checked": true,
+      "all_outputs_positive_and_at_most_fixed_single": true,
+      "all_added_bytes_equal_partition_plus_spill": true,
+      "all_12_opportunities_and_protected_grains": true,
+      "single_core_metric": 1,
+      "mean_speedup_definition": "mean over100 cases of T1/Tk",
+      "seed": 0,
+      "unit_tests_local": 100,
+      "unit_tests_server": 100,
+      "diagnostic_runs": 155,
+      "formal_runs": 400,
+      "actual_search_full_evaluations": 6105,
+      "diagnostic_original_final_replays": 59,
+      "formal_original_final_replays": 16,
+      "strict_original_final_reuse": 480,
+      "formal_search_over_600": 0,
+      "formal_max_search_seconds": 363.85866411589086,
+      "host_wall_seconds": {
+        "local": 104.2462746000383,
+        "server": 1489.3166961874813
+      },
+      "all_config_total_cycles_reduction_pct": 1.9925036063563106,
+      "default_or_main_changed": false,
+      "official_source_hash": "3112331344df7dcf2dcef2ff5f789669c0419e32cefbbc6e2742b9e36d5c43c9"
+    }
   }
 }

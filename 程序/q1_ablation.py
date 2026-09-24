@@ -158,5 +158,9 @@ def main():
     write_json(out / 'summary.json', summary)
 
 
+CONFIGS['routes_event_rank'] = CONFIGS['routes_event_guarded'] + ['event_seed_rank']
+CONFIGS['routes_event_reuse'] = CONFIGS['routes_event_rank'] + ['preparation_reuse']
+CONFIGS['routes_gate_reuse'] = CONFIGS['routes_event_guarded'] + ['preparation_reuse']
+
 if __name__ == '__main__':
     main()
