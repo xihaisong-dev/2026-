@@ -1477,5 +1477,396 @@
     "academic_name": "考虑共享DDR与缓存约束的有向无环图划分—多处理器调度组合优化模型",
     "canonical_model_family": "有向无环图划分与带前驱约束的多处理器调度组合优化",
     "solver_algorithm": "结构感知初始划分、关键路径调度与预算保护的有界启发式搜索"
+  },
+  "q2_current_main_r02": {
+    "status": "pilot_complete_not_full100",
+    "validation_gate": false,
+    "full100": false,
+    "question": "Q2",
+    "report": "审查/问题二基于当前main的首轮验证_r02.md",
+    "run": "图表/runs/20260924-A-q2-main-r02",
+    "evidence_sha256": "3b4b2fc3fa15cb0bb779647929d5a4210a9ecbafe4be9cd263594c4dc4d87a7e",
+    "q1_unchanged": true
+  },
+  "q2_controls_r03": {
+    "run": "图表/runs/20260924-A-q2-controls-r03",
+    "decision": {
+      "status": "not_promoted",
+      "passing_challenges": [],
+      "full100": false,
+      "audit": {
+        "runs": 120,
+        "search_slots": 1248,
+        "search_calls": 1101,
+        "cache_hits": 147,
+        "final_replays": 120,
+        "full100": false
+      },
+      "invalid_candidates": [],
+      "diagnostic_seconds": 27.330827640369534,
+      "q1_unchanged": true,
+      "r02_sources_unchanged": true,
+      "tests_passed": 13,
+      "placement_diagnostics": {
+        "development": {
+          "changed_plan_slots": 7,
+          "win": 2,
+          "tie": 1,
+          "loss": 4,
+          "invalid": 0
+        },
+        "confirmation": {
+          "changed_plan_slots": 1,
+          "win": 0,
+          "tie": 0,
+          "loss": 1,
+          "invalid": 0
+        }
+      },
+      "repair_diagnostics": {
+        "development": {
+          "j_ordinary": {
+            "improved_over_base": 3,
+            "tied_base": 9
+          },
+          "j_mixed": {
+            "improved_over_base": 4,
+            "tied_base": 8
+          },
+          "j_guided": {
+            "improved_over_base": 5,
+            "tied_base": 7
+          }
+        },
+        "confirmation": {
+          "j_ordinary": {
+            "improved_over_base": 4,
+            "tied_base": 8
+          },
+          "j_mixed": {
+            "improved_over_base": 3,
+            "tied_base": 9
+          },
+          "j_guided": {
+            "improved_over_base": 0,
+            "tied_base": 12
+          }
+        }
+      },
+      "crossround_shared_development": [
+        {
+          "case": 12,
+          "cores": 2,
+          "old": 25535,
+          "reference_heft": 26375,
+          "ratio": 0.9681516587677725,
+          "outcome": "loss"
+        },
+        {
+          "case": 12,
+          "cores": 3,
+          "old": 18128,
+          "reference_heft": 17704,
+          "ratio": 1.0239493899683687,
+          "outcome": "win"
+        },
+        {
+          "case": 12,
+          "cores": 4,
+          "old": 14948,
+          "reference_heft": 14689,
+          "ratio": 1.0176322418136021,
+          "outcome": "win"
+        },
+        {
+          "case": 12,
+          "cores": 5,
+          "old": 12519,
+          "reference_heft": 13302,
+          "ratio": 0.9411366711772666,
+          "outcome": "loss"
+        },
+        {
+          "case": 48,
+          "cores": 2,
+          "old": 158327,
+          "reference_heft": 150049,
+          "ratio": 1.0551686449093296,
+          "outcome": "win"
+        },
+        {
+          "case": 48,
+          "cores": 3,
+          "old": 150551,
+          "reference_heft": 114626,
+          "ratio": 1.3134105700277423,
+          "outcome": "win"
+        },
+        {
+          "case": 48,
+          "cores": 4,
+          "old": 156242,
+          "reference_heft": 114384,
+          "ratio": 1.365942789201287,
+          "outcome": "win"
+        },
+        {
+          "case": 48,
+          "cores": 5,
+          "old": 147369,
+          "reference_heft": 101641,
+          "ratio": 1.4498971871587254,
+          "outcome": "win"
+        },
+        {
+          "case": 50,
+          "cores": 2,
+          "old": 96256,
+          "reference_heft": 87435,
+          "ratio": 1.100886372734031,
+          "outcome": "win"
+        },
+        {
+          "case": 50,
+          "cores": 3,
+          "old": 60421,
+          "reference_heft": 60421,
+          "ratio": 1.0,
+          "outcome": "tie"
+        },
+        {
+          "case": 50,
+          "cores": 4,
+          "old": 57912,
+          "reference_heft": 57912,
+          "ratio": 1.0,
+          "outcome": "tie"
+        },
+        {
+          "case": 50,
+          "cores": 5,
+          "old": 57909,
+          "reference_heft": 57017,
+          "ratio": 1.0156444569163583,
+          "outcome": "win"
+        }
+      ],
+      "report_sha256": "d321715cbfedd62b40e46080e5007db12db1344e1a5ccb78b1087f9a7949ff50"
+    },
+    "report": "审查/问题二初解与J同预算对照_r03.md"
+  },
+  "q2_compliance_route_r04": {
+    "hard_constraints_audit": "PASS_ON_AUDITED_EVIDENCE",
+    "full_deliverables": "NOT_COMPLETE",
+    "route_confirmation_gate": true,
+    "full100": false,
+    "default_changed": false,
+    "q1_unchanged": true,
+    "audit": {
+      "final_replays": 72,
+      "slots": 864,
+      "actual_search_calls": 783,
+      "cache_hits": 81,
+      "full100": false
+    },
+    "tests_passed": 14,
+    "audit_report": "审查/问题二建模解算要求审核_r04.md",
+    "experiment_report": "审查/问题二结构准入对照_r04.md",
+    "sources": [
+      {
+        "path": "程序/q2_requirements_audit.py",
+        "sha256": "e982d9162ea4e65e5673b40c000a83b01b3eb69c38a708b71ca8862e0088e777",
+        "lines": 97
+      },
+      {
+        "path": "程序/q2_structural_route.py",
+        "sha256": "1f629991c4a4733b2149d411fa6fbcbeb870c27ce7848e33dba7d6c576efc649",
+        "lines": 32
+      },
+      {
+        "path": "程序/q2_route_campaign.py",
+        "sha256": "650c22c7e960d3c56c47107629c67d99c034f6d00d91e05f947947b497ee95b0",
+        "lines": 97
+      },
+      {
+        "path": "程序/q2_route_finalize.py",
+        "sha256": "2889581d0404fc6a6ba9dfcf2c6faf71e63987178e71629717ba752b8cca4afc",
+        "lines": 33
+      },
+      {
+        "path": "程序/tests/test_q2_structural_route.py",
+        "sha256": "02f25002a572204c56b2c13ace6b2c7edcdd8c8d95b47cdf9356517e3f5052f1",
+        "lines": 23
+      }
+    ],
+    "audit_evidence_sha256": "d41681c0dd8a9fbb4d2e510e3aea119b80865216bf985c4098aaefc5f95f16e6"
+  },
+  "q2_full_r05": {
+    "status": "full100_computational_evidence_checked_not_formal_acceptance",
+    "selected": "routed",
+    "summary": {
+      "status": "full100_evaluated",
+      "curves": {
+        "legacy": {
+          "1": 1.0,
+          "2": 1.9677190480198021,
+          "3": 2.7894089888489644,
+          "4": 3.4976045082593665,
+          "5": 4.099257283111167
+        },
+        "routed": {
+          "1": 1.0,
+          "2": 1.9784171143080242,
+          "3": 2.8078714845171224,
+          "4": 3.549551018742047,
+          "5": 4.150022191664851
+        }
+      },
+      "geomean_ratio": 1.0131669014203342,
+      "outcomes": {
+        "win": 71,
+        "tie": 313,
+        "loss": 16
+      },
+      "gate": true,
+      "selected_global_algorithm": "routed",
+      "audit": {
+        "final_replays": 800,
+        "search_slots": 9600,
+        "actual_search_calls": 8306,
+        "cache_hits": 1294,
+        "pilot_concordance": 48,
+        "invalid_candidates": []
+      },
+      "totals": {
+        "legacy": {
+          "bytes": 4324578472,
+          "solve_seconds": 16013.143173096702
+        },
+        "routed": {
+          "bytes": 4387116718,
+          "solve_seconds": 16070.070294074714
+        }
+      }
+    },
+    "audit_path": "图表/runs/20260924-A-q2-full-r05/full_audit.json",
+    "audit_sha256": "2cb48024e20a4fa1ac9d096d3745830183457f55859c109b6a544cd70de8e4e8",
+    "delivery_manifest": "图表/runs/20260924-A-q2-full-r05/delivery/manifest.json",
+    "q1_unchanged": true,
+    "formal_stage_advanced": false,
+    "old_default_changed": false
+  },
+  "q2_diagnosis_r06": {
+    "status": "diagnostic_candidate_not_promoted",
+    "report": "审查/问题二结构准入退步诊断_r06.md",
+    "summary": {
+      "status": "posthoc_pilot_complete_not_independent_confirmation",
+      "curves": {
+        "routed": {
+          "1": 1.0,
+          "2": 1.7069227735403503,
+          "3": 2.2068193478649154,
+          "4": 2.576430935347828,
+          "5": 2.7797447768548604
+        },
+        "reserve": {
+          "1": 1.0,
+          "2": 1.7261787499644297,
+          "3": 2.26283450216157,
+          "4": 2.585509143499219,
+          "5": 2.850830960627523
+        }
+      },
+      "totals": {
+        "routed": {
+          "bytes": 47926994,
+          "official_calls": 585,
+          "cache_hits": 87,
+          "solve_seconds": 852.4860751610249,
+          "replay_seconds": 51.97751625068486
+        },
+        "reserve": {
+          "bytes": 49194148,
+          "official_calls": 643,
+          "cache_hits": 29,
+          "solve_seconds": 1030.7571450639516,
+          "replay_seconds": 56.435801891610026
+        }
+      },
+      "geomean_ratio": 1.0236467278744361,
+      "outcomes": {
+        "win": 13,
+        "tie": 43,
+        "loss": 0
+      },
+      "per_core_gate": true,
+      "original_16_losses_recovered": 13,
+      "actual_replays": 112,
+      "search_slots": 1344,
+      "default_changed": false
+    },
+    "checks_sha256": "2d2e4e7a5ef31d63627624f4a6ba63ab4476325f5ecd987ad1d9230cc604fded",
+    "sources": {
+      "q2_route_diagnosis.py": "41a0d0c2be5c8a079c40f33ded6b4a8767f1b109af114026e46e5d5dd82bc23d",
+      "q2_reserve_gate.py": "6b8b6a22adb24747af1071a5ee9e3e51efd7fdf3cb68f52ea7060399e78d318c",
+      "q2_reserve_campaign.py": "8e775f3272ed01a2682b58f6e2b6833afdbb255789cc624ca2a242d91fa761e1",
+      "q2_reserve_campaign_v2.py": "3df1569764c0c4dcb3c261f197dfafdf433a38fc2df9af49f0287854eb4e1b21",
+      "q2_reserve_counterfactual.py": "9f5dcc12f6777ad79403abc8ed9e7365526dc57e009052df8291ad576cbbcf4d",
+      "q2_diagnosis_report.py": "02ab35459288c4391722b8152ab9459553da5c175d7215db3fe1ca1c959d857d"
+    }
+  },
+  "q2_overhead_r07": {
+    "status": "completed_not_promoted",
+    "report": "审查/问题二开销优化与新样本检验_r07.md",
+    "summary_sha256": "ad2f75ebee4bb95d2ac2202561cf3cf7d9a5c36f0cf579fdbfd11d8b574eb94b",
+    "checks_sha256": "006581b42161c1359a35775174855daf925e6bac93c51a08b27ba50ff2039e7b",
+    "sources": {
+      "q2_overhead_diagnosis.py": "5b3f7ddcb40e548afb10c11438a20539e13deae02faced71663a04a82a6a7b2b",
+      "q2_reserve_fast.py": "a08c04326fd22b5b2a73de0e237beb6d8f9e41e50ad72cf1f167e5ce98e8f0ec",
+      "q2_overhead_campaign.py": "c1bad8f5bc8cc474db23c13ab782a426f7d57e21e8b474da15859a1a72c240a5",
+      "q2_overhead_finalize.py": "ddde070b9a4fc9cb0dcb37e32effc1bf334e2754801a6416ae2afe6de62ef8b1"
+    }
+  },
+  "q2_full_shared_r08": {
+    "status": "full100_confirmed_shared_pilot_checked_not_promoted",
+    "report": "审查/问题二r07全量确认与共享准备_r08.md",
+    "summary_sha256": "d6c6962faf9af31f82175901633a3109d1cc19c88c1f407a496f522cf0756230",
+    "checks_sha256": "4ec6926dd8e13a27c911b85e2f355364968cb7b309cb48d1f48063cd7b10c618",
+    "sources": {
+      "q2_reserve_shared.py": "df034fd81a1605478d3f13e3201db11878c8bed0a8787d892f26cf2ab9f3b114",
+      "q2_full_r07_campaign.py": "c08dd6fc1d4de55017b0dc392cd4b0c08ee936bc6e475099f8a50e40da74f35a",
+      "q2_full_r07_finalize.py": "8f8f435fc92e8b1a97fe51de536290d7fef5eb55629a63c36d61e17e28586617",
+      "tests/test_q2_shared_preparation.py": "eb83444511663751de019c515d63b6e0443261218f8992943afcf10409e7ae94"
+    }
+  },
+  "q2_current_delivery_r07": {
+    "status": "COMPUTATIONAL_DELIVERY_VERIFIED",
+    "algorithm": "r07_reserve_fast",
+    "entry": "程序/q2_current_submit.py",
+    "report": "审查/问题二r07计算提交与复现.md",
+    "delivery": "图表/runs/20260924-A-q2-delivery-r07",
+    "full_run": "图表/runs/20260924-A-q2-full-r07-shared-r08",
+    "package": {
+      "path": "output/q2-r07-portable.zip",
+      "sha256": "f42e51fd3dac0e4ad04d2cc3428beed844db42cac2047af8f69036e38657d04e",
+      "bytes": 33262077
+    },
+    "verification": "审查/证据/20260924-A-q2-delivery-r07/reproduction.json",
+    "curves": {
+      "1": 1.0,
+      "2": 1.9811129510073953,
+      "3": 2.815713606118654,
+      "4": 3.550821967883242,
+      "5": 4.159974257393023
+    },
+    "formal_manuscript_accepted": false,
+    "sources": {
+      "q2_current_submit.py": "a38a86134951a5c8783bb897188fd1db6cb3ac5cc9a7525894ad7b2c7252e0b8",
+      "q2_r07_submit.py": "745f4bb047e41adf7ea8152fa25cae479742676ca4b24f41b6634cd69495a97b",
+      "q2_r07_reproduce.py": "1c0fad2a32b72979ad64de48dea14a25465bfd964944c97c3d04ef7cd65d6781",
+      "q2_reserve_fast.py": "a08c04326fd22b5b2a73de0e237beb6d8f9e41e50ad72cf1f167e5ce98e8f0ec",
+      "q2_delivery_r07.py": "18ff04c5a205a0074054fcf6d26a2ac318d23815b433461afa49b5346d600cae",
+      "q2_package_r07.py": "d5490698486cf84130a6df6bc0a6ee70a0ad4405d4a663a637c81da220d718ab"
+    }
   }
 }

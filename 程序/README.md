@@ -388,3 +388,32 @@ python 程序/q1_global_calibration_report.py --run 图表/runs/20260924-A-q1-gl
 ```
 
 output必须不存在。正式批次完整命令、冻结源与日志见该run的`execution.json`、`launch.py`和`runs/*/source_snapshot`。报告以`global-calibration-analysis-v2`为准，中间版尚未将未评分提议从实际预算消耗中区分。
+
+
+## 问题二当前main首轮原型
+
+输入必须由当前原始附件经 q1_io 审计。目录名 q1 不代表共享场景A评分。`q2_submit.py graph.json -n 4 --migration Q1_plan.json --output new_dir` 提供标准输出；迁移计划可省略，使用合法整图回退。候选始终由官方B重新评价，固定单核分母默认用Q1已验证的精确计数引擎重新计算，`--reference-backend official` 可用原入口核对。没有复用A多核成绩。
+
+`--mode base|ordinary|guided` 分别为8基础机会、基础加4普通J、基础加4诊断J；guided仍在首轮验证，不视为已采用。`q2_main_campaign.py freeze|development|validation|scale` 为固定协议入口；大图使用 `q2_large_campaign.py scale --case 14` 等执行补充协议，仅加速等价单核分母。相同输出不覆盖；输入、配置、官方版本和完整计划共同限定B缓存。
+
+差异和模型见问题分析.md、建模报告.md末尾；每组search.json区分迁移、结构候选、J、命中及实际官方调用。task执行cycles、额外搬运bytes和求解seconds严格分开。Q1冻结源码及成绩保持不变。
+
+
+### Q2 r03 隔离对照
+
+`python 程序/q2_controls_campaign.py freeze` 冻结新实验；`run --phase development --case 12` 等运行单图；`report` 汇总全部120份方案；`python 程序/q2_controls_finalize.py` 格式化并索引。运行目录固定为20260924-A-q2-controls-r03且禁止覆盖，复现需独立副本/新版本OUT。placement两组8机会，J三组12机会，各类内同预算；不将两类预算混作因果对照。完整来源和版本见contract.json及source_manifest.json。
+
+
+### Q2 r04 审计与结构准入
+
+`q2_requirements_audit.py`只读核查历史方案并另存标准名样本导出；当前OUT-v2已存在，复现须新目录。`q2_route_campaign.py freeze`冻结，`run --phase development --case 12`等运行，`report`汇总；`q2_route_finalize.py`登记证据。每组12机会，路由仅可替换第7/8机会，J仍普通4次。所有输出禁止覆盖，当前默认q2_submit未改。
+
+
+### Q2 r05 全量复现
+
+新入口`q2_r05_submit.py`读取固定全量决策；传入`--migration`复现共同预生成种子的对照，省略时从原图生成Q1种子并单独记录额外12次A机会及耗时。旧`q2_submit.py`默认保持历史版本。完整命令和时间口径见`output/q2-r05-portable/README.md`，先运行包内`verify_package.py`。全量800结果、400选定方案容量核验及500行指标见`图表/runs/20260924-A-q2-full-r05/`。
+
+
+### Q2 当前入口 r07
+
+当前计算交付切换到`q2_current_submit.py`；单例支持-n 1至5及可选--migration。批量入口`q2_r07_reproduce.py`默认100图×1至5核，--workers 1串行；输出须新目录。完整命令、冷启动与冻结种子口径见`output/q2-r07-portable/README.md`，包内先运行verify_package.py。历史入口与结果保留。

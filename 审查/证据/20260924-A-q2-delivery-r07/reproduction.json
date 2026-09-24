@@ -1,0 +1,125 @@
+{
+  "status": "PASS",
+  "scope": "portable package sampled reproducibility; full100 evidence audited separately",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "archive_sha256": "f42e51fd3dac0e4ad04d2cc3428beed844db42cac2047af8f69036e38657d04e",
+  "commands": [
+    {
+      "label": "manifest",
+      "command": [
+        "python",
+        "verify_package.py"
+      ],
+      "working_directory": "extracted q2-r07-portable",
+      "returncode": 0,
+      "seconds": 8.546593900071457
+    },
+    {
+      "label": "batch-single",
+      "command": [
+        "python",
+        "程序/q2_r07_reproduce.py",
+        "--cases",
+        "1",
+        "--cores",
+        "1",
+        "--workers",
+        "1",
+        "--output",
+        "batch-single"
+      ],
+      "working_directory": "extracted q2-r07-portable",
+      "returncode": 0,
+      "seconds": 1.1989315000828356
+    },
+    {
+      "label": "cold-001-2",
+      "command": [
+        "python",
+        "程序/q2_current_submit.py",
+        "数据/processed/q1/data/case_001.json",
+        "-n",
+        "2",
+        "--output",
+        "cold-001-2"
+      ],
+      "working_directory": "extracted q2-r07-portable",
+      "returncode": 0,
+      "seconds": 2.21952769998461
+    },
+    {
+      "label": "seeded-005-5",
+      "command": [
+        "python",
+        "程序/q2_current_submit.py",
+        "数据/processed/q1/data/case_005.json",
+        "-n",
+        "5",
+        "--migration",
+        "图表/runs/20260924-A-q1-delivery-r02/solutions/5cores/case_005_multicore_res.json",
+        "--output",
+        "seeded-005-5"
+      ],
+      "working_directory": "extracted q2-r07-portable",
+      "returncode": 0,
+      "seconds": 19.200051399995573
+    },
+    {
+      "label": "official-cli",
+      "command": [
+        "python",
+        "数据/processed/q1/code/multicore_cut_evaluate_problem_2.py",
+        "数据/processed/q1/data/case_005.json",
+        "seeded-005-5/case_005_multicore_res.json",
+        "--config",
+        "数据/processed/q1/data/config.txt",
+        "-o",
+        "direct-official/result.json",
+        "--trace-output",
+        "direct-official/trace.json",
+        "--log-output",
+        "direct-official/log.txt"
+      ],
+      "working_directory": "extracted q2-r07-portable",
+      "returncode": 0,
+      "seconds": 0.8098034000722691
+    }
+  ],
+  "checks": [
+    {
+      "case": 1,
+      "cores": 1,
+      "plan_equal": true,
+      "full_official_result_equal": false,
+      "single_metrics_equal": true
+    },
+    {
+      "case": 1,
+      "cores": 2,
+      "plan_equal": true,
+      "full_official_result_equal": true,
+      "single_metrics_equal": false
+    },
+    {
+      "case": 5,
+      "cores": 5,
+      "plan_equal": true,
+      "full_official_result_equal": true,
+      "single_metrics_equal": false
+    }
+  ],
+  "direct_official_full_result_equal": true,
+  "resource_snapshot": {
+    "host": "LAPTOP-5AB30HJG",
+    "python": "3.12.14",
+    "logical_cpus": 32,
+    "cpu_idle_fraction": 0.9535113748763601,
+    "total_gib": 15.29739761352539,
+    "available_gib": 2.4224777221679688,
+    "reserve_gib": 1.5297397613525392,
+    "assumed_peak_worker_gib": 2.0,
+    "disk_free_gib": 164.9263916015625,
+    "recommended_workers": 0,
+    "timestamp_utc": "2026-09-24T07:55:48Z"
+  }
+}

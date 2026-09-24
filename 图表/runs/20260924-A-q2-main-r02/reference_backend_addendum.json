@@ -1,0 +1,22 @@
+{
+  "backend": "indexed-counter-v3:2095f188a6c24ce3899f156bef21d50dcd87cbd9368488046b1e77e2bf91af3f",
+  "scope": "Recompute prescribed fixed single-core reference only; no B evaluator/search changes",
+  "sources": {
+    "q2_single_reference.py": "4b7b79badfd0afbc3276b67f115291f607c0c013add92fffe9bc7ed5e96e7781",
+    "q2_large_campaign.py": "6dc0d223f7f6ddf2be860e051d72726f71b0346a9270c0650b55c25d25a22b7e",
+    "q1_fast_evaluator.py": "bd8670fd0f0a4433c52f3be4c19b42a427fb1f90a412f4b8d984dda1642d4b04"
+  },
+  "checks": [
+    {
+      "case": 6,
+      "complete_json_equal": true,
+      "makespan": 82837
+    },
+    {
+      "case": 48,
+      "complete_json_equal": true,
+      "makespan": 222220
+    }
+  ],
+  "reason": "Original fixed-reference scans caused large-case startup bottleneck; interrupted before first B row"
+}

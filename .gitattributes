@@ -49,3 +49,15 @@
 
 # Preserve recorded Windows result bytes; CRLF is intentional evidence, not trailing spaces.
 "图表/runs/20260924-A-q1-delivery*/**" whitespace=cr-at-eol
+
+# Q2 frozen evidence/source hashes must survive checkout byte-for-byte.
+"图表/runs/20260924-A-q2-*/**" -text
+"审查/证据/20260924-A-q2-*/**" -text
+"程序/q2*.py" -text
+"程序/tests/test_q2*.py" -text
+"图表/runs/20260924-A-q2-*/**" whitespace=cr-at-eol
+"审查/证据/20260924-A-q2-*/**" whitespace=cr-at-eol
+"程序/q2*.py" whitespace=cr-at-eol
+"程序/tests/test_q2*.py" whitespace=cr-at-eol
+# Preserve native TeX diagnostic output, including its original trailing spaces.
+"审查/证据/20260924-A-q2-delivery-r07/preview_compile.log.txt" whitespace=-blank-at-eol,cr-at-eol
