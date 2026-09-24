@@ -1,4 +1,4 @@
-"""Build a self-contained Q1 baseline reproduction archive from frozen evidence."""
+"""Historical v18 package builder; use q1_package_r02.py for the current adopted delivery."""
 import argparse
 import csv
 import json

@@ -7,8 +7,10 @@ import time
 from pathlib import Path
 from q1_io import PROCESSED, official, verify, sha, write_json
 
-BASELINE_FEATURES = ('local_cost', 'critical', 'insertion', 'comm_rank',
-                     'partition_guard', 'shared_input', 'region')
+from q1_ablation import CONFIGS
+
+ADOPTED_POLICY = 'routes_gate_reuse'
+BASELINE_FEATURES = tuple(CONFIGS[ADOPTED_POLICY])
 
 
 def main():
@@ -64,7 +66,7 @@ def main():
     write_json(args.output / 'search.json', stats)
     (args.output / 'evaluation.json.gz').write_bytes(gzip.compress(
         json.dumps(result, ensure_ascii=False, separators=(',', ':')).encode(), mtime=0))
-    meta = {'algorithm': 'shared_region', 'features': sorted(BASELINE_FEATURES),
+    meta = {'algorithm': ADOPTED_POLICY, 'features': sorted(BASELINE_FEATURES),
             'seed': args.seed, 'budget': args.budget, 'cores': args.cores,
             'backend': args.backend, 'python': platform.python_version(),
             'input_sha256': sha(args.graph.read_bytes()), 'config_sha256': sha(args.config.read_bytes()),

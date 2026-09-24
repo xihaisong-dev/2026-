@@ -1,4 +1,4 @@
-"""Reproduce shared_region for 1..5 cores, with bounded process parallelism."""
+"""Reproduce routes_gate_reuse for 1..5 cores, with bounded process parallelism."""
 import argparse
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import csv
@@ -9,7 +9,7 @@ import platform
 from statistics import mean
 import time
 from q1_io import PROCESSED, official, verify, sha, write_json
-from q1_submit import BASELINE_FEATURES
+from q1_submit import BASELINE_FEATURES, ADOPTED_POLICY
 
 
 def run_case(job):
@@ -76,7 +76,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=False)
     sources = {p.name: sha(p.read_bytes()) for p in Path(__file__).parent.glob('*.py')}
     rows = []
-    write_json(args.output / 'protocol.json', dict(algorithm='shared_region', features=sorted(BASELINE_FEATURES),
+    write_json(args.output / 'protocol.json', dict(algorithm=ADOPTED_POLICY, features=sorted(BASELINE_FEATURES),
         budget=12, seed=0, backend=args.backend, workers=args.workers, cases=args.cases,
         python=platform.python_version(), source_sha256=sources,
         input_manifest_sha256=sha((PROCESSED / 'manifest.json').read_bytes())))
