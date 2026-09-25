@@ -1,0 +1,46 @@
+{
+  "q2_cases": [
+    33,
+    65,
+    12,
+    94,
+    17,
+    55
+  ],
+  "q3_cases": [
+    5,
+    44,
+    46,
+    88
+  ],
+  "arms": [
+    "control",
+    "guided"
+  ],
+  "seconds_including_final_replay": 90,
+  "candidate_limit": 16,
+  "q2_protected_candidates": 8,
+  "cores": 5,
+  "seed": 0,
+  "q2_seed": "latest protected full100",
+  "q3_seed": "latest combined full100",
+  "decision": "No new full100 unless each problem improves mean fixed-T1 speedup versus its control and has no final verification failure. Reuse is separate fixed-pool experiment, never reuse global time. Warm input construction excluded.",
+  "selection": "Q2 33/65 development;12/94 further regressions;17/55 non-regression checks. Q3 5/44 development;46/88 checks. Historical cases, not unseen-data generalization.",
+  "sources": {
+    "程序/q23_log_diagnosis.py": "4a83ad2dc85827dfacaf48a9ca8ac9bb73a8c19defe320a318e44a8641682364",
+    "程序/q23_preparation_reuse.py": "66601cb490c9d1df479c193f4d6ea46a74c575257ac4c8bb36292210b6edf371",
+    "程序/q23_targeted_candidates.py": "e5e80e0c237fd7e7bbe893a453e181bcbfd5211d763b777ffe9ea20cdcea7b81",
+    "程序/q23_targeted_trial.py": "f7d0ef65ea287b509108dc2b8b1d818b96520b4dd1c8538f2831d814d0103bb5",
+    "程序/tests/test_q23_preparation_reuse.py": "62d833aff675545aacb0c6beb7026ef42ed376ae0e5cf82a8711dd454764d795",
+    "图表/runs/20260925-A-q23-diagnostics/seeds_q3/case_005.json": "6c285b8599bafd8e69558de68a681cfdc568209114f19bfce4312cdedf8a65d3",
+    "图表/runs/20260925-A-q23-diagnostics/seeds_q3/case_044.json": "07693bc893146e45938cc577fa5096bcf7e017678140d5328dcae1631d3f0c64",
+    "图表/runs/20260925-A-q23-diagnostics/seeds_q3/case_046.json": "3f9dbef834a7ca7d0efb8be8bbb5a5ed63d132b46264aa79230c557479de6ea5",
+    "图表/runs/20260925-A-q23-diagnostics/seeds_q3/case_088.json": "378889a1235dac33e50b2708c85091c23781391e1a71975829a00ef6c90ec030"
+  },
+  "notes": [
+    "final original replay and physical audit counted inside90s",
+    "preparation cache disabled in algorithm arms to isolate mechanisms",
+    "same-cycle fewer-byte candidate lexicographically accepted",
+    "up to48 bounded joint proposals to obtain16 distinct; no exhaustive enumeration"
+  ]
+}
