@@ -245,7 +245,7 @@ def elite_update(entries, entry, limit=4):
 
 def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed=0,
                        features=(), on_evaluation=None, cache_dir=None, single_reference=None,
-                       evaluator_backend='official', on_proposal=None):
+                       evaluator_backend='official', on_proposal=None, initial_plan=None, on_incumbent=None):
     from multicore_cut_evaluate_problem_1 import evaluate_scene_a
     if evaluator_backend == 'counter':
         from q1_fast_evaluator import evaluate_scene_a, BACKEND_ID
@@ -383,12 +383,17 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
                         'best_makespan': best[0][0]})
         if on_evaluation:
             on_evaluation(history[-1])
+        if improved and on_incumbent:
+            on_incumbent(plan, result)
         return entry
 
     fallback = {'node_to_subgraph': {str(u): 0 for u in sorted(g.ops)},
                 'core_schedules': [[0] if g.ops else []] + [[] for _ in range(cores-1)]}
-    evaluate(fallback, 'single_task')
-    baseline = best[0][0]
+    evaluate(fallback if initial_plan is None else initial_plan,
+             'single_task' if initial_plan is None else 'provided_initial')
+    # A multicore incumbent is not the prescribed whole-graph single-core reference.
+    baseline = best[0][0] if initial_plan is None else None
+    reward_scale = max(1, best[0][0])
     if cores > 1 and len(history) < evaluation_budget:
         if 'resource_init' in features:
             from q1_resource_init import resource_partition
@@ -643,7 +648,7 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
             grain_record.update(proposal_ledger[-1])
         if entry:
             # Count-based reward keeps seeded runs reproducible across machine speeds.
-            rewards[arm] += max(0., before - entry[0][0]) / max(1, baseline)
+            rewards[arm] += max(0., before - entry[0][0]) / reward_scale
     if 'component_followup' in features and pending_component:
         structural_info['followup_skip_reason'] = 'no_unprotected_opportunity_before_budget_end'
     stats = {'method': 'experimental', 'features': sorted(features), 'seed': seed,
@@ -663,7 +668,8 @@ def solve_experimental(raw, settings, waits, cores=4, evaluation_budget=12, seed
              'protected_prefix_evaluations': guarded_start if 'guarded_joint' in features else 0,
              'protected_prefix_makespan': protected_score,
              'budget_exhausted': len(history) == evaluation_budget,
-             'singlecore_makespan': baseline, 'speedup': baseline / best[0][0] if best[0][0] else 1.,
+             'singlecore_makespan': baseline,
+             'speedup': (baseline / best[0][0] if best[0][0] else 1.) if baseline is not None else None,
              'rejected_proposals': rejected, 'local_cost_entries': len(g.local_observations),
              'local_cost_hits': g.cost_hits, 'local_cost_conflicts': g.observation_conflicts,
              'placement_stats': g.placement_stats,
