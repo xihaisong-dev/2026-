@@ -1,3 +1,5 @@
+> **最新定版交付入口（2026-09-25）**：Q1继续使用q1_submit.py；Q2/Q3使用q23_submit_current.py显式传入已验证暖初解并导出Appendix B文件名，底层算法未变。完整调用参数可用`python 程序/q23_submit_current.py --help`查看。低核数与同方案L2补齐批次见`q23_delivery_complete.py`；不得把旧入口默认结果混作最新组合。详见`审查/三问题面复核与补齐_20260925.md`。
+
 # 计算实现
 
 > **2026-09-24 当前采用版本：r02 / routes_gate_reuse。** 本文保留研发历史，写作以 `审查/问题一交付与赛题要求核对_r02.md` 和 `协作/交接/Q1/Q1-WRITE-r02.md` 为当前入口。单图运行 `python 程序/q1_submit.py 数据/processed/q1/data/case_001.json -n 5 --output trial --verify-final`；批量运行 `python 程序/q1_reproduce.py --output all100 --workers 2`。输入尚未导入时先运行 `python 程序/主程序.py prepare`。当前程序包 `output/q1-delivery-r02-20260924-portable.zip`，校验后再运行。1～5核平均加速比：1、1.834917、2.546238、3.161009、3.665903。只报告我们自身工程；旧历史段落不是当前提交口径。
