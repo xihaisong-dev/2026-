@@ -276,12 +276,17 @@
     "Q1": {
       "academic_name": "考虑共享DDR与缓存约束的有向无环图划分—多处理器调度组合优化模型",
       "canonical_model_family": "有向无环图划分与带前驱约束的多处理器调度组合优化",
-      "solver_algorithm": "贪心初始划分、多层次无环粗化与关键区域贪心修复的有界多邻域搜索"
+      "solver_algorithm": "结构感知初始划分、关键路径调度与预算保护的有界启发式搜索"
+    },
+    "Q2": {
+      "academic_name": "考虑核内数据复用与跨核同步的图划分—多处理器调度组合优化模型",
+      "canonical_model_family": "有向无环图划分与带前驱约束的多处理器调度组合优化",
+      "solver_algorithm": "基础搜索保护的结构感知多邻域组合启发式"
     },
     "Q3": {
       "academic_name": "共享FIFO缓存约束下的多处理器调度离散事件优化模型",
       "canonical_model_family": "多处理器调度与离散事件仿真优化",
-      "solver_algorithm": "Q2种子保护的缓存事件引导有界邻域搜索"
+      "solver_algorithm": "Q2种子保护的缓存事件引导多邻域组合启发式"
     }
   },
   "writing_handoff": {
@@ -3289,10 +3294,34 @@
     "formal_promoted": false
   },
   "q23_full100_verified_campaign": {
-    "status": "RUNNING",
+    "status": "COMPLETE_VERIFIED",
     "expected": 200,
     "contract": "图表/runs/20260925-A-q23-full100-verified/contract.json",
     "launch": "图表/runs/20260925-A-q23-full100-verified/launch.json",
-    "formal_promoted": false
+    "formal_promoted": false,
+    "results": {
+      "2": {
+        "cases": 100,
+        "cores": 5,
+        "mean_speedup": 4.26440723514465,
+        "total_cycles": 65342192,
+        "total_added_bytes": 1063835222,
+        "max_wall": 538.3426849525422
+      },
+      "3": {
+        "cases": 100,
+        "cores": 5,
+        "mean_speedup": 4.364503083322216,
+        "total_cycles": 63759268,
+        "total_added_bytes": 1150596866,
+        "max_wall": 520.8796878922731
+      }
+    },
+    "summary": "图表/runs/20260925-A-q23-full100-verified/verified_summary.json"
+  },
+  "current_model_algorithm_freeze": {
+    "path": "图表/runs/20260925-A-q123-model-freeze/freeze.json",
+    "submit_ready": false,
+    "formal_gate": "NOT_RUN"
   }
 }
