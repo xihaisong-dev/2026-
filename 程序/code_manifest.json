@@ -935,6 +935,30 @@
       "lines": 45,
       "sha256": "a2c353a38c95ce45f6b3c1f361e5fa6cc65b1213da3961f5d9c5e7fa6aa57f4c",
       "role": "Q2 frozen full100 five-core paired campaign"
+    },
+    {
+      "path": "程序/q23_cache_search.py",
+      "lines": 116,
+      "sha256": "16fa4cd8a0620ecb656717b6e2b5d0e651ddda59754e293a0844697cf387c414",
+      "role": "experimental cache-toggle validation"
+    },
+    {
+      "path": "程序/q23_cache_search_report.py",
+      "lines": 100,
+      "sha256": "0d59f505c31d2dcc822b5f5b01a733b49bc9f14f6789d7d32e199c2bb27b45aa",
+      "role": "experimental cache-toggle validation"
+    },
+    {
+      "path": "程序/tests/test_q23_cache_search.py",
+      "lines": 25,
+      "sha256": "3c7b262daab6b230369556600b96d159fabaaf088015423a9a8e5b858952fabc",
+      "role": "experimental cache-toggle validation"
+    },
+    {
+      "path": "程序/tests/test_q23_cache_deadline.py",
+      "lines": 27,
+      "sha256": "693d5ff6b447a75db6b7e39bb52fb6dd652b1b26bdc0ffb7d017e4da0560c360",
+      "role": "experimental cache-toggle validation"
     }
   ],
   "official_source_sha256": "3112331344df7dcf2dcef2ff5f789669c0419e32cefbbc6e2742b9e36d5c43c9",
@@ -1275,5 +1299,40 @@
       "程序/q23_preserved_report.py": "92b69d46ce8149b0a11fb1238e8fb4cc2b2eebd7d9b862c7064fce7222b55e82",
       "程序/tests/test_q23_preparation_reuse.py": "a04a1dd7462878887e3c953a6265180f92df13f56215ba28529c18464eb8a970"
     }
+  },
+  "q23_cache_search": {
+    "entry": "程序/q23_cache_search.py",
+    "report": "图表\\runs\\20260925-A-q23-cache-search\\README.md",
+    "cache_enabled_in_search": true,
+    "software_cache_only": true,
+    "formal_baseline_replaced": false,
+    "promoted_full100": false,
+    "sources": {
+      "程序/q23_cache_search.py": "16fa4cd8a0620ecb656717b6e2b5d0e651ddda59754e293a0844697cf387c414",
+      "程序/q23_cache_search_report.py": "0d59f505c31d2dcc822b5f5b01a733b49bc9f14f6789d7d32e199c2bb27b45aa",
+      "程序/tests/test_q23_cache_search.py": "3c7b262daab6b230369556600b96d159fabaaf088015423a9a8e5b858952fabc",
+      "程序/tests/test_q23_cache_deadline.py": "693d5ff6b447a75db6b7e39bb52fb6dd652b1b26bdc0ffb7d017e4da0560c360"
+    },
+    "comparison": {
+      "2": {
+        "off_mean_speedup": 4.888048141199915,
+        "on_mean_speedup": 4.88810511750469,
+        "off_total_cycles": 18579665,
+        "on_total_cycles": 18579649,
+        "off_total_added": 360116592,
+        "on_total_added": 360122736
+      },
+      "3": {
+        "off_mean_speedup": 4.117209219509452,
+        "on_mean_speedup": 4.117209219509452,
+        "off_total_cycles": 17773903,
+        "on_total_cycles": 17773903,
+        "off_total_added": 352279588,
+        "on_total_added": 352279588
+      }
+    },
+    "gate_reasons": [
+      "Q3: no strict sample mean speedup improvement"
+    ]
   }
 }
