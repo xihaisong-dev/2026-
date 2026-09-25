@@ -24,7 +24,8 @@ def worker(args,deadline):
     from q1_structural_seeds import GraphModel,_component_plan
     from q2_solver import SceneBGraph
     from q23_preparation_reuse import SerializedPreparationReuse
-    out=Path(args['output']);rows=[];cache=None;stages={};best=result=None
+    from q23_selective_reuse import GenerationReuse,SelectivePreparationReuse
+    out=Path(args['output']);rows=[];cache=None;stages={};best=result=None;generation=None
     started=time.monotonic()
     try:
         s,d,c,provenance=load();raw=read(args['graph']);q=args['problem']
@@ -64,8 +65,12 @@ def worker(args,deadline):
             t=time.monotonic();m=m or GraphModel(raw,s,dict(task_cross_core_wait_cycles=d,task_same_core_wait_cycles=0));g=SceneBGraph(raw,s,d)
             stages['model_seconds']=time.monotonic()-t
             rng=random.Random(args['seed']);seen={key(seed)};last=stages['anchor_score_seconds']
-            cache=SerializedPreparationReuse(q,max_bytes=args['cache_mib']*1024**2) if args['mode']=='on' else None
-            with cache if cache else contextlib.nullcontext():
+            cls=SelectivePreparationReuse if args.get('selective_preparation',False) else SerializedPreparationReuse
+            cache=cls(q,max_bytes=args['cache_mib']*1024**2) if args['mode']=='on' else None
+            generation=GenerationReuse(g) if args.get('generation_reuse',False) else None
+            with contextlib.ExitStack() as stack:
+                if cache:stack.enter_context(cache)
+                if generation:stack.enter_context(generation)
                 for i in range(args['max_proposals']):
                     if time.monotonic()+1.5*last>=search_end:break
                     t=time.monotonic();row=dict(index=i,incumbent=key(best))
@@ -81,7 +86,7 @@ def worker(args,deadline):
                             row['seconds']=time.monotonic()-t
                     except (ValueError,RuntimeError) as exc:row.update(status='invalid',error=str(exc),seconds=time.monotonic()-t)
                     rows.append(row)
-                    atomic(out/'search.json',dict(rows=rows,cache_stats=dict(cache.stats) if cache else {},peak_rss_bytes=peak_rss(),stages=stages,reserve_seconds=reserve))
+                    atomic(out/'search.json',dict(rows=rows,cache_stats=dict(cache.stats) if cache else {},generation_stats=dict(generation.stats) if generation else {},peak_rss_bytes=peak_rss(),stages=stages,reserve_seconds=reserve))
                 t=time.monotonic()
                 with original():
                     replay=score(best);assert replay==result;physical(best,replay)
@@ -90,7 +95,7 @@ def worker(args,deadline):
         else:
             # Anchor itself came from the original evaluator and physical audit.
             stages['final_original_verify_seconds']=0
-        atomic(out/'details.json',dict(stages=stages,anchor=objective(anchor),selected=objective(result),cache_stats=dict(cache.stats) if cache else {},peak_rss_bytes=peak_rss(),rows=rows,reserve_seconds=reserve,worker_seconds=time.monotonic()-started,complete=True))
+        atomic(out/'details.json',dict(stages=stages,anchor=objective(anchor),selected=objective(result),cache_stats=dict(cache.stats) if cache else {},generation_stats=dict(generation.stats) if generation else {},peak_rss_bytes=peak_rss(),rows=rows,reserve_seconds=reserve,worker_seconds=time.monotonic()-started,complete=True))
     except Exception:(out/'error.txt').write_text(traceback.format_exc(),encoding='utf-8')
 
 def run(args):
@@ -113,4 +118,5 @@ def run(args):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--problem',required=True,type=int,choices=[2,3]);p.add_argument('--graph',required=True);p.add_argument('--plan');p.add_argument('--output',required=True);p.add_argument('--mode',choices=['off','on'],required=True);p.add_argument('--seconds',type=float,default=590);p.add_argument('--seed',type=int,default=0);p.add_argument('--max-proposals',type=int,default=96);p.add_argument('--cache-mib',type=int,default=32)
+    p.add_argument('--generation-reuse',action='store_true');p.add_argument('--selective-preparation',action='store_true')
     print(json.dumps(run(vars(p.parse_args()))))

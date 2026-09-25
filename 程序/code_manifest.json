@@ -937,12 +937,6 @@
       "role": "Q2 frozen full100 five-core paired campaign"
     },
     {
-      "path": "程序/q23_cache_search.py",
-      "lines": 116,
-      "sha256": "16fa4cd8a0620ecb656717b6e2b5d0e651ddda59754e293a0844697cf387c414",
-      "role": "experimental cache-toggle validation"
-    },
-    {
       "path": "程序/q23_cache_search_report.py",
       "lines": 100,
       "sha256": "0d59f505c31d2dcc822b5f5b01a733b49bc9f14f6789d7d32e199c2bb27b45aa",
@@ -959,6 +953,30 @@
       "lines": 27,
       "sha256": "693d5ff6b447a75db6b7e39bb52fb6dd652b1b26bdc0ffb7d017e4da0560c360",
       "role": "experimental cache-toggle validation"
+    },
+    {
+      "path": "程序/q23_cache_search.py",
+      "lines": 122,
+      "sha256": "8ecd5fb13fabd81115fb70b9699d53278da46bf66d2b6bfe68b69ca8351e9b62",
+      "role": "experimental selective reuse"
+    },
+    {
+      "path": "程序/q23_selective_reuse.py",
+      "lines": 75,
+      "sha256": "e64cd11f3fac96346217c7d10836b1506dfdf6d852ee33cd81eeb9be89e18588",
+      "role": "experimental selective reuse"
+    },
+    {
+      "path": "程序/q23_selective_report.py",
+      "lines": 60,
+      "sha256": "e8d8198daff5e05dc3af1043498c4480dbe89b522575634501668e68d4baa4e3",
+      "role": "experimental selective reuse"
+    },
+    {
+      "path": "程序/tests/test_q23_selective_reuse.py",
+      "lines": 64,
+      "sha256": "05c5ae0a48dc6c6ecb517d95158cfe7cc1a3ad3c86fec193c14c8996e1a3013b",
+      "role": "experimental selective reuse"
     }
   ],
   "official_source_sha256": "3112331344df7dcf2dcef2ff5f789669c0419e32cefbbc6e2742b9e36d5c43c9",
@@ -1334,5 +1352,18 @@
     "gate_reasons": [
       "Q3: no strict sample mean speedup improvement"
     ]
+  },
+  "q23_selective_reuse": {
+    "freeze_branch": "codex/q23-submit-freeze",
+    "freeze_commit": "ebce54dd",
+    "experimental_branch": "codex/q23-generation-reuse",
+    "sources": {
+      "程序/q23_cache_search.py": "8ecd5fb13fabd81115fb70b9699d53278da46bf66d2b6bfe68b69ca8351e9b62",
+      "程序/q23_selective_reuse.py": "e64cd11f3fac96346217c7d10836b1506dfdf6d852ee33cd81eeb9be89e18588",
+      "程序/q23_selective_report.py": "e8d8198daff5e05dc3af1043498c4480dbe89b522575634501668e68d4baa4e3",
+      "程序/tests/test_q23_selective_reuse.py": "05c5ae0a48dc6c6ecb517d95158cfe7cc1a3ad3c86fec193c14c8996e1a3013b"
+    },
+    "report": "图表/runs/20260925-A-q23-selective-reuse/report.json",
+    "promoted": false
   }
 }
