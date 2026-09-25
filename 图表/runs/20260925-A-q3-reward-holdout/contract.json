@@ -1,0 +1,89 @@
+{
+  "seconds": 590,
+  "cores": 5,
+  "max_proposals": 384,
+  "search_fraction": 0.8,
+  "weights": {
+    "gain_scale": 100,
+    "max_boost": 8,
+    "exploration_fraction": 0.5,
+    "byte_tie_reward_scale": 0.001
+  },
+  "sources": {
+    "程序/q23_reward_prefix.py": "8d195b0f5b2b7913475d46bfca5d6558905ba6bd77cfc6f41eec0bd4b217999d",
+    "程序/tests/test_q23_reward_prefix.py": "096769dbbcd18b1074d9bff3e37b1a8cde4cf7c1fda4f107247cd69187d892ae",
+    "程序/q23_stable_prefix.py": "8dbf0012dfce8d274769756b8deec9ddfd2f3516e20afe3479663f0fe8601b43",
+    "程序/q23_order_prepare.py": "b04d640744f1753f99dd9045763a9caa76cd6efa51c05b5c01cda71f95de8ab8",
+    "程序/q23_order_portfolio.py": "70bc7038d374b831c564324547d4d82e84f9c7ee15478e6ce2c6796a2dfc5f43",
+    "程序/q23_portfolio_reuse.py": "8076d8517d7c39af1d9847b3400d9bcdde6ff1840cbde9b76a1a22f9e7d13fe2",
+    "程序/q23_cache_search.py": "8ecd5fb13fabd81115fb70b9699d53278da46bf66d2b6bfe68b69ca8351e9b62",
+    "程序/q3_reward_holdout_run.py": "dc79d9124ad104e57b836c7251f920aef9774d4fc6f22742f1df752da569d849"
+  },
+  "cases": [
+    1,
+    2,
+    13,
+    24,
+    68,
+    69
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "arms": [
+    "legacy",
+    "reward"
+  ],
+  "ordering_prepare": false,
+  "reuse": true,
+  "workers": 12,
+  "input_commit": "fcc42606",
+  "formal_promoted": false,
+  "selection": {
+    "exclude": [
+      5,
+      44,
+      72
+    ],
+    "scope": "held out from reward-weight design, not historically unseen in the project",
+    "rule": "sort all100 by ops,case; split rank terciles; within each tercile split components=1/>1; select minimum SHA256(q3-reward-holdout-v1:case_NNN); no performance used",
+    "profile": "图表/runs/20260925-A-q1-portfolio-profile/graph_profile.csv"
+  },
+  "analysis": {
+    "unit": "paired case and seed",
+    "primary": "official makespan",
+    "secondary": "extra bytes at equal makespan",
+    "report": [
+      "per seed",
+      "per case mean",
+      "wins/ties/losses",
+      "total cycles",
+      "max wall",
+      "failures"
+    ],
+    "promotion": "none; no tuning during evaluation"
+  },
+  "inputs": {
+    "图表/runs/20260925-A-q1-portfolio-profile/graph_profile.csv": "57858db02ea11f2296b449066eca624f890227039e626388df3c5e8e0cee06bc",
+    "数据/processed/q1/data/case_001.json": "a634cd1151c0e918dd3a143eba421b88907f7f0334bfe6a5ca0412342307f09f",
+    "图表/runs/20260925-A-q2-new-seeds/5cores/case_001_multicore_res.json": "3963d4ccddacb77293b6bfe4fb886fcee56d01e3410255737c44d548e7a6b586",
+    "图表/runs/20260924-A-q3-full-r02/case_001/5/case_001_multicore_res.json": "3963d4ccddacb77293b6bfe4fb886fcee56d01e3410255737c44d548e7a6b586",
+    "数据/processed/q1/data/case_002.json": "578fceeb9f66a3c083b9f27d8464cf75c1e7602cbc7290920c02aa1aef7ca352",
+    "图表/runs/20260925-A-q2-new-seeds/5cores/case_002_multicore_res.json": "93beea0b0dc55362e0b12641908971020fdaeaf3e533fb7c0d92d52c695c9864",
+    "图表/runs/20260924-A-q3-full-r02/case_002/5/case_002_multicore_res.json": "256f4f36d92c547967db8e1986ff143269ed8586b80c9b1ab2c3f4b273901c38",
+    "数据/processed/q1/data/case_013.json": "b95d97cf90bdd0fe64a0fd1ecd5a36a7b091ecadef204ef8c6ae430f6ccfac3c",
+    "图表/runs/20260925-A-q2-new-seeds/5cores/case_013_multicore_res.json": "63ffcd1ddf022fd537c89bb94e20fbbf5f1a838fbb8b53dfed160e880454089a",
+    "图表/runs/20260924-A-q3-full-r02/case_013/5/case_013_multicore_res.json": "63ffcd1ddf022fd537c89bb94e20fbbf5f1a838fbb8b53dfed160e880454089a",
+    "数据/processed/q1/data/case_024.json": "f974fbf1a23b4a145b5f8c9c691eb1b247f93d8785d98bb46a9cdd8626399aec",
+    "图表/runs/20260925-A-q2-new-seeds/5cores/case_024_multicore_res.json": "315212c909c1f5c2122baa85ca8fdd657618e0d3e113b5455051ee9b54d0b9b5",
+    "图表/runs/20260924-A-q3-full-r02/case_024/5/case_024_multicore_res.json": "315212c909c1f5c2122baa85ca8fdd657618e0d3e113b5455051ee9b54d0b9b5",
+    "数据/processed/q1/data/case_068.json": "dfd9a58ef9d26a8a4567026b50af8b4499d87eebb3d98f8208b909b11e963c6d",
+    "图表/runs/20260925-A-q2-new-seeds/5cores/case_068_multicore_res.json": "8bfd10b63bbf783dad86f8c8cda9e71f13596552aaa4f34ff5f56e9764d93c69",
+    "图表/runs/20260924-A-q3-full-r02/case_068/5/case_068_multicore_res.json": "4b11539c6aee44d777ea533b76c77bb9a4edb0b851fbf65259799096f3a1847f",
+    "数据/processed/q1/data/case_069.json": "9632392d98cfc04291ba0546accf1f4c3ede8ff71befd3cd0ae67caf27659e52",
+    "图表/runs/20260925-A-q2-new-seeds/5cores/case_069_multicore_res.json": "f6d022529ec0875c80b14741fef50c659052fa7c491b44e3d3edcea263f40423",
+    "图表/runs/20260924-A-q3-full-r02/case_069/5/case_069_multicore_res.json": "0b7dea6050eeefb97c0693c5ebd2e5d079fcf50517ff5b7daa3a3c9ad8358e25"
+  }
+}
