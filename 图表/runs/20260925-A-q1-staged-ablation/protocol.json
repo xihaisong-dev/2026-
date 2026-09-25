@@ -1,0 +1,39 @@
+{
+  "cases": [
+    48,
+    71,
+    17,
+    55
+  ],
+  "cores": [
+    5
+  ],
+  "seconds": 60.0,
+  "workers": 2,
+  "methods": {
+    "previous": [
+      "q1_timed_portfolio.py",
+      []
+    ],
+    "reuse_stage": [
+      "q1_staged_portfolio.py",
+      [
+        "--no-structure",
+        "--no-timeline"
+      ]
+    ],
+    "structure": [
+      "q1_staged_portfolio.py",
+      [
+        "--no-timeline"
+      ]
+    ],
+    "full": [
+      "q1_staged_portfolio.py",
+      []
+    ]
+  },
+  "seed": 0,
+  "role": "development=048,071; untouched evaluation=017,055; no rule tuning after outcomes",
+  "unit": "case x cores; all methods cold start; time cap includes final official replay"
+}
