@@ -50,11 +50,13 @@ def initial(graph,k,out,seed):
     def checkpoint(q,s):
         nonlocal best
         if value(s)<best:save(out,'candidate',q,s);best=value(s)
+    def ledger(row):
+        with (out/'initial_evaluations.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(row)+'\n')
     _,_,stats=solve_experimental(raw,settings,waits,k,12,seed,BASELINE_FEATURES,
-        evaluator_backend='counter',initial_plan=p,on_incumbent=checkpoint)
+        evaluator_backend='counter',initial_plan=p,on_incumbent=checkpoint,on_evaluation=ledger)
     write_json(out/'initial_search.json',stats)
 
-def search(graph,k,out,seed,deadline,use_structure,use_timeline):
+def search(graph,k,out,seed,deadline,use_structure,use_timeline,phase_name='search'):
     from q1_experimental import CostGraph
     from q1_timed_candidates import Generator
     from q1_task_reuse import TaskReuseEvaluator
@@ -69,7 +71,7 @@ def search(graph,k,out,seed,deadline,use_structure,use_timeline):
     write_json(out/'structure.json',dict(features=features,priors=prior))
     pulls={a:0 for a in arms};reward={a:0. for a in arms};cost={a:0. for a in arms};seen={canonical_key(p)}
     attempt=0
-    with (out/'search.jsonl').open('w',encoding='utf-8') as log:
+    with (out/(phase_name+'.jsonl')).open('w',encoding='utf-8') as log:
         while time.monotonic()<deadline:
             arm=min(arms,key=lambda a:pulls[a]) if attempt%5==0 else max(arms,key=lambda a:reward[a]/max(.01,cost[a])+.001*prior[a]*math.sqrt(math.log(attempt+2)/(pulls[a]+1)))
             t=time.monotonic();attempt+=1;pulls[arm]+=1;record=dict(attempt=attempt,arm=arm)
@@ -87,7 +89,7 @@ def search(graph,k,out,seed,deadline,use_structure,use_timeline):
             except (ValueError,RuntimeError) as exc:record.update(status='invalid',error=str(exc))
             elapsed=time.monotonic()-t;cost[arm]+=elapsed;record['seconds']=elapsed
             log.write(json.dumps(record)+'\n');log.flush()
-            atomic_json(out/'search_progress.json',dict(attempts=attempt,pulls=pulls,cost_seconds=cost,rewards=reward,reuse=evaluator.stats()))
+            atomic_json(out/(phase_name+'_progress.json'),dict(attempts=attempt,pulls=pulls,cost_seconds=cost,rewards=reward,reuse=evaluator.stats()))
 
 def replay(graph,k,out,seed):
     raw,settings,waits=context(graph);p,s=read_selected(out,'candidate');_,old=read_selected(out,'verified')
@@ -124,6 +126,14 @@ def main():
         if time.monotonic()<search_end:
             phases['search']=phase(search,args+(search_end,not a.no_structure,not a.no_timeline),search_end)
         phases['replay']=phase(replay,args,start+a.seconds-2)
+        # Reclaim overly conservative verification reserve after a successful
+        # replay. Any later timeout retains the already verified incumbent.
+        remaining=start+a.seconds-2-time.monotonic()
+        if remaining>20 and not phases['replay']['error'] and not phases['replay']['interrupted']:
+            reserve2=max(5,min(remaining*.6,2*phases['replay']['seconds']+2))
+            second_end=start+a.seconds-2-reserve2
+            phases['search2']=phase(search,args+(second_end,not a.no_structure,not a.no_timeline,'search2'),second_end)
+            phases['replay2']=phase(replay,args,start+a.seconds-2)
         selected=json.loads((out/'verified.json').read_text(encoding='utf-8'))
         shutil.copyfile(out/selected['folder']/'plan.json',out/f'{a.graph.stem}_multicore_res.json')
         run=dict(complete=True,selected=selected,phases=phases,mode='cold',wall_seconds=time.monotonic()-start)

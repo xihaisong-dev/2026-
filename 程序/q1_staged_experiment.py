@@ -10,7 +10,7 @@ def main():
     methods={'previous':('q1_timed_portfolio.py',[]),'reuse_stage':('q1_staged_portfolio.py',['--no-structure','--no-timeline']),
         'structure':('q1_staged_portfolio.py',['--no-timeline']),'full':('q1_staged_portfolio.py',[])}
     write_json(a.output/'protocol.json',dict(cases=a.cases,cores=a.cores,seconds=a.seconds,workers=a.workers,methods=methods,seed=0,
-        role='development=048,071; untouched evaluation=017,055; no rule tuning after outcomes',unit='case x cores; all methods cold start; time cap includes final official replay'))
+        role='Case list fixed before this batch; no rule tuning after outcomes within this batch',unit='case x cores; all methods cold start; time cap includes final official replay'))
     def one(c,k,m):
         folder=a.output/f'case_{c:03}_{k}cores_{m}';script,extra=methods[m]
         cmd=[sys.executable,str(ROOT/'程序'/script),str(ROOT/f'数据/processed/q1/data/case_{c:03}.json'),'-n',str(k),'--seconds',str(a.seconds),'--output',str(folder)]+extra

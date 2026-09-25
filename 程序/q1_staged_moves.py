@@ -25,12 +25,17 @@ def timeline_move(g,plan,result,k,rng,index):
     end=max(tasks,key=lambda s:tasks[s]['end']);path=[end]
     # Follow actual release blockers, including same-core serialization.
     previous={b:a for seq in plan['core_schedules'] for a,b in zip(seq,seq[1:])}
+    core={s:c for c,seq in enumerate(plan['core_schedules']) for s in seq}
     while len(path)<12:
         s=path[-1];causes=set(pred[s])
         if s in previous:causes.add(previous[s])
-        causes={p for p in causes if p not in path and tasks[p]['end']<=tasks[s]['start']}
+        def release(p):
+            dependency=tasks[p]['end']+(g.cross if core[p]!=core[s] else 0) if p in pred[s] else 0
+            serial=tasks[p]['end']+g.same if previous.get(s)==p else 0
+            return max(dependency,serial)
+        causes={p for p in causes if p not in path and release(p)<=tasks[s]['start']+1e-6}
         if not causes:break
-        path.append(max(causes,key=lambda p:tasks[p]['end']))
+        path.append(max(causes,key=release))
     s=path[index%len(path)]
     if index%3==0 and pred[s]:
         p=max(pred[s],key=lambda p:tasks[p]['end'])

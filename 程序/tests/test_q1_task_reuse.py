@@ -15,6 +15,13 @@ class ReuseTests(unittest.TestCase):
         q=copy.deepcopy(p);q['core_schedules']=[[2],[1,0]]
         self.assertEqual(e.evaluate(q),evaluate(raw,q));self.assertEqual(e.hits,3)
         self.assertEqual(e.evaluate(p),evaluate(raw,p));self.assertEqual(e.evaluations,3)
+        returned=e.evaluate(p)
+        returned['step3_by_task'][0]['local_makespan']=-1
+        returned['per_core_timeline'][0]['ops'].clear()
+        self.assertEqual(e.evaluate(p),evaluate(raw,p))
+        for prepared,_ in e.cache.values():
+            self.assertNotIn('pipe_cursor',prepared)
+            self.assertNotIn('core_id',prepared)
 
     def test_local_split_invalidates_changed_task_only_when_boundary_ids_match(self):
         raw=fixture([(0,1),(2,3),(4,5)])
@@ -31,5 +38,20 @@ class ReuseTests(unittest.TestCase):
             p={'node_to_subgraph':{str(i):s for i,s in enumerate(mapping)},'core_schedules':[sorted(set(mapping)),[]]}
             self.assertEqual(e.evaluate(p),evaluate(raw,p))
         self.assertEqual(e.evaluations,3)
+
+    def test_invalid_core_order_rejected_even_with_cached_preparation(self):
+        raw=fixture([(0,1)])
+        e=self.engine(raw)
+        p={'node_to_subgraph':{'0':0,'1':1},'core_schedules':[[0,1],[]]}
+        e.evaluate(p);p['core_schedules']=[[1,0],[]]
+        with self.assertRaises((ValueError,RuntimeError)):e.evaluate(p)
+
+    def test_bandwidth_change_cannot_reuse_old_local_cost(self):
+        from q1_io import official
+        raw=fixture([(0,1),(2,3)]);e=self.engine(raw)
+        p={'node_to_subgraph':{str(i):i//2 for i in range(4)},'core_schedules':[[0],[1]]}
+        e.evaluate(p);misses=e.misses;e.bandwidth=30
+        expected=official().evaluate_scene_a(raw,p,30,SETTINGS['capacity'],1000,100)
+        self.assertEqual(e.evaluate(p),expected);self.assertGreater(e.misses,misses)
 
 if __name__=='__main__':unittest.main()

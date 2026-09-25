@@ -43,16 +43,19 @@ class TaskReuseEvaluator:
         key=hashlib.sha256(json.dumps([graph,capacity,bandwidth],sort_keys=True,separators=(',',':')).encode()).digest()
         if key in self.cache:
             self.hits+=1;self.cache.move_to_end(key)
-            return copy.deepcopy(self.cache[key])
+            prepared,byte_count=self.cache[key]
+            # Pinned official engine only changes top-level metadata and installs
+            # a NEW pipe_cursor dictionary. Nested preparation is read-only.
+            return dict(prepared),byte_count
         self.misses+=1;n=self.local_namespace
         seq=n['step1_schedule'](graph)
         spill=n['step2_spill_insertion'](graph,seq,capacity=capacity)
         byte_count=sum(s['size']*(1+int(s['spill_out_copies_data'])) for s in spill['spill_records'])
         ext=n['_build_extended_graph'](graph,spill)
         prepared=n['prepare_step3_execution'](ext,capacity=capacity,bandwidth=bandwidth)
-        self.cache[key]=copy.deepcopy((prepared,byte_count))
+        self.cache[key]=(prepared,byte_count)
         if len(self.cache)>self.limit:self.cache.popitem(last=False)
-        return prepared,byte_count
+        return dict(prepared),byte_count
 
     def evaluate(self,plan):
         result=self.engine(self.raw,plan,self.bandwidth,self.capacity,self.cross,self.same)
