@@ -33,6 +33,16 @@ def generate(family, m, g, incumbent, n, rng, step):
     from q2_solver import place, order_plan, owner_of, context, proposal, DEFAULTS
     from q2_physical import candidate_pool
     mapping = {int(u): s for u, s in incumbent['node_to_subgraph'].items()}
+    if family == 'packing':
+        # Only partition/placement construction is inherited from A; accepted
+        # costs always include B's whole-core scheduling and tensor lifetimes.
+        from q1_timed_candidates import packing
+        return packing(g,m.components,n,rng,step)
+    if family == 'frontier':
+        from q1_timed_candidates import frontier_mapping
+        mapping=frontier_mapping(g,n,rng,step)
+        owners=place(g,mapping,n,True,(.25,1.,4.)[step%3])
+        return order_plan(g,mapping,owners,n,True,weight=.5)
     if family == 'remap':
         # Log-spaced trade-offs between parallel work and marginal tensor traffic.
         weight = (0., .25, .5, 1., 2., 4.)[step % 6]
@@ -119,14 +129,21 @@ def worker(args, deadline):
             if time.monotonic() >= deadline: return
             assess('ordinary_J', item['plan'])
         if args['arm'] == 'baseline': return
-        weights = family_weights(m); families = list(weights)
+        weights = family_weights(m)
+        if args['arm']=='protected':
+            weights['frontier']=1
+            if len(m.components)>1: weights['packing']=2
+        families = list(weights)
+        adaptive_started=time.monotonic()
+        protected_until=adaptive_started+.4*max(0,deadline-adaptive_started)
         # Finite proposal cap, not a combinatorial enumeration. Initial round
         # explores every family; subsequent draws retain minimum exploration.
         for iteration in range(args['max_proposals']):
             remaining = deadline-time.monotonic()
             recent = [r['seconds'] for r in rows if r['status']=='ok'][-4:]
             if remaining < max(.5, 1.3*max(recent, default=.1)): break
-            family = ('joint' if args['arm']=='ordinary_extended' else
+            protected=args['arm']=='protected' and iteration<32 and time.monotonic()<protected_until
+            family = ('joint' if args['arm']=='ordinary_extended' or protected else
                 families[iteration] if iteration<len(families) else rng.choices(
                 families, [weights[f]*(1+min(8.,100*gain[f]/max(.1,spent[f]))) for f in families])[0])
             step=counters[family]; counters[family]+=1; t=time.perf_counter()
@@ -143,7 +160,7 @@ def worker(args, deadline):
 
 def run(graph, output, cores=5, seconds=590, arm='portfolio', seed=0, migration=None, max_proposals=96):
     if not 2 <= cores <= 5 or not 0 < seconds <= 590: raise ValueError('cores 2..5, seconds (0,590]')
-    if arm not in ('baseline','portfolio','ordinary_extended'): raise ValueError(arm)
+    if arm not in ('baseline','portfolio','ordinary_extended','protected'): raise ValueError(arm)
     started=time.monotonic(); folder=Path(output); folder.mkdir(parents=True,exist_ok=False)
     args=dict(graph=str(Path(graph).resolve()),output=str(folder.resolve()),cores=cores,
               seconds=seconds,arm=arm,seed=seed,migration=str(Path(migration).resolve()) if migration else None,
@@ -165,6 +182,6 @@ def run(graph, output, cores=5, seconds=590, arm='portfolio', seed=0, migration=
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('graph');p.add_argument('--output',required=True)
     p.add_argument('--cores',type=int,default=5);p.add_argument('--seconds',type=float,default=590)
-    p.add_argument('--arm',choices=['baseline','portfolio','ordinary_extended'],default='portfolio');p.add_argument('--seed',type=int,default=0)
+    p.add_argument('--arm',choices=['baseline','portfolio','ordinary_extended','protected'],default='portfolio');p.add_argument('--seed',type=int,default=0)
     p.add_argument('--migration');p.add_argument('--max-proposals',type=int,default=96)
     print(json.dumps(run(**vars(p.parse_args())),ensure_ascii=False,indent=2))

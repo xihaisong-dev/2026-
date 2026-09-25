@@ -9,7 +9,9 @@ from q2_evaluator import load,evaluate
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--output',required=True,type=Path)
     ap.add_argument('--cases',nargs='+',type=int,default=[17,32,48,55,64,71,88])
-    ap.add_argument('--seconds',type=float,default=60);a=ap.parse_args()
+    ap.add_argument('--seconds',type=float,default=60)
+    ap.add_argument('--arms',nargs='+',choices=['baseline','ordinary_extended','portfolio','protected'],
+                    default=['baseline','ordinary_extended','portfolio']);a=ap.parse_args()
     a.output.mkdir(parents=True,exist_ok=False)
     source={p.name:sha(p.read_bytes()) for p in (ROOT/'程序').glob('q*.py')}
     settings,delay,provenance=load()
@@ -17,7 +19,7 @@ def main():
     with baseline_path.open(encoding='utf-8-sig') as f:
         baseline={int(r['case']):r for r in csv.DictReader(f) if r['cores']=='5'}
     reference=json.loads((ROOT/'图表/runs/20260924-A-q2-full-r05/contract.json').read_text(encoding='utf-8'))['fixed_references']
-    rows=[];arms=['baseline','ordinary_extended','portfolio']
+    rows=[];arms=a.arms
     inputs={};seeds={}
     for i in a.cases:
         inputs[str(i)]=sha((PROCESSED/f'data/case_{i:03}.json').read_bytes())

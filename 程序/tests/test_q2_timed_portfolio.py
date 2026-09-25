@@ -18,7 +18,7 @@ class TimedTests(unittest.TestCase):
         m=GraphModel(raw,self.settings,dict(task_cross_core_wait_cycles=self.delay,task_same_core_wait_cycles=0))
         g=SceneBGraph(raw,self.settings,self.delay)
         plan=_component_plan(m,5,'pipe',True)
-        for family in family_weights(m):
+        for family in list(family_weights(m))+['packing','frontier']:
             for step in range(3):
                 p=generate(family,m,g,plan,5,random.Random(42),step)
                 self.assertEqual(set(map(int,p['node_to_subgraph'])),set(g.ops))
