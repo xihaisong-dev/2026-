@@ -34,3 +34,25 @@ class PreparationReuse:
     def __exit__(self,*exc):
         for n,fn in self.original.items():setattr(self.module,n,fn)
         self.entries.clear();self.size=0
+
+class SerializedPreparationReuse(PreparationReuse):
+    """Store immutable serialized payload once; deserialize isolated hits.
+
+    No shared mutable graph aliases, and no deepcopy followed by serialization on
+    misses. Payloads originate only from this process, never untrusted files.
+    """
+    def wrap(self,name,fn):
+        def call(*args,**kwargs):
+            started=time.perf_counter()
+            key=(name,hashlib.sha256(pickle.dumps((args,kwargs),protocol=5)).digest())
+            self.stats['calls']+=1
+            if key in self.entries:
+                self.stats['hits']+=1;payload,size=self.entries.pop(key);self.entries[key]=(payload,size)
+                value=pickle.loads(payload);self.stats['hit_seconds']+=time.perf_counter()-started;return value
+            self.stats['misses']+=1;value=fn(*args,**kwargs);payload=pickle.dumps(value,protocol=5);size=len(payload)
+            if size<=self.limit:
+                while self.entries and self.size+size>self.limit:
+                    _,(_,n)=self.entries.popitem(last=False);self.size-=n;self.stats['evictions']+=1
+                self.entries[key]=(payload,size);self.size+=size
+            self.stats['miss_seconds']+=time.perf_counter()-started;return value
+        return call
