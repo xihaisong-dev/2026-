@@ -100,11 +100,12 @@ def main():
     b=points[2,5];l=points[3,5]
     src+=f'问题二五核逐图平均加速比为 ${b["mean_speedup"]:.6f}$，百图总周期为 ${num(b["total_cycles"])}$，总额外搬运为 ${num(b["added_bytes"])}$ 字节。各配置保留完整官方结果与物理内存审计。历史初解作为显式输入，其生成不包含在本轮限时搜索内。\n'
     src+=table(['核数','平均加速比','总周期','额外搬运'],[[k,f'{points[2,k]["mean_speedup"]:.6f}',num(points[2,k]['total_cycles']),num(points[2,k]['added_bytes'])] for k in range(1,6)],'问题二百图汇总','tab:q2-main')+fig('speedup','三问的百图逐图平均加速比；L2 单核点沿用无 L2 单核参考','fig:q2-speed')+fig('cycles','三问百图总周期；与逐图平均加速比采用不同权重','fig:total-cycles')
-    src+='算法在每个核数独立搜索，增加核心数并不保证每个图都更快。全量结果证明与给定官方仿真一致，不构成全局最优证书或未见图泛化检验。\n';text(p,src)
+    src+='算法在每个核数独立搜索，增加核心数并不保证每个图都更快。全量结果证明与给定官方仿真一致，不构成全局最优证书或未见图泛化检验。\n'
+    src=src.replace(r'\label{fig:q2-speed}',r'\label{fig:q2-speed}\label{fig:q3-speed}');text(p,src)
     p=chapters/'7_problem3.tex';src=(templates/p.name).read_text('utf-8').split(r'\subsection{固定方案消融')[0]+r'\input{章节/7e_current_algorithm}'+'\n'+r'\subsection{百图成对结果}'+'\n'
     src+=f'五核相对固定无 L2 单核参考的平均加速比为 ${l["mean_speedup"]:.6f}$，总周期为 ${num(l["total_cycles"])}$。固定最终方案只切换 L2 的逐图同核时间比为 ${l["mean_same_plan_cache_ratio"]:.6f}$；相对本轮问题二所选方案的综合时间比为 ${comp[5]:.6f}$。后者不能单独归因于缓存硬件。\n'
     src+=table(['核数','L2 平均加速比','L2 总周期','同方案硬件比','跨方案综合比'],[[k,f'{points[3,k]["mean_speedup"]:.6f}',num(points[3,k]['total_cycles']),f'{points[3,k]["mean_same_plan_cache_ratio"]:.6f}',f'{comp[k]:.6f}'] for k in range(1,6)],'问题三百图成对结果','tab:q3-main')+fig('cache_gain','固定问题三方案的 L2 效应与跨方案综合比较','fig:q3-gain')
-    src+=r'\label{fig:q3-speed}'+'\n'+f'问题三五核总额外逻辑搬运为 ${num(l["added_bytes"])}$ 字节。附录的同方案无 L2 与 L2 两次评价采用同一逻辑搬运口径，不从额外搬运中扣除命中字节。命中率并不单独决定周期：FIFO 淘汰、并发冷读、双带宽竞争与数据释放的改变均会影响关键路径。\n'
+    src+=f'问题三五核总额外逻辑搬运为 ${num(l["added_bytes"])}$ 字节。附录的同方案无 L2 与 L2 两次评价采用同一逻辑搬运口径，不从额外搬运中扣除命中字节。命中率并不单独决定周期：FIFO 淘汰、并发冷读、双带宽竞争与数据释放的改变均会影响关键路径。\n'
     text(p,src)
     # Recompute current diagnostics; never relabel historical distributions as new.
     import numpy as np
@@ -190,6 +191,8 @@ R_k^\Sigma=\frac{\sum_iT^0_{i,1}}{\sum_iT_{i,k}}.
     write_json(Path('图表/figure_manifest.json'),fm)
     allresults=read(Path('图表/全部结果.json'));allresults['latest_complete_delivery']=dict(path=OUT.as_posix(),plans=1500,paired_q3=500,full100_cold_timing=False,submit_ready=False);write_json(Path('图表/全部结果.json'),allresults)
     text(OUT/'README.md','# 三问同步交付\n\n1500份标准方案；Q3最终方案500组同方案无L2/L2对照。冷启动为预先声明的压力样本，并非全量耗时认证。当前正式门禁与身份信息仍须验收。\n')
+    readme=Path('论文/README.md');body=readme.read_text('utf-8').split('\n\n',1)[-1]
+    text(readme,'> **数据已同步，尚待提交验收**：正文、曲线及附录使用20260926完整交付矩阵；编译和视觉检查状态以该目录的记录为准。冷启动仅完成压力样本，未证明100图全核数均在十分钟内完成。旧DOCX未同步，不能用其替代本次PDF。\n\n'+body)
     if a.compile:
         build=ROOT/'论文/build/20260926-completion';build.mkdir(parents=True,exist_ok=True)
         exe=shutil.which('xelatex');assert exe,'XeLaTeX unavailable'
@@ -201,8 +204,10 @@ R_k^\Sigma=\frac{\sum_iT^0_{i,1}}{\sum_iT_{i,k}}.
         log=(build/'论文正文.log').read_text('utf-8',errors='replace')
         warnings=[line for line in log.splitlines() if any(t in line for t in ['Overfull','undefined','Missing character'])]
         write_json(OUT/'compile.json',dict(passes=3,warnings=warnings,pdf_sha256=sha(ROOT/'论文/数模论文.pdf'),visual_review='NOT_RUN'))
+        audits={}
         for tool in ['工具/rendered_visual_audit.py','工具/pdf_layout_audit.py']:
-            proc=subprocess.run([sys.executable,tool,'--workspace','.','--strict'],capture_output=True);text(OUT/(Path(tool).stem+'.log'),proc.stdout.decode('utf-8','replace')+proc.stderr.decode('utf-8','replace'))
+            proc=subprocess.run([sys.executable,tool,'--workspace','.','--strict'],capture_output=True);text(OUT/(Path(tool).stem+'.log'),proc.stdout.decode('utf-8','replace')+proc.stderr.decode('utf-8','replace'));audits[tool]=proc.returncode
+        write_json(OUT/'audit_exitcodes.json',audits)
         if warnings:raise RuntimeError('Compiled but layout/reference warnings require repair')
     print('Complete matrix/materials refreshed; formal acceptance and visual review remain separate.')
 
