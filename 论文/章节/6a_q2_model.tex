@@ -1,0 +1,76 @@
+\subsection{从独立 Task 到每核联合 Task}
+场景 B 保留同一个划分 $\pi$、核心映射 $m$ 和核上顺序 $\sigma$ 决策，但改变了这些决策的物理含义。对每个核心 $c$，把映射到 $c$ 的全部子图按 $\sigma_c$ 展开到一个 Task 的内部：子图之间仍有次序，然而私有 L1/UB 状态在这段次序中连续存在。若生产与最后消费同在 $c$，中间张量可在容量允许时直接驻留；外层切出两个子图并不自动产生一次 DDR 往返。相反，两个核心之间的依赖须经源端写出、目标端读入与同步释放。由此，场景 A 的“每跨一个子图边界就增加传输”在 B 中不再成立，决策的风险从 Task 边数转向跨\emph{核心}的逻辑张量集合与同核生命周期长度。
+
+记 $c_p(x)$ 为内部张量 $x$ 的生产核心，$\mathcal C(x;p)=\{m(\pi(v)):v\in C(x)\}$ 为消费核心的去重集合。目标核心数
+\begin{equation}\label{eq:q2-destination-count}
+n_{\rm remote}(x;p)=
+\bigl|\mathcal C(x;p)\setminus\{c_p(x)\}\bigr|
+\end{equation}
+给出跨核心\emph{目的地}的数目，而不是跨核算子边条数。若同一核心有三个消费算子，集合里仍只出现一次。对于原始外部输入，不存在内部生产核心；其各消费核心可共享一次该核心的加载机会。这个去重关系用于静态候选估价，但是否产生源端一次或多次 COPY、原图已经有多少基础 COPY、是否因容量溢出再读，均由官方 Task 构造及核内展开确定。因此问题二沿用
+\begin{equation}\label{eq:q2-added-exact}
+D^B(p)=B_{\rm all}^{B}(p)-B_{\rm orig},
+\end{equation}
+作为可交付的额外搬运定义；不直接把 $b_x n_{\rm remote}(x;p)$ 宣称为总额外字节。对按边计费的朴素代理，令 $\mathcal E_x^{\rm remote}$ 为张量 $x$ 的跨核消费者边集合，则目标核心去重的\emph{读入字节代理}满足
+\begin{equation}\label{eq:q2-dedup-inequality}
+b_x\,n_{\rm remote}(x;p)
+\ \le\ b_x\,|\mathcal E_x^{\rm remote}|.
+\end{equation}
+不等号可严格成立，说明朴素边权和可能高估共享消费者的通信，从而错误惩罚本应考虑的划分。
+
+\subsection{跨核释放与事件路径}
+对一个源核心 $a$ 到目标核心 $b$ 的张量传递，设 $e^{\rm out}$ 为源端对应 \texttt{COPY\_OUT}，$e^{\rm in}$ 为目标端 \texttt{COPY\_IN}。在场景 B，后者的发射条件是
+\begin{equation}\label{eq:q2-sync-expanded}
+s_{e^{\rm in}}\ge f_{e^{\rm out}}+\delta_B,
+\qquad \delta_B=500\ {\rm cycles}.
+\end{equation}
+等待从\emph{实际写出完成}开始计，不是从源子图的名义结束开始计。若源核还有与这份张量无关的矩阵计算，这段计算可能在写出完成后继续；目标核只需等待它自身需要的 COPY 就绪，而不是盲等源核整个 Task 完成。一个目标操作若依赖多个数据来源，其就绪时刻取相关发射与完成约束的最大值。把多条前驱的 $500$ 周期全部相加，会夸大并行等待；把所有源 Task 一起拉长 $500$，则会错误阻塞无关 Pipe。表\ref{tab:scenario}所示三个场景在此处产生的差别，必须在事件层而非仅在子图时长层表达。
+
+场景 B 的完整事件依赖包括：原算子数据边、各 Pipe 的顺序边、跨核 COPY 写出到读入的释放边，以及官方核内启发式插入的内存复用和换入换出边。若把所有源到汇路径记为 $\Gamma_B(p)$，则在真实事件服务时长确定后仍可使用式\eqref{eq:realized-critical-path}解释总时间；但搜索前无法仅由子图大小求得这些路径。特别地，跨核释放 $\delta_B$ 可以与另一核心的计算并行，只有位于决定最终输出的路径时才直接增加 Makespan。
+
+\subsection{真实物理驻留与容量约束}
+令 $\mathcal R_{c,r}^{\rm phys}(t)$ 表示时刻 $t$ 实际驻留于核心 $c$、私有池 $r$ 的张量实例。场景 B 与 A 一样必须满足
+\begin{equation}\label{eq:q2-physical-capacity}
+\sum_{x\in\mathcal R_{c,r}^{\rm phys}(t)}b_x\le C_r,
+\qquad r\in\{\mathrm{L1},\mathrm{UB}\},\quad \forall c,t.
+\end{equation}
+不同的是，场景 B 的同核子图共享一段 Task 生命周期。为了估计不溢出时的压力，可定义某张量在核心 $c$ 的理想驻留区间 $I_{x,c}=[t_{x,c}^{\rm first},t_{x,c}^{\rm last}]$，并定义同时存活字节
+\begin{equation}\label{eq:q2-logical-live}
+L_{c,r}^{\rm ideal}(t)=
+\sum_{x:\,x\text{ 属池 }r}
+b_x\,\mathbf 1\{t\in I_{x,c}\}.
+\end{equation}
+如果 $L_{c,r}^{\rm ideal}(t)>C_r$，这份完全驻留的理想日程不可能直接执行；核内调度必须改变操作顺序、及时释放，或把部分张量换出并在再次使用时换入。反过来，$L_{c,r}^{\rm ideal}(t)\le C_r$ 也不足以断言不会有搬运开销：原始输入读入、输出写回、Pipe 冲突和启发式实际排程仍在。式\eqref{eq:q2-logical-live}是压力诊断而非赛题评价器的替身。
+
+若同核聚集更多子图，跨核消费核心集合可能缩小，式\eqref{eq:q2-destination-count}的通信代理下降；但某些中间张量的 $t^{\rm last}-t^{\rm first}$ 可能变长，驻留峰值上升，触发换出换入。这正是“合并后反而更慢”的一种可检验机制。以生命周期面积
+\begin{equation}\label{eq:q2-live-area}
+A_{c,r}=\int_0^{T(p)}L_{c,r}^{\rm ideal}(t)\,{\rm d}t
+\end{equation}
+描述整体占用强度有助于排序候选，但它不能取代峰值约束\eqref{eq:q2-physical-capacity}：相同的面积可能由短时高峰或长时低占用形成，前者更容易引发容量违规。最终物理实例仍以官方核内输出和全局内存审计为准。
+
+\subsection{场景 B 的严格下界与局部判断}
+式\eqref{eq:universal-compute-bound}对 B 继续成立。对\emph{固定}方案 $p$，将所有源到汇的算子依赖链记为 $\Gamma_c$。链 $\gamma$ 上的固定计算周期和为 $C(\gamma)$，穿越不同核心的依赖次数为 $n_{\times}(\gamma;p)$。每次跨核依赖须经过式\eqref{eq:q2-sync-expanded}的 $500$ 周期释放，且链上先后发生，故有条件下界
+\begin{equation}\label{eq:q2-sync-path-lb}
+T^B(p)\ge
+L_{\rm sync}(p):=
+\max_{\gamma\in\Gamma_c}
+\{C(\gamma)+500\,n_{\times}(\gamma;p)\}.
+\end{equation}
+这仍忽略写出、读入本身的服务与共享带宽竞争，因此是保守界。多个平行分支上的同步不能相加，但沿同一条连续路径发生的释放可以累积。结合实际展开 DDR 字节数得到
+\begin{equation}\label{eq:q2-plan-lb}
+T^B(p)\ge
+\max\left\{L_0(k),L_{\rm sync}(p),B_D^B(p)/60\right\}.
+\end{equation}
+后两项随划分和映射变化，不能用于声称“当前方案离全局最优只差某百分比”。它们可用于判别：如果 $L_{\rm sync}(p)$ 接近实测时间，优先消除链上核心切换；如果带宽项接近实测时间，优先检查多核心重复读取和在途拥塞。与问题一相比，跨核同步而非每个子图边界成为关键链的主要显式释放代价。
+
+考虑移动一个边界子图 $S$ 至相邻核心。该动作可能同时改变三项：$S$ 的生产张量跨核目标数、消费张量的读入核心集合，以及本核张量的最后使用时刻。令 $\Delta_{\rm comm}$、$\Delta_{\rm live}$、$\Delta_{\rm crit}$ 分别表示由这些因素构成的\emph{代理}变化，则可用
+\begin{equation}\label{eq:q2-move-score}
+\widehat\Delta(S,c)
+=\alpha\,\widehat\Delta_{\rm crit}
++\beta\,\widehat\Delta_{\rm comm}
++\gamma\,\widehat\Delta_{\rm live}
+\end{equation}
+为有限候选排序；权重不是赛题的真实目标系数，也不用于公布收益。对任意迁移、合并或拆分，真实判别始终是
+\begin{equation}\label{eq:q2-move-real}
+\Delta T=T^B(p_{\rm old})-T^B(p_{\rm new}).
+\end{equation}
+尤其不能从“删除 $b$ 字节跨核搬运与一次同步”推断必节省 $b/60+500$ 周期：传输可能原本与别的计算重叠，迁移可能令另一条链成为新的瓶颈，或推高 L1/UB 溢出。式\eqref{eq:q2-move-score}说明为什么值得提出该动作；式\eqref{eq:q2-move-real}才决定是否采用。

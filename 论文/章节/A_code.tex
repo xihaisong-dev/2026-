@@ -1,11 +1,11 @@
 \section{核心程序与复现入口}
-本附录直接从仓库引用求解源文件，避免论文中的程序片段与实际运行代码分叉。完整环境、输入和官方评价代码随交付仓库提供；下面列出三问的核心实现。百图批量运行、校验与结果打包分别由\texttt{q1\_delivery\_r02.py}、\texttt{q2\_delivery\_r07.py}和\texttt{q3\_submit.py}及对应交接单约定，命令应在仓库根目录和该版本依赖环境中执行。以下列表为求解器源码，不把开发阶段的实验脚本视为所交付算法。
+本附录直接从仓库引用三问的\emph{当前提交入口}，避免把初版求解器误列为现行算法。完整源码、输入和官方评价程序随交付仓库提供。百图批量复现与校验由\path{q1_delivery_r02.py}、\path{q2_delivery_r07.py}及问题三冻结交付脚本与交接单约定。问题一入口调用\path{q1_experimental.py}和结构候选模块；问题二入口调用\path{q2_reserve_fast.py}；问题三入口调用\path{q3_solver.py}与\path{q3_neighborhood.py}。入口代码和核心模块应在相同提交版本下一起使用；纸面列表只是定位复现入口，不能替代仓库中的全部依赖。
 \subsection{问题一求解器}
-\lstinputlisting[language=Python,caption={问题一求解器}]{../程序/q1_solver.py}
+\lstinputlisting[language=Python,caption={问题一当前提交入口}]{../程序/q1_submit.py}
 \subsection{问题二求解器}
-\lstinputlisting[language=Python,caption={问题二求解器}]{../程序/q2_solver.py}
+\lstinputlisting[language=Python,caption={问题二 r07 当前提交入口}]{../程序/q2_r07_submit.py}
 \subsection{问题三求解器}
-\lstinputlisting[language=Python,caption={问题三求解器}]{../程序/q3_solver.py}
+\lstinputlisting[language=Python,caption={问题三当前提交入口}]{../程序/q3_submit.py}
 \clearpage
 \section{问题一逐用例官方结果}
 每行对应一张图和一个核心数，共500行；加速比的分母为该图固定单核基准。额外搬运量为官方评价输出的逻辑字节数。

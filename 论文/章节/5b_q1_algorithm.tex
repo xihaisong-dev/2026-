@@ -1,0 +1,73 @@
+\subsection{初解生成的结构依据}
+求解先利用计算图的弱连通分量。两个互不相连的分量之间没有计算数据前驱；若把完整分量分别放到不同核心，不会产生分量间新的中间张量通信，因此它们是低成本的并行初解。设分量 $C$ 的矩阵、向量工作量分别为 $W_M(C),W_V(C)$，并定义两管道负载向量 $\mathbf w(C)=(W_M(C),W_V(C))$。若某分量的某项工作量超过平均每核份额，
+\begin{equation}\label{eq:q1-dominant-component}
+W_M(C)>\frac{W_M}{k}
+\quad\text{或}\quad
+W_V(C)>\frac{W_V}{k},
+\end{equation}
+则在“整个分量必须落在一个核心”的候选中，该核心相应 Pipe 至少要执行 $W_M(C)$ 或 $W_V(C)$ 周期，比理想均摊项更大。式\eqref{eq:q1-dominant-component}是\emph{考虑拆分}的判据，不是“拆分必优”的证明：如果沿分量内部切断一条巨量共享张量，通信、同步或溢出可能使最终时间更差。实现只在有限拓扑窗口提出切分，并保留不拆的完整分量方案作对照。
+
+分量分核用负载向量而非操作数量。对当前核心 $c$ 的估计负载记 $\mathbf L_c=(L_{M,c},L_{V,c})$；将分量 $C$ 放到 $c$ 后，一个用于初解的平衡指标为
+\begin{equation}\label{eq:q1-pipe-load}
+\widehat L_c(C)=
+\max\{L_{M,c}+W_M(C),\,L_{V,c}+W_V(C)\}.
+\end{equation}
+优先选择能控制当前最大 Pipe 长尾的核心，再用共享输入字节数和依赖释放风险破同分。式\eqref{eq:q1-pipe-load}只近似双计算管道的最短可能占用，尚未计入搬运 Pipe、DDR 或生命周期。它比“每核平均分配相同算子数”更贴合计算时间，却不能单独决定最终方案。
+
+另一类初解利用共享输入超边。对输入 $x$ 的 Task 消费集合 $\mathcal C_x(\pi)=\{\pi(v):v\in C(x)\}$，式\eqref{eq:q1-duplicate-input}说明切到多个 Task 会增加读入机会。生成候选时，先根据超边交集和拓扑位置给相关操作形成小的局部簇，然后只有在商图无环且负载不过分集中时才尝试合并。这样让“共享输入节省”与“并行空间丢失”在候选池中同时可见。弱连通分量、拓扑窗口、共享输入簇对应不同图结构，保留多种候选能够降低单一固定粒度的偶然性。
+
+\subsection{关键工作量优先与合法空隙插入}
+固定一种划分后，给 Task $r$ 一个向后看的关键度。以 $\underline\tau_r$ 为式\eqref{eq:q1-task-min-duration}给出的最短计算时长，从商图汇点反向递推
+\begin{equation}\label{eq:q1-upward-rank}
+\operatorname{rank}(r)=\underline\tau_r+
+\max_{s\in\operatorname{Succ}_{\pi}(r)}
+\left\{\operatorname{rank}(s)+\underline c_{rs}\right\},
+\qquad \max\varnothing=0.
+\end{equation}
+其中 $\underline c_{rs}$ 可以取零作为保守结构排序，也可用经场景 A 展开规则估计的边界搬运与释放代价。$\operatorname{rank}(r)$ 大，表示推迟它更可能拖慢最终输出，因而在已就绪 Task 中优先处理。这是排序启发式，不把估计值误认为准确关键路径。Task 间序与核心映射仍由合法性检查和官方评价决定。
+
+对就绪 Task $r$，列表调度并非只能附加在某核队尾。核心 $c$ 上已有按时间排序的 Task 区间 $[S_j,F_j]$。考虑相邻区间 $(j,j+1)$ 之间的空隙，候选插入位置须同时满足
+\begin{equation}\label{eq:q1-gap-insert}
+S_r\ge F_j+100,\qquad
+F_r+100\le S_{j+1},\qquad
+S_r\ge \max_{a\in\operatorname{Pred}_\pi(r)}(F_a+\delta_{ar}).
+\end{equation}
+还要检查插入后扩展商图仍无环。若放在队头或队尾，相应的单侧不等式删除。$F_r$ 在真实仿真前未知，调度器以局部成本估计做插入排序；被选中的完整方案最终由官方事件评价。与永远追加在队尾相比，合法空隙插入可把一个已经满足前驱的任务放进另一个任务等待 DDR 或跨核释放时留下的区间，而不改变已排 Task 的相对次序。若局部估计误差使其实际上不缩短完成时间，保底方案仍在。
+
+候选核的比较遵循预计最早完成时间，但显式保留释放时刻和空隙位置。记 $\widehat d_r(c)$ 为局部核内准备得到的任务时长代理，$\widehat S_r(c,g)$ 为在核心 $c$ 空隙 $g$ 中满足式\eqref{eq:q1-gap-insert}的最早估计开始时刻，则
+\begin{equation}\label{eq:q1-eft-expanded}
+(c^\star,g^\star)\in
+\arg\min_{c,g\ {\rm legal}}
+\Bigl[\widehat S_r(c,g)+\widehat d_r(c)\Bigr].
+\end{equation}
+式\eqref{eq:q1-eft-expanded}只产生一个或少量候选，不意味着真实全局完成时间等于该任务预计完成时间。多个任务共享 DDR；把一个任务提前可能推迟同时搬运的关键任务，所以每个候选在送官方评价前还要经过较完整的事件成本排序。
+
+\subsection{代理排序、机会成本与局部修复}
+在官方评估调用受限时，搜索对象不是全部合法方案，而是当前结构附近的有界候选池。代理评价固定一次成本状态，保留已准备的 Pipe 顺序、依赖和传输工作量；对各候选仅重放受到局部改变影响的释放与资源事件。设 $\widehat T_{\theta}(p)$ 为在同一已冻结状态 $\theta$ 下的预测完成时间，比较候选 $p_a,p_b$ 时必须使用同一 $\theta$：
+\begin{equation}\label{eq:q1-proxy-comparison}
+p_a\prec_{\theta}p_b
+\iff
+\widehat T_\theta(p_a)<\widehat T_\theta(p_b).
+\end{equation}
+若用候选 $a$ 的旧资源占用预测 $a$，却用另一套已更新的占用预测 $b$，排名差异不能解释为方案差异。更重要的是 $\widehat T_\theta$ 不是严格上界或下界；代理预测改善但官方变差的负例曾出现。因此代理只决定哪个合法候选优先占用宝贵评价机会，\emph{不能}直接替换已验证方案。对于不同划分但同核内准备键的候选，复用已确定的核内子问题结果以降低主机计算秒数；这种工程复用不改变 NPU 仿真周期。
+
+局部修复选择少量相互关联的瓶颈 Task，允许调整它们的边界、核心和局部顺序。相关性由关键链邻接、共享张量和在同一 DDR 拥塞窗口内搬运共同确定。区域外保持原相对顺序，区域内仅取有限种分配和优先级，逐项过滤覆盖重复、商图环与资源非法；对完全相同的完整方案按划分、映射、顺序的规范序列去重。保留至少一个结构不同的合法候选，比重复评价同一方案更有信息价值。区域规模及提案数设置硬上限，其作用是搜索联合改变而非组合穷举。
+
+每个多核配置的完整官方评价机会封顶为 $B=12$。基本划分与映射搜索先保留一部分机会，新初解和区域修复只能在剩余机会内竞争；同一指纹的重复方案不应假装是一次新探索。官方返回 $(T,D)$ 后，采用规则为
+\begin{equation}\label{eq:q1-incumbent}
+p_{\rm best}\leftarrow
+\arg\min_{p\in\{p_{\rm best},p_{\rm new}\}}
+\operatorname{lex}\{T^A(p),D(p)\},
+\end{equation}
+因此在一个配置内已评价方案的最优记录不会因一次失败提案而变差。相对上一轮\emph{不同}完整算法版本的少数退步仍可能存在：版本间初解、排序、预算占用发生变化，新的有限候选池不一定包含旧版最优解。不能把式\eqref{eq:q1-incumbent}误读为跨版本、跨核数或跨场景单调性的证明。
+
+\subsection{求解过程与复杂度边界}
+可将上述过程写为如下可复核的有限步骤：
+\begin{enumerate}[leftmargin=2em]
+\item 从原图生成整图保底、依赖贪心和完整分量等合法初解；对式\eqref{eq:q1-dominant-component}触发的分量有限地产生拓扑切分。
+\item 对每种划分用式\eqref{eq:q1-upward-rank}排序就绪任务，按式\eqref{eq:q1-gap-insert}、\eqref{eq:q1-eft-expanded}选取核心及合法空隙，得到完整 $(\pi,m,\sigma)$。
+\item 扩展商图做无环检查，并检查唯一覆盖与基本结构；对合法且不重复方案，用相同成本状态的代理排序。
+\item 在至多 $B$ 次完整官方评价内，轮流分配基础搜索与有限区域修复机会；每次按式\eqref{eq:q1-incumbent}更新最优实测方案。
+\item 输出每个算子子图编号与每核顺序，最终再作独立官方回放和逐例指标核对。
+\end{enumerate}
+拓扑排序和无环检查对一个固定候选可在线性于商图节点、边数的时间完成；候选生成次数由结构档数、局部区域上限和评价预算限制。官方核内排程及事件仿真仍可能随大图、缓存溢出和同时在途搬运而耗时，故“组合搜索次数有界”并不自动保证每个大图从冷启动到最终复核都在十分钟内。本文所报最长约 $364$ 秒仅对应已记录的热搜索阶段，求解器墙钟秒数与所输出方案的 NPU 执行周期必须分别解释。

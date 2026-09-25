@@ -1,0 +1,65 @@
+\subsection{场景 A 的物理语义与可行性}
+场景 A 中子图与 Task 一一对应，即 $\mathcal T(p)=\{V_1,\ldots,V_q\}$。两个 Task 即使被映射到同一个核心，前者的私有 L1/UB 状态也不能跨 Task 保留；跨子图张量必须先写至 DDR，后继 Task 再读回。因此子图边界上的数据路径由 $\pi$ 决定，核心映射 $m$ 并不能把同核边界通信改成免费的片上读取。这一点与场景 B 是根本区别。核心 $c$ 上按 $\sigma_c$ 串行执行的 Task 之间另有固定的 $100$ 周期切换间隔；跨核数据前驱给目标 Task 施加 $1000$ 周期等待。若有多个前驱，目标 Task 等到\emph{最后一个}约束满足即可，而非把所有前驱延迟相加。
+
+将 Task $r$ 的实际开始、完成记为 $S_r,F_r$，其数据前驱集合为 $\operatorname{Pred}_{\pi}(r)$。若 $a\prec_c r$ 表示核心 $c=m(r)$ 上排在 $r$ 前面的最后一个 Task，释放规则可写为
+\begin{align}\label{eq:q1-release-expanded}
+S_r&\ge \max_{a\in\operatorname{Pred}_\pi(r)}
+  \{F_a+\delta_{ar}\},&
+\delta_{ar}&=1000\,\mathbf 1\{m(a)\ne m(r)\},\\
+S_r&\ge F_{\operatorname{prev}_{\sigma_c}(r)}+100
+&&\text{若该前一 Task 存在}.\nonumber
+\end{align}
+式\eqref{eq:q1-release-expanded}只描述外层 Task 的可发射时刻。某 Task 的 $F_r-S_r$ 并非常数：展开出的四条 Pipe 上的操作依赖、共享 DDR 竞争以及 L1/UB 压力都会影响它。优化器因此必须先给出合法 $(\pi,m,\sigma)$，再调用官方核内与多核评价过程得到真实 $F_r$。若仅用一个预先标定的“子图长度”代入普通列表调度，便会在两个候选改变 DDR 发射重叠时给出相同预测，却可能得到不同的正式完成时间。
+
+四条 Pipe 分别执行矩阵运算、向量运算和两类搬运。用 $P(e)$ 表示事件 $e$ 所属 Pipe，核内候选排程给每条 Pipe 一个确定顺序。对相同核心及相同 Pipe 的前后事件有 $f_{\operatorname{prevPipe}(e)}\le s_e$；跨 Pipe 只由真实算子依赖与内存复用依赖约束，不人为强制串行。对任一私有存储池 $r\in\{\mathrm{L1},\mathrm{UB}\}$，展开后的物理驻留集合 $\mathcal R_{c,r}(t)$ 必须满足
+\begin{equation}\label{eq:q1-capacity}
+\sum_{x\in\mathcal R_{c,r}(t)} b_x\le C_r,\quad
+C_{\mathrm{L1}}=524288,\quad C_{\mathrm{UB}}=131072
+\qquad(\forall c,t).
+\end{equation}
+如果未经换出换入就会越界，官方核内启发式会引入附加搬运来维持容量合法。因而式\eqref{eq:q1-capacity}约束的是\emph{实际展开的执行}，不能把“候选静态张量大小总和未超限”误认为充分条件，也不能把溢出惩罚写成只由子图算子数量决定的固定函数。
+
+\subsection{额外搬运的计数口径}
+令 $B_{\rm all}(p)$ 为官方展开方案在 DDR 上的总逻辑 COPY 字节数，$B_{\rm orig}$ 为未切图输入中已经要求的基础 COPY 字节数。题目所报的额外搬运定义为
+\begin{equation}\label{eq:q1-added-bytes}
+D(p)=B_{\rm all}(p)-B_{\rm orig}.
+\end{equation}
+这个定义覆盖了子图边界传递、原始输入的重复读取，以及核内启发式因容量不足插入的换入换出。正文始终用式\eqref{eq:q1-added-bytes}与官方输出核对，而不用简单割边权和代替它。设输入张量 $x$ 被 $r_x(\pi)$ 个不同 Task 消费，则在独立 Task 都需要从 DDR 读入这一语义下，\emph{相对一次读取}的重复输入字节可用
+\begin{equation}\label{eq:q1-duplicate-input}
+D_{\rm input}^{\rm proxy}(\pi)=
+\sum_{x\in\mathcal X_{\rm input}}\bigl(r_x(\pi)-1\bigr)_+\,b_x
+\end{equation}
+作静态代理。它反映多消费超边的割开程度：同一张量的三个消费者分处三个 Task 时，不宜只看三条两两边的权重；若三个消费者聚在一个 Task，代理重复读入为零。但式\eqref{eq:q1-duplicate-input}只涉及外部输入的一个组成项，不能再把同一张量的边界读入重复加进另一个“割边项”以免双计。中间张量的写出次数、各目标 Task 的读取及真实溢出，由官方展开后的事件记录裁决。
+
+减少 $D(p)$ 并不等价于减少 $T(p)$。反例是合并两个可并行子图：该动作可能删除边界 COPY，却使原来可分别运行的矩阵链和向量链被一个 Task 的内部顺序或容量压力拖慢。反过来，少量额外搬运若释放关键任务的并行空间，也可能缩短 Makespan。因此式\eqref{eq:q1-objective}采用完成时间优先的字典序；并在结果章节同时报告 $D(p)$ 的变化，而不预设它必与主目标同向。
+
+\subsection{方案条件下的下界及其推导}
+共同计算下界 $L_0(k)$ 已由式\eqref{eq:universal-compute-bound}给出。场景 A 还允许对固定方案 $p$ 构造更贴近其 Task 结构的事后下界。令 $W_{M,r}=\sum_{e\in V_r\cap O_M}c_e$，$W_{V,r}=\sum_{e\in V_r\cap O_V}c_e$；同一 Task 内这两类 Pipe 可以重叠，却各自不能在本 Pipe 上并发，因此
+\begin{equation}\label{eq:q1-task-min-duration}
+F_r-S_r\ge \underline\tau_r:=\max\{W_{M,r},W_{V,r}\}.
+\end{equation}
+若核心 $c$ 上有 $n_c$ 个 Task，则该核从第一个 Task 起始到最后一个 Task 完成至少占用 $\sum_{r:m(r)=c}\underline\tau_r+100(n_c-1)_+$ 周期。令 $\mathcal P(H(p))$ 为扩展商图的路径集合，在路径 $(r_1,\ldots,r_h)$ 上，每个任务的最短计算时间和依赖释放必须依次经过。因此
+\begin{align}\label{eq:q1-fixed-plan-lb}
+T(p)\ge L_A(p):=\max\Bigg\{&
+L_0(k),\ \frac{B_D(p)}{60},\
+\max_c\bigg[\sum_{r:m(r)=c}\underline\tau_r+100(n_c-1)_+\bigg],\\
+&\max_{(r_1,\ldots,r_h)\in\mathcal P(H(p))}
+\bigg[\sum_{j=1}^{h}\underline\tau_{r_j}
++\sum_{j=1}^{h-1}\underline\delta(r_j,r_{j+1})\bigg]\Bigg\}.\nonumber
+\end{align}
+对路径中的数据依赖弧，跨核时取 $\underline\delta=1000$，同核时至少为 $100$ 的任务间隔；对纯顺序弧，只取 $100$。若一对任务既有数据依赖又有顺序关系，同一间隔仅计一次。式\eqref{eq:q1-fixed-plan-lb}的每项分别由计算工作、带宽容量、同核串行和依赖链推出，取最大而不是相加，避免把可重叠资源时间重复计算。
+
+这个界是\emph{针对所选划分和映射的条件界}。例如合并任务会改变 $B_D(p)$、$n_c$ 和路径集；把方案 $p_1$ 的 $L_A(p_1)$ 当作方案 $p_2$ 的最优下界没有依据。我们用它寻找当前方案的主导限制：若同核负载项远大于其他项，优先考虑拆分或迁核；若关键路径项主导，优先处理路径上的边界与核心切换；若带宽项主导，检查重复输入及边界流量。这是一条有物理解释的候选分配规则，不是由下界直接求得最优划分。
+
+\subsection{合并与拆分的边际判断}
+考虑相邻子图 $A,B$ 与一份大小为 $b$ 的边界张量。若把它们合成同一 Task，理论上可删除这份边界上的部分 DDR 事件与释放等待；但这份“被删除的字节数”不一定等于 $b$ 或 $2b$，因为还取决于共享消费者、输出写回以及已有 COPY。令 $\Delta B_{\rm boundary}$ 为按场景 A 展开规则实际消失的边界字节，$\Delta B_{\rm spill}$ 为合并后新增的溢出字节。一个\emph{仅用于排序}的净搬运近似为
+\begin{equation}\label{eq:q1-merge-traffic-proxy}
+\widehat{\Delta B}
+=\Delta B_{\rm boundary}-\Delta B_{\rm spill}.
+\end{equation}
+若合并删除一个实际落在关键链上的跨核 Task 边，还可能减少 $1000$ 周期释放；若删除的是同核相邻 Task 边，最多直接省下该处 $100$ 周期间隔。然而被删除的等待与传输可以重叠，也可能原本根本不控制最终输出，所以不能把 $\Delta B_{\rm boundary}/60+1000$ 作为\emph{必得}的 Makespan 改善。真正的差值为
+\begin{equation}\label{eq:q1-merge-exact}
+\Delta T_{\rm merge}
+=T^A(p_{\rm old})-T^A(p_{\rm merged}),
+\end{equation}
+只能在两个完整方案通过官方评估后确定。式\eqref{eq:q1-merge-traffic-proxy}给出有依据的候选顺序，式\eqref{eq:q1-merge-exact}才给出是否接受的结论。拆分动作同理：它增加边界开销，却可能降低单核长尾与局部溢出。固定算子个数切块无法表达这种结构差异，故初始划分同时覆盖整分量与少量主导分量拆分。
