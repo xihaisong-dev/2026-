@@ -20,6 +20,11 @@ R_v\ge F_{P_{m_v}(v)}+100 .
 为了识别一份输入被多个子图重复读取的情形，我们把共享张量与多个消费算子的关系视为有向超边，保留原图方向和商图无环性。多层次无环划分研究说明，此类表示比仅统计两两割边更适合描述共享输入\cite{popp}。我们借鉴这一表示和粗化思想，但没有照搬其平衡目标或宣称实现了文献的完整算法；本题的最终目标仍是式\eqref{eq:q1-objective}。
 
 \input{章节/5a_q1_model}
+图\ref{fig:q1-algorithms}概括两种方法的候选构造路线。两条路线共享覆盖、无环与物理约束；图中的最终评价原则也用于搜索过程中的每次候选接纳。
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.92\linewidth,height=0.70\textheight,keepaspectratio]{../图表/runs/20260926-A-six-figures/fig_q1_algorithms.pdf}
+\caption{结构感知搜索与多候选精修的算法对照}\label{fig:q1-algorithms}
+\end{figure}
 \subsection{结构感知搜索：结构感知初解与有界搜索}
 首先构造整图保底方案与依赖贪心方案。对没有计算依赖的弱连通分量，尝试保持完整并按估计的最长 Pipe 工作量分核；这样能释放天然并行度，且减少不必要的分量内切边。若一个主导分量明显压过其余分量，则在满足无环性的拓扑窗口中有限拆分，以免完整保留造成单核长尾。共享输入复用、局部核内时长和容量压力同时参与候选排序；局部估计只负责提出方案，不能替代官方全局仿真。
 
@@ -45,10 +50,7 @@ R_v\ge F_{P_{m_v}(v)}+100 .
 \bottomrule
 \end{tabular}
 \end{table}
-\begin{figure}[!htbp]\centering
-\includegraphics[width=0.85\linewidth,height=0.70\textheight,keepaspectratio]{../图表/fig_q1_r02_mean_speedup.pdf}
-\caption{问题一结构感知搜索的百图逐图加速比算术平均}\label{fig:q1-speed}
-\end{figure}
+
 
 与本工程上一轮相同百图方案相比，二至五核总周期分别下降 $0.9958\%$、$1.6807\%$、$2.7519\%$、$3.6678\%$；$400$ 个多核配置中 $68$ 胜、$330$ 平、$2$ 负。负例是第 $6$ 图的三核和四核，不能把各阶段收益简单相加，或说每张图都改善。第 $59$ 图在二、四、五核取得本批次最大的逐图加速比，三核最大值来自第 $97$ 图；这些仅为分布端点，不替代百图均值。由于单核分母本身是题目规定的核内启发式而非全局最优，少数多核比值超过核数可以出现，不构成评价错误。
 

@@ -84,3 +84,8 @@ L(p)=\max\left\{L_0(k),\frac{B_D(p)}{60}\right\}\le T(p).
 \omega_{i,k}=\frac{T_{i,k}}{\sum_jT_{j,k}}.
 \end{equation}
 所以总周期比是以\emph{多核耗时}为权重的加速比，而式\eqref{eq:mean-speedup-derivation}是每图等权。两个数值可以同时陈述，但不能互换作题目要求的折线图纵轴。若某些大图总周期改善很多、而大量小图改善一般，总周期下降可以明显，平均加速比却不一定同幅增长。后续结果表同时列出平均加速比、百图总周期和额外搬运，正是为了避免单一指标遮蔽这层差异。
+图\ref{fig:scene-paths}用相同的依赖关系说明三种场景的服务路径。P、Q、R 表示子图，P 与 Q 同核、R 在另一核心；示意图只说明规则，不表示实测时长。同核驻留仍受依赖与容量约束；共享只读 L2 的命中不取消原有跨核同步。
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.92\linewidth,height=0.70\textheight,keepaspectratio]{../图表/runs/20260926-A-six-figures/fig_scene_paths.pdf}
+\caption{三种场景的子图数据路径对照}\label{fig:scene-paths}
+\end{figure}

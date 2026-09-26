@@ -21,3 +21,10 @@ P(f)=\frac{\widetilde w_f}{\sum_g\widetilde w_g}.
 p^\star\in\arg\min_{p\in\mathcal A}\operatorname{lex}(T^B(p),D(p)).
 \end{equation}
 这一有限集合择优性质由逐次更新直接归纳得到，既不证明全局最优，也不保证另一台机器在同一秒数内访问同一个 $\mathcal A$。全量实验固定规则、种子与配置，并单独披露历史初解成本。
+\subsection{典型算例的执行时间线}
+图\ref{fig:q2-gantt}采用第12图的五核配置，把已声明输入初解与最终方案放在同一场景B官方评价器下比较。初解完成周期为13406，最终为11971，下降10.70\%。图中按每核分别合并同类计算、搬运操作的实际执行区间，保留二者重叠；空白只表示该类操作当时未执行，不单凭空白判定等待原因。虚线标明全图完成时刻。该图揭示末段完成时刻与活动分布的变化，不把全部改善归因于某一种局部操作。
+
+\begin{figure}[!htbp]\centering
+\includegraphics[width=0.92\linewidth,height=0.70\textheight,keepaspectratio]{../图表/runs/20260926-A-six-figures/fig_q2_gantt.pdf}
+\caption{第12图五核初解与最终方案的官方执行时间线}\label{fig:q2-gantt}
+\end{figure}

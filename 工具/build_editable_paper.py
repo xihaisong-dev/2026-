@@ -61,10 +61,10 @@ def picture(m):
  path=(P/m[2]).resolve();target=path
  if path.suffix.lower()=='.pdf':
   target=TMP/(hashlib.sha256(str(path).encode()).hexdigest()[:12]+'.png')
-  if not target.exists(): subprocess.run([str(POP),'-f','1','-singlefile','-scale-to','2200','-png',str(path),str(target.with_suffix(''))],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+  if not target.exists() or target.stat().st_mtime < path.stat().st_mtime: subprocess.run([str(POP),'-f','1','-singlefile','-scale-to','2200','-png',str(path),str(target.with_suffix(''))],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
  if not target.exists():raise FileNotFoundError(path)
  image_manifest.append({'source':str(path),'render':str(target)})
- return '\\includegraphics[width=14cm]{'+target.as_posix()+'}'
+ return '\\includegraphics[width=15cm]{'+target.as_posix()+'}'
 s=re.sub(r'\\includegraphics(?:\[([^]]*)\])?\{([^}]+)\}',picture,s)
 # Number headings, captions, and displayed equations in document order; resolve all references explicitly.
 labels={}; counters={'section':0,'subsection':0,'subsubsection':0,'equation':0,'table':0,'figure':0}; appendix=False;last='';env=[];equations=[]
@@ -205,7 +205,7 @@ for sty in d.styles:
  for b in list(sty.element.xpath('.//w:pBdr')):b.getparent().remove(b)
 for shape in d.inline_shapes:
  ratio=shape.height/shape.width
- width=min(shape.width,Cm(14));height=width*ratio
+ width=min(shape.width,Cm(15));height=width*ratio
  if height>Cm(15):height=Cm(15);width=height/ratio
  shape.width=int(width);shape.height=int(height)
 # Native, editable three-line tables with repeating column headers; no fixed row heights.
@@ -242,5 +242,6 @@ for idx,sec in enumerate(d.sections):
   el=OxmlElement('w:fldSimple');el.set(qn('w:instr'),'PAGE');footer._p.append(el)
 update=OxmlElement('w:updateFields');update.set(qn('w:val'),'true');d.settings.element.append(update)
 dest=OUT/'通用神经网络处理器多核调度论文_两方案修订版.docx';d.save(dest)
-audit={'output':str(dest),'sources':sources,'equation_blocks':eq_count,'native_math_count':len(d.element.xpath('.//m:oMath')),'tables':len(d.tables),'figures':len(d.inline_shapes),'raw_nodes':len(raw),'images':image_manifest,'references':labels,'source_note':'Latest full manuscript b9334831 plus verified Allin2 five-core delivery; low-core Allin2 runs pending.'}
+audit={'output':str(dest),'sources':sources,'equation_blocks':eq_count,'native_math_count':len(d.element.xpath('.//m:oMath')),'tables':len(d.tables),'figures':len(d.inline_shapes),'raw_nodes':len(raw),'images':image_manifest,'references':labels,'source_note':'Full two-method curves and six evidence figures; Allin2 all 500 configurations verified.'}
 (TMP/'build_audit.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps({k:v for k,v in audit.items() if k not in ['sources','references','images']},ensure_ascii=False))
+
