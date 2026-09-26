@@ -1,7 +1,7 @@
 \subsection{平均加速、总周期与执行效率的不同视角}
 表\ref{tab:q1-main}中的平均加速比按式\eqref{eq:mean-speedup-derivation}逐图等权统计。为了评价这批图的总体执行负担，表\ref{tab:q1-aggregate-perspective}另把单核总周期 $312\,479\,373$ 作为分母，列出合计周期缩减率与总周期比。数值均直接由同一500行结果表计算，不引入另一批算例。五核总周期较单核下降 $76.5839\%$，其倒数形式的总周期比为 $4.270565$；规定的逐图平均加速比却为 $3.665903$。差异并非评估矛盾，而是式\eqref{eq:weighted-speedup}的权重差异。论文主图仍采用规定的逐图等权均值，总周期比只用于说明大图的绝对时延贡献。
 \begin{table}[!htbp]\centering
-\caption{问题一方案一百图总周期视角与逐图等权视角}\label{tab:q1-aggregate-perspective}
+\caption{问题一结构感知搜索百图总周期视角与逐图等权视角}\label{tab:q1-aggregate-perspective}
 \begin{tabular}{rrrrr}
 \toprule
 核数 & 总周期比 & 总周期下降率 & 平均加速比 & 平均并行效率\\
@@ -17,7 +17,7 @@
 并行效率定义为 $\eta_k=\overline S_k/k$，只是把相对核数的等权加速程度标准化。五核时 $\eta_5=0.733181$ 并不意味着其余 $26.6819\%$ 的周期都由 DDR 独自造成；关键链、Pipe 不均、释放等待和核内溢出都可能参与。任务执行时间越短是首要目标，不能为了让 $\eta_k$ 的比值好看而故意牺牲 Makespan。图\ref{fig:q1-total}展示合计周期随核数的实际下降，与图\ref{fig:q1-speed}共同报告两个互补视角。
 \begin{figure}[!htbp]\centering
 \includegraphics[width=0.85\linewidth,height=0.60\textheight,keepaspectratio]{../图表/fig_q1_r02_total_cycles.pdf}
-\caption{问题一方案一百图总执行周期随核心数的变化}\label{fig:q1-total}
+\caption{问题一结构感知搜索百图总执行周期随核心数的变化}\label{fig:q1-total}
 \end{figure}
 
 \subsection{典型结果与反例}

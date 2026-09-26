@@ -24,24 +24,24 @@ app=r'''\section{程序与结果复现说明}
 正文所用模型的实现及全部逐配置结果保留在配套工程中。此 Word 版将整段源代码改列为文件索引和运行入口；数学模型、算法步骤及下列逐图数值均可直接编辑。
 \begin{tabular}{ll}
 \toprule 内容 & 工程入口\\\midrule
-问题一方案一 & q1\_submit.py、q1\_experimental.py\\
-问题一方案二 & Allin2/npu\_schedule\_project/src/solver.py\\
+问题一结构感知搜索 & q1\_submit.py、q1\_experimental.py\\
+问题一多候选精修 & Allin2/npu\_schedule\_project/src/solver.py\\
 问题二与问题三 & q23\_submit\_current.py\\
 问题二限时搜索 & q2\_timed\_portfolio.py\\
 问题三组合搜索 & q3\_timed\_combination.py\\
-方案一结果索引 & 20260924-A-q1-delivery-r02/all\_case\_results.csv\\
-方案二五核核对 & recovered\_n5\_summary.json\\\bottomrule
+结构感知搜索结果索引 & 20260924-A-q1-delivery-r02/all\_case\_results.csv\\
+多候选精修五核核对 & recovered\_n5\_summary.json\\\bottomrule
 \end{tabular}
-方案一的命令入口如下；GRAPH 为经审计的输入图，K 为核心数，DIR 为新的输出目录。不得把已有运行目录作为可覆盖的临时目录。
+结构感知搜索的命令入口如下；GRAPH 为经审计的输入图，K 为核心数，DIR 为新的输出目录。不得把已有运行目录作为可覆盖的临时目录。
 \begin{verbatim}
 python q1_submit.py GRAPH -n K --output DIR --verify-final
 \end{verbatim}
-方案二的交付来自 model/new-model-20260925 分支中 Allin2，来源提交 da469d8e。五核历史交付方案已恢复并按官方评价核对，不能把恢复指定历史候选的耗时作为盲搜算法的运行时间。正文的三问基础稿取自 b9334831；本稿另增问题一两方案比较。
-\section{问题一方案一的逐图结果}
-每个加速比的分母为同图固定单核周期。以下结果属于方案一。
+多候选精修的交付来自 model/new-model-20260925 分支中 Allin2，来源提交 da469d8e。五核历史交付方案已恢复并按官方评价核对，不能把恢复指定历史候选的耗时作为盲搜算法的运行时间。正文的三问基础稿取自 b9334831；本稿另增问题一两方案比较。
+\section{问题一结构感知搜索的逐图结果}
+每个加速比的分母为同图固定单核周期。以下结果属于结构感知搜索。
 '''+expand(r'\input{../图表/runs/20260924-A-q1-delivery-r02/appendix_results.tex}')
 rows=json.loads((R/'recovered_n5_summary.json').read_text())
-app+=r'\section{问题一方案二的五核逐图结果}'+'\n'+r'\begin{longtable}{lrrr}\caption{方案二已恢复核对的五核结果}\\\toprule 算例 & 周期 & 额外搬运（bytes） & 加速比\\\midrule\endfirsthead\toprule 算例 & 周期 & 额外搬运（bytes） & 加速比\\\midrule\endhead'+'\n'
+app+=r'\section{问题一多候选精修的五核逐图结果}'+'\n'+r'\begin{longtable}{lrrr}\caption{多候选精修已恢复核对的五核结果}\\\toprule 算例 & 周期 & 额外搬运（bytes） & 加速比\\\midrule\endfirsthead\toprule 算例 & 周期 & 额外搬运（bytes） & 加速比\\\midrule\endhead'+'\n'
 for x in rows:app+=x['case'].replace('_',r'\_')+f" & {x['makespan']} & {x['added_copy_bytes']} & {x['speedup']:.6f}"+r'\\'+'\n'
 app+=r'\bottomrule\end{longtable}'+'\n'
 app+=r'\section{问题二逐图官方结果}'+expand(r'\input{../图表/runs/20260926-A-q123-complete-delivery/q2_appendix.tex}')
