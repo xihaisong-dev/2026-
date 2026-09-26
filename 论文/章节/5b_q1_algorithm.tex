@@ -1,4 +1,4 @@
-\subsection{初解生成的结构依据}
+\subsubsection{初解生成的结构依据}
 求解先利用计算图的弱连通分量。两个互不相连的分量之间没有计算数据前驱；若把完整分量分别放到不同核心，不会产生分量间新的中间张量通信，因此它们是低成本的并行初解。设分量 $C$ 的矩阵、向量工作量分别为 $W_M(C),W_V(C)$，并定义两管道负载向量 $\mathbf w(C)=(W_M(C),W_V(C))$。若某分量的某项工作量超过平均每核份额，
 \begin{equation}\label{eq:q1-dominant-component}
 W_M(C)>\frac{W_M}{k}
@@ -16,7 +16,7 @@ W_V(C)>\frac{W_V}{k},
 
 另一类初解利用共享输入超边。对输入 $x$ 的 Task 消费集合 $\mathcal C_x(\pi)=\{\pi(v):v\in C(x)\}$，式\eqref{eq:q1-duplicate-input}说明切到多个 Task 会增加读入机会。生成候选时，先根据超边交集和拓扑位置给相关操作形成小的局部簇，然后只有在商图无环且负载不过分集中时才尝试合并。这样让“共享输入节省”与“并行空间丢失”在候选池中同时可见。弱连通分量、拓扑窗口、共享输入簇对应不同图结构，保留多种候选能够降低单一固定粒度的偶然性。
 
-\subsection{关键工作量优先与合法空隙插入}
+\subsubsection{关键工作量优先与合法空隙插入}
 固定一种划分后，给 Task $r$ 一个向后看的关键度。以 $\underline\tau_r$ 为式\eqref{eq:q1-task-min-duration}给出的最短计算时长，从商图汇点反向递推
 \begin{equation}\label{eq:q1-upward-rank}
 \operatorname{rank}(r)=\underline\tau_r+
@@ -42,7 +42,7 @@ S_r\ge \max_{a\in\operatorname{Pred}_\pi(r)}(F_a+\delta_{ar}).
 \end{equation}
 式\eqref{eq:q1-eft-expanded}只产生一个或少量候选，不意味着真实全局完成时间等于该任务预计完成时间。多个任务共享 DDR；把一个任务提前可能推迟同时搬运的关键任务，所以每个候选在送官方评价前还要经过较完整的事件成本排序。
 
-\subsection{代理排序、机会成本与局部修复}
+\subsubsection{代理排序、机会成本与局部修复}
 在官方评估调用受限时，搜索对象不是全部合法方案，而是当前结构附近的有界候选池。代理评价固定一次成本状态，保留已准备的 Pipe 顺序、依赖和传输工作量；对各候选仅重放受到局部改变影响的释放与资源事件。设 $\widehat T_{\theta}(p)$ 为在同一已冻结状态 $\theta$ 下的预测完成时间，比较候选 $p_a,p_b$ 时必须使用同一 $\theta$：
 \begin{equation}\label{eq:q1-proxy-comparison}
 p_a\prec_{\theta}p_b
@@ -61,7 +61,7 @@ p_{\rm best}\leftarrow
 \end{equation}
 因此在一个配置内已评价方案的最优记录不会因一次失败提案而变差。相对上一轮\emph{不同}完整算法版本的少数退步仍可能存在：版本间初解、排序、预算占用发生变化，新的有限候选池不一定包含旧版最优解。不能把式\eqref{eq:q1-incumbent}误读为跨版本、跨核数或跨场景单调性的证明。
 
-\subsection{求解过程与复杂度边界}
+\subsubsection{求解过程与复杂度边界}
 可将上述过程写为如下可复核的有限步骤：
 \begin{enumerate}[leftmargin=2em]
 \item 从原图生成整图保底、依赖贪心和完整分量等合法初解；对式\eqref{eq:q1-dominant-component}触发的分量有限地产生拓扑切分。
