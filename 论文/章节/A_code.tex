@@ -1,39 +1,12 @@
-\section{核心程序与复现入口}
-本附录直接从仓库引用三问的\emph{当前提交入口}，避免把初版求解器误列为现行算法。完整源码、输入和官方评价程序随交付仓库提供。百图批量复现与校验由\path{q1_delivery_r02.py}、\path{q2_delivery_r07.py}及问题三冻结交付脚本与交接单约定。问题一入口调用\path{q1_experimental.py}和结构候选模块；问题二入口调用\path{q2_reserve_fast.py}；问题三入口调用\path{q3_solver.py}与\path{q3_neighborhood.py}。入口代码和核心模块应在相同提交版本下一起使用；纸面列表只是定位复现入口，不能替代仓库中的全部依赖。
-\subsection{三问核心求解逻辑与参数}
-以下伪代码对应当前交付程序的候选生成、官方评价与择优主循环。输入图、配置和官方评价器必须来自同一冻结版本；公式中的 $D$ 为官方逻辑额外搬运量。
-\begin{enumerate}[leftmargin=2em]
-\item \textbf{问题一（\path{q1_experimental.solve_experimental}）：}读取图并构造有向依赖及共享输入索引；生成整图、完整分量、受限拓扑切分等合法初解；按关键度与 Pipe 工作量映射到核心，并进行合法空隙插入；对规范指纹去重。保护基础划分机会后，在剩余预算中提出局部边界、映射与顺序联动候选。每次先验合法性，再用场景 A 官方评价返回 $(T^A,D)$；按字典序更新当前最优，输出方案并作独立回放。
-\item \textbf{问题二（\path{q2_reserve_fast.solve}）：}将问题一结果仅作为结构种子，另保留整图备选；在场景 B 中重新估计同核驻留、跨核 COPY 与 $500$ 周期释放，生成六个结构候选；对主导分量按 $\chi(G)>0.5$ 的固定门控允许另一种布局，重复候选只按预设规则补位；最后提出至多四次合法的迁核加局部顺序修复。所有候选用场景 B 官方评价按 $(T^B,D)$ 选择，并独立回放。
-\item \textbf{问题三（\path{q3_solver.solve}）：}问题二方案作为保底；先用场景 C 官方评价取得固定方案 L2 结果，扫描真实 FIFO 未命中和消费者所在子图；\path{q3_neighborhood.pool} 从有限核心迁移与合法插入位置提出至多四个不同候选。逐个用官方双带宽事件评价，以 $(T^{L2},D)$ 字典序更新，最终重放并复核 FIFO、内存峰值与搬运恒等式。问题三最终方案再由\path{q3_no_l2_replay.py} 在官方场景 B 评价器下重放一次，形成同方案无 L2 对照；这一步是结果复核，不是额外搜索机会。
-\end{enumerate}
-\begin{table}[!htbp]\centering\small\setlength{\tabcolsep}{3pt}
-\caption{交付求解器的关键固定参数与比较口径}\label{tab:code-parameters}
-\begin{tabular}{llll}
-\toprule
-问题 & 每多核配置候选机会 & 固定参数 & 最终比较\\
-\midrule
-一 & $12$；基础划分机会受保护 & 种子 $0$；计数型成本准备 & 官方场景 A：$(T,D)$\\
-二 & $12$；含 $4$ 个普通联合邻域 & 主导分量阈值 $0.5$；跨核释放 $500$ 周期 & 官方场景 B：$(T,D)$\\
-三 & 继承种子并新增至多 $4$ 个候选 & L2 容量 $1$ MiB；带宽 $250$ bytes/cycle & 官方场景 C：$(T,D)$\\
-\bottomrule
-\end{tabular}
-\end{table}
-\subsection{问题一求解器}
-\lstinputlisting[language=Python,caption={问题一当前提交入口}]{../程序/q1_submit.py}
-\subsection{问题二求解器}
-\lstinputlisting[language=Python,caption={问题二 r07 当前提交入口}]{../程序/q2_r07_submit.py}
-\subsection{问题三求解器}
-\lstinputlisting[language=Python,caption={问题三当前提交入口}]{../程序/q3_submit.py}
+\input{章节/A_generated_core}
 \clearpage
 \section{问题一逐用例官方结果}
-每行对应一张图和一个核心数，共500行；加速比的分母为该图固定单核基准。额外搬运量为官方评价输出的逻辑字节数。
+加速比为固定单核时间除以本配置时间。
 \input{../图表/runs/20260924-A-q1-delivery-r02/appendix_results.tex}
 \clearpage
 \section{问题二逐用例官方结果}
-每行对应一张图和一个核心数，共500行。
-\input{../图表/runs/20260924-A-q2-delivery-r07/appendix_table.tex}
-\clearpage
-\section{问题三逐用例成对结果}
-下列长表以两种固定方案与两种硬件配置的 $2\times2$ 设计列出执行周期：问题二方案和最终问题三方案均分别在无L2与只读L2下评价。每行对应同一张图及核数，500行均为题目原始评价程序的输出。问题三方案无L2列由\path{q3_no_l2_replay.py}对最终交付方案重新评价；其原始评价、输入哈希及方案哈希保存在\path{20260925-A-q3-selected-plan-no-l2-r04}目录。缓存统计仍由问题三保存的事件账本复核。
-\input{../图表/runs/20260925-A-q3-selected-plan-no-l2-r04/appendix_table.tex}
+各核数均为100图，额外搬运单位为bytes。
+\input{../图表/runs/20260926-A-q123-complete-delivery/q2_appendix.tex}
+\section{问题三最终方案的同方案成对结果}
+每行的无L2与L2周期来自同一最终方案的独立官方评价，两次额外逻辑搬运相同，表中合列一次；命中率为官方字节命中率。
+\input{../图表/runs/20260926-A-q123-complete-delivery/q3_appendix.tex}

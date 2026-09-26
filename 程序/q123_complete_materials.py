@@ -98,7 +98,7 @@ def main():
     p=chapters/'6_problem2.tex';src=(templates/p.name).read_text('utf-8').split(r'\subsection{继承初解')[0]
     src+=r'\input{章节/6e_current_algorithm}'+'\n'+r'\subsection{百图结果与验证}'+'\n'
     b=points[2,5];l=points[3,5]
-    src+=f'问题二五核逐图平均加速比为 ${b["mean_speedup"]:.6f}$，百图总周期为 ${num(b["total_cycles"])}$，总额外搬运为 ${num(b["added_bytes"])}$ 字节。各配置保留完整官方结果与物理内存审计。历史初解作为显式输入，其生成不包含在本轮限时搜索内。\n'
+    src+=f'问题二五核逐图平均加速比为 ${b["mean_speedup"]:.6f}$，百图总周期为 ${num(b["total_cycles"])}$。\\par\n总额外搬运为 ${num(b["added_bytes"])}$ 字节。各配置保留完整官方结果与物理内存审计。历史初解作为显式输入，其生成不包含在本轮限时搜索内。\n'
     src+=table(['核数','平均加速比','总周期','额外搬运'],[[k,f'{points[2,k]["mean_speedup"]:.6f}',num(points[2,k]['total_cycles']),num(points[2,k]['added_bytes'])] for k in range(1,6)],'问题二百图汇总','tab:q2-main')+fig('speedup','三问的百图逐图平均加速比；L2 单核点沿用无 L2 单核参考','fig:q2-speed')+fig('cycles','三问百图总周期；与逐图平均加速比采用不同权重','fig:total-cycles')
     src+='算法在每个核数独立搜索，增加核心数并不保证每个图都更快。全量结果证明与给定官方仿真一致，不构成全局最优证书或未见图泛化检验。\n'
     src=src.replace(r'\label{fig:q2-speed}',r'\label{fig:q2-speed}\label{fig:q3-speed}');text(p,src)
@@ -180,7 +180,6 @@ R_k^\Sigma=\frac{\sum_iT^0_{i,1}}{\sum_iT_{i,k}}.
 \section{问题二逐用例官方结果}
 各核数均为100图，额外搬运单位为bytes。
 \input{../图表/runs/20260926-A-q123-complete-delivery/q2_appendix.tex}
-\clearpage
 \section{问题三最终方案的同方案成对结果}
 每行的无L2与L2周期来自同一最终方案的独立官方评价，两次额外逻辑搬运相同，表中合列一次；命中率为官方字节命中率。
 \input{../图表/runs/20260926-A-q123-complete-delivery/q3_appendix.tex}
